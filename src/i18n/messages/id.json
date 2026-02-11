@@ -1,0 +1,147 @@
+{
+  "nav": {
+    "home": "Beranda",
+    "about": "Tentang Kami",
+    "products": "Produk",
+    "contact": "Hubungi Kami",
+    "articles": "Artikel"
+  },
+  "footer": {
+    "copyright": "© {year} Cartenz. All rights reserved.",
+    "links": {
+      "home": "Beranda",
+      "about": "Tentang Kami",
+      "products": "Produk",
+      "contact": "Hubungi Kami",
+      "articles": "Artikel"
+    }
+  },
+  "home": {
+    "title": "Beranda",
+    "welcome": "Selamat datang di company profile kami.",
+    "hero": {
+      "badge": "BARU",
+      "badgeText": "Coba opsi gratis 30 hari",
+      "headline": "Solusi andal untuk mengembangkan",
+      "headlineHighlight": "bisnis Anda.",
+      "subtext": "Tanpa ribet. Tanpa kebisingan. Hanya otomasi bersih dan andal untuk meningkatkan efisiensi tim Anda.",
+      "ctaPrimary": "Mulai sekarang",
+      "ctaSecondary": "Tonton demo",
+      "check1": "Tanpa kartu kredit",
+      "check2": "Gratis 30 hari",
+      "check3": "Siap dalam 10 menit"
+    },
+    "features": {
+      "badge": "Fitur",
+      "title": "Apa yang Anda dapatkan",
+      "subtext": "Komponen, pola, dan halaman — semua yang Anda butuhkan untuk meluncurkan.",
+      "card1Title": "Setup super cepat",
+      "card1Desc": "Luncurkan halaman siap produksi dalam hitungan menit dengan komponen siap pakai.",
+      "card2Title": "Sempurna hingga detail",
+      "card2Desc": "UI modern yang mengutamakan desain dan diterjemahkan ke kode yang presisi.",
+      "card3Title": "Sangat dapat disesuaikan",
+      "card3Desc": "Kelas utility-first Tailwind membuat kustomisasi menjadi mudah.",
+      "sectionText": "Kami membantu Anda membangun lebih cepat dengan mengubah visi desain menjadi komponen UI yang fungsional dan siap produksi.",
+      "sectionTitle": "Desain lebih baik dengan pendapatan dan keuntungan tertinggi",
+      "sectionDesc": "Kami memberdayakan Anda untuk membangun dengan indah dan berkembang tanpa hambatan.",
+      "learnMore": "Pelajari lebih lanjut tentang produk"
+    },
+    "produkSection": {
+      "badge": "Produk",
+      "title": "INOVASI UNTUK INDONESIA",
+      "viewMore": "Lihat Selengkapnya",
+      "product1Title": "Solusi Online Transaction Monitoring",
+      "product1Category": "EFD",
+      "product2Title": "Solusi SmartGov Revenue",
+      "product2Category": "SmartGov",
+      "product3Title": "Solusi Integrasi Data Pajak Daerah",
+      "product3Category": "SmartGov",
+      "product4Title": "Solusi Dashboard Command Center",
+      "product4Category": "OTM",
+      "product5Title": "Solusi E-Kiosk",
+      "product5Category": "Palapa",
+      "product6Title": "Solusi Perekaman Retribusi",
+      "product6Category": "SmartGov"
+    },
+    "testimonials": {
+      "badge": "Testimoni",
+      "title": "Jangan hanya dengar dari kami",
+      "subtext": "Dengarkan apa kata pelanggan kami. Kami selalu berusaha meningkatkan layanan.",
+      "item1Quote": "Layanan dan produk yang sangat memuaskan. Sangat direkomendasikan.",
+      "item1Name": "Budi Santoso",
+      "item2Quote": "Tim profesional dan responsif. Hasil melebihi ekspektasi.",
+      "item2Name": "Siti Aminah",
+      "item3Quote": "Solusi tepat untuk kebutuhan bisnis kami. Terima kasih!",
+      "item3Name": "Ahmad Wijaya"
+    },
+    "pricing": {
+      "badge": "Harga",
+      "title": "Paket Harga Kami",
+      "subtext": "Opsi harga fleksibel yang dirancang untuk kebutuhan Anda.",
+      "basic": "Dasar",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "perMonth": "/bulan",
+      "popular": "Paling Populer",
+      "getStarted": "Mulai",
+      "basicFeature1": "Akses ke semua kursus dasar",
+      "basicFeature2": "Dukungan komunitas",
+      "basicFeature3": "10 proyek latihan",
+      "basicFeature4": "Sertifikat penyelesaian",
+      "basicFeature5": "Review kode dasar",
+      "proFeature1": "Akses ke semua kursus Pro",
+      "proFeature2": "Dukungan prioritas",
+      "proFeature3": "30 proyek latihan",
+      "proFeature4": "Sertifikat penyelesaian",
+      "proFeature5": "Review kode lanjutan",
+      "proFeature6": "Sesi mentoring 1-on-1",
+      "proFeature7": "Bantuan pekerjaan",
+      "enterpriseFeature1": "Akses ke semua kursus",
+      "enterpriseFeature2": "Dukungan dedicated",
+      "enterpriseFeature3": "Proyek tanpa batas",
+      "enterpriseFeature4": "Sertifikat penyelesaian",
+      "enterpriseFeature5": "Review kode premium"
+    },
+    "contact": {
+      "badge": "Kontak",
+      "title": "Hubungi kami",
+      "subtext": "Siap mengembangkan merek Anda? Mari terhubung dan bangun sesuatu yang istimewa bersama.",
+      "nameLabel": "Nama Anda",
+      "namePlaceholder": "Masukkan nama Anda",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Masukkan email Anda",
+      "messageLabel": "Pesan",
+      "messagePlaceholder": "Masukkan pesan Anda",
+      "submit": "Kirim"
+    },
+    "cta": {
+      "title": "Siap mencoba layanan kami?",
+      "subtext": "Alat favorit Anda berikutnya hanya satu klik lagi.",
+      "button": "Mulai sekarang"
+    }
+  },
+  "about": {
+    "title": "Tentang Kami",
+    "content": "Konten tentang kami akan ditampilkan di sini."
+  },
+  "products": {
+    "title": "Produk",
+    "content": "Daftar produk kami akan ditampilkan di sini."
+  },
+  "contact": {
+    "title": "Hubungi Kami",
+    "content": "Form atau informasi kontak akan ditampilkan di sini."
+  },
+  "articles": {
+    "title": "Artikel",
+    "listTitle": "Daftar Artikel",
+    "readMore": "Baca selengkapnya",
+    "backToList": "Kembali ke daftar artikel",
+    "notFound": "Artikel tidak ditemukan."
+  },
+  "theme": {
+    "light": "Terang",
+    "dark": "Gelap",
+    "system": "Sistem"
+  }
+}

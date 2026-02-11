@@ -1,0 +1,147 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "products": "Products",
+    "contact": "Contact Us",
+    "articles": "Articles"
+  },
+  "footer": {
+    "copyright": "© {year} Cartenz. All rights reserved.",
+    "links": {
+      "home": "Home",
+      "about": "About Us",
+      "products": "Products",
+      "contact": "Contact Us",
+      "articles": "Articles"
+    }
+  },
+  "home": {
+    "title": "Home",
+    "welcome": "Welcome to our company profile.",
+    "hero": {
+      "badge": "NEW",
+      "badgeText": "Try 30 days free trial",
+      "headline": "Reliable solutions to grow your",
+      "headlineHighlight": "business.",
+      "subtext": "No complexity. No noise. Just clean, reliable automation to boost your team's efficiency.",
+      "ctaPrimary": "Get started",
+      "ctaSecondary": "Watch demo",
+      "check1": "No credit card",
+      "check2": "30 days free trial",
+      "check3": "Setup in 10 minutes"
+    },
+    "features": {
+      "badge": "Features",
+      "title": "What you get",
+      "subtext": "Components, patterns and pages — everything you need to ship.",
+      "card1Title": "Lightning-fast setup",
+      "card1Desc": "Launch production-ready pages in minutes with prebuilt components.",
+      "card2Title": "Pixel perfect",
+      "card2Desc": "Modern Figma-driven UI that translates to exact code.",
+      "card3Title": "Highly customizable",
+      "card3Desc": "Tailwind utility-first classes make customization trivial.",
+      "sectionText": "We help you build faster by transforming your design vision into fully functional, production-ready UI components.",
+      "sectionTitle": "Better design with highest revenue and profits",
+      "sectionDesc": "We empower you to build beautifully and scale effortlessly.",
+      "learnMore": "Learn more about the product"
+    },
+    "produkSection": {
+      "badge": "Products",
+      "title": "INNOVATION FOR INDONESIA",
+      "viewMore": "View More",
+      "product1Title": "Online Transaction Monitoring Solution",
+      "product1Category": "EFD",
+      "product2Title": "SmartGov Revenue Solution",
+      "product2Category": "SmartGov",
+      "product3Title": "Regional Tax Data Integration Solution",
+      "product3Category": "SmartGov",
+      "product4Title": "Dashboard Command Center Solution",
+      "product4Category": "OTM",
+      "product5Title": "E-Kiosk Solution",
+      "product5Category": "Palapa",
+      "product6Title": "Retribution Recording Solution",
+      "product6Category": "SmartGov"
+    },
+    "testimonials": {
+      "badge": "Testimonials",
+      "title": "Don't just take our word for it",
+      "subtext": "Hear what our customers say about us. We're always looking for ways to improve.",
+      "item1Quote": "Excellent service and product. Highly recommended.",
+      "item1Name": "John Doe",
+      "item2Quote": "Professional and responsive team. Results exceeded expectations.",
+      "item2Name": "Jane Smith",
+      "item3Quote": "The right solution for our business needs. Thank you!",
+      "item3Name": "Mike Johnson"
+    },
+    "pricing": {
+      "badge": "Pricing",
+      "title": "Our Pricing Plans",
+      "subtext": "Flexible pricing options designed to meet your needs.",
+      "basic": "Basic",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "perMonth": "/month",
+      "popular": "Most Popular",
+      "getStarted": "Get Started",
+      "basicFeature1": "Access to all basic courses",
+      "basicFeature2": "Community support",
+      "basicFeature3": "10 practice projects",
+      "basicFeature4": "Course completion certificate",
+      "basicFeature5": "Basic code review",
+      "proFeature1": "Access to all Pro courses",
+      "proFeature2": "Priority support",
+      "proFeature3": "30 practice projects",
+      "proFeature4": "Course completion certificate",
+      "proFeature5": "Advance code review",
+      "proFeature6": "1-on-1 mentoring sessions",
+      "proFeature7": "Job assistance",
+      "enterpriseFeature1": "Access to all courses",
+      "enterpriseFeature2": "Dedicated support",
+      "enterpriseFeature3": "Unlimited projects",
+      "enterpriseFeature4": "Course completion certificate",
+      "enterpriseFeature5": "Premium code review"
+    },
+    "contact": {
+      "badge": "Contact",
+      "title": "Reach out to us",
+      "subtext": "Ready to grow your brand? Let's connect and build something exceptional together.",
+      "nameLabel": "Your name",
+      "namePlaceholder": "Enter your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Enter your message",
+      "submit": "Submit"
+    },
+    "cta": {
+      "title": "Ready to try our service?",
+      "subtext": "Your next favourite tool is just one click away.",
+      "button": "Get Started"
+    }
+  },
+  "about": {
+    "title": "About Us",
+    "content": "Content about us will be displayed here."
+  },
+  "products": {
+    "title": "Products",
+    "content": "Our product list will be displayed here."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "content": "Contact form or information will be displayed here."
+  },
+  "articles": {
+    "title": "Articles",
+    "listTitle": "Article List",
+    "readMore": "Read more",
+    "backToList": "Back to article list",
+    "notFound": "Article not found."
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}

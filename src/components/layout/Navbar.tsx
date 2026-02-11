@@ -1,0 +1,132 @@
+"use client";
+
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
+import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LanguageSwitch } from "@/components/ui/LanguageSwitch";
+
+const navItems = [
+  { path: "/", key: "home" },
+  { path: "/tentang-kami", key: "about" },
+  { path: "/produk", key: "products" },
+  { path: "/hubungi-kami", key: "contact" },
+] as const;
+
+function isActivePath(pathname: string, locale: string, path: string): boolean {
+  const prefix = `/${locale}`;
+  if (path === "/") return pathname === prefix || pathname === `${prefix}/`;
+  return pathname === `${prefix}${path}` || pathname.startsWith(`${prefix}${path}/`);
+}
+
+export function Navbar() {
+  const t = useTranslations("nav");
+  const locale = useLocale();
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const closeMobile = () => setMobileOpen(false);
+
+  return (
+    <>
+      <nav className="fixed top-0 z-50 flex w-full items-center justify-between px-6 py-4 backdrop-blur md:px-16 lg:px-24 xl:px-32">
+        <Link
+          href={`/${locale}`}
+          className="flex shrink-0 items-center"
+          onClick={closeMobile}
+        >
+          <Image
+            src="/assets/logoCartenzBlack.svg"
+            alt="Cartenz Technology"
+            width={160}
+            height={40}
+            className="h-8 w-auto md:h-[34px]"
+            priority
+          />
+        </Link>
+
+        <div className="hidden items-center gap-8 md:flex">
+          {navItems.map(({ path, key }) => {
+            const active = isActivePath(pathname, locale, path);
+            return (
+              <Link
+                key={key}
+                href={`/${locale}${path}`}
+                className={`text-[#1E1E1E] transition hover:text-[#408FB4] ${active ? "font-bold" : ""}`}
+              >
+                {t(key)}
+              </Link>
+            );
+          })}
+          <Link
+            href={`/${locale}/artikel`}
+            className={`text-[#1E1E1E] transition hover:text-[#408FB4] ${isActivePath(pathname, locale, "/artikel") ? "font-bold" : ""}`}
+          >
+            {t("articles")}
+          </Link>
+        </div>
+
+        <div className="hidden items-center gap-2 md:flex">
+          <LanguageSwitch />
+          <ThemeToggle />
+        </div>
+
+        <button
+          type="button"
+          id="open-menu"
+          onClick={() => setMobileOpen(true)}
+          className="active:scale-90 transition md:hidden"
+          aria-label="Buka menu"
+        >
+          <Menu className="size-[26px] text-[#1E1E1E]" />
+        </button>
+      </nav>
+
+      {/* Mobile nav overlay */}
+      <div
+        id="mobile-navlinks"
+        className={`fixed inset-0 z-100 flex flex-col items-center justify-center gap-8 bg-black/40 text-lg backdrop-blur transition-transform duration-400 md:hidden ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {navItems.map(({ path, key }) => {
+          const active = isActivePath(pathname, locale, path);
+          return (
+            <Link
+              key={key}
+              href={`/${locale}${path}`}
+              onClick={closeMobile}
+              className={`text-white transition hover:text-[#408FB4] ${active ? "font-bold" : ""}`}
+            >
+              {t(key)}
+            </Link>
+          );
+        })}
+        <Link
+          href={`/${locale}/artikel`}
+          onClick={closeMobile}
+          className={`text-white transition hover:text-[#408FB4] ${isActivePath(pathname, locale, "/artikel") ? "font-bold" : ""}`}
+        >
+          {t("articles")}
+        </Link>
+        <div className="mt-4 flex items-center gap-3">
+          <LanguageSwitch />
+          <ThemeToggle />
+        </div>
+        <button
+          type="button"
+          id="close-menu"
+          onClick={closeMobile}
+          className="active:ring-3 active:ring-white flex aspect-square size-10 items-center justify-center rounded-md bg-[#408FB4] p-1 text-white transition hover:opacity-90"
+          aria-label="Tutup menu"
+        >
+          <X className="size-6" />
+        </button>
+      </div>
+    </>
+  );
+}

@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1e1e1e;
+  --cartenz-blue: #408fb4;
+  --cartenz-black: #1e1e1e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-cartenz-blue: #408fb4;
+  --color-cartenz-black: #1e1e1e;
+  --font-sans: "Avenir", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Avenir", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Hero Swiper: pagination dots (navigasi pakai tombol kustom di komponen) */
+.hero-swiper .swiper-pagination-bullet {
+  background: rgba(30, 30, 30, 0.3);
+  opacity: 1;
+  width: 8px;
+  height: 8px;
+}
+.hero-swiper .swiper-pagination-bullet-active {
+  background: #408fb4;
+}
