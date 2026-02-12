@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
+/* Dark mode pakai class .dark (next-themes), bukan prefers-color-scheme */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Default: teks #1E1E1E di semua halaman */
 :root {
   --background: #ffffff;
-  --foreground: #1e1e1e;
+  --foreground: #1E1E1E;
   --cartenz-blue: #408fb4;
-  --cartenz-black: #1e1e1e;
+  --cartenz-black: #1E1E1E;
 }
 
 @theme inline {
@@ -16,16 +20,11 @@
   --font-mono: ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Dark mode: teks putih, hanya dari class .dark (di-set next-themes) */
+html.dark,
 .dark {
   --background: #0a0a0a;
-  --foreground: #ededed;
+  --foreground: #ffffff;
 }
 
 body {
@@ -34,7 +33,11 @@ body {
   font-family: "Avenir", "Avenir Next", "Segoe UI", system-ui, sans-serif;
 }
 
-/* Hero Swiper: pagination dots (navigasi pakai tombol kustom di komponen) */
+/* Hero Swiper: contain overflow agar tidak muncul scroll horizontal / glitch saat arrow */
+.hero-swiper,
+.hero-swiper .swiper {
+  overflow: hidden !important;
+}
 .hero-swiper .swiper-pagination-bullet {
   background: rgba(30, 30, 30, 0.3);
   opacity: 1;
@@ -43,4 +46,37 @@ body {
 }
 .hero-swiper .swiper-pagination-bullet-active {
   background: #408fb4;
+}
+
+/* Galeri Swiper: slide samping 278x264, slide tengah 278x305 + caption */
+.galeri-swiper .swiper {
+  overflow: hidden !important;
+}
+.galeri-swiper .swiper-slide {
+  width: 278px !important;
+  height: 264px;
+  flex-shrink: 0;
+  transition: height 0.25s ease;
+}
+.galeri-swiper .swiper-slide-active {
+  height: 305px;
+}
+.galeri-swiper .galeri-slide-inner {
+  width: 278px;
+  height: 264px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.galeri-swiper .swiper-slide-active .galeri-slide-inner {
+  height: 305px;
+}
+.galeri-swiper .galeri-caption {
+  display: none;
+  margin-top: 8px;
+  font-family: Avenir, "Avenir Next", "Segoe UI", system-ui, sans-serif;
+}
+.galeri-swiper .swiper-slide-active .galeri-caption {
+  display: block;
 }

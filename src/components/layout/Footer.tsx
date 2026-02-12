@@ -17,7 +17,7 @@ export function Footer() {
             <Link href="https://cartenz.co.id" target="_blank" rel="noreferrer">
               <div className="mb-4">
                 <img
-                  src="/assets/logoCartenzBlack.svg"
+                  src="/assets/logoCartenzWhiteFooter.svg.svg"
                   alt="Cartenz Technology"
                   className="h-9 w-auto"
                 />

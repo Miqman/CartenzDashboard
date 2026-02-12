@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getLocale } from "next-intl/server";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { GalleryCarousel } from "@/components/home/GalleryCarousel";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -124,9 +125,9 @@ export default async function HomePage() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-white text-[#1E1E1E]">
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       {/* Hero section: mobile full screen, konten tidak tertutup navbar */}
-      <section className="relative min-h-[100dvh] min-h-[100vh] bg-[#1E1E1E] pt-[72px] md:min-h-[50vh] md:pt-0">
+      <section className="relative min-h-[100dvh] min-h-[100vh] overflow-x-hidden bg-[#1E1E1E] pt-[72px] md:min-h-[50vh] md:pt-0">
         <Image
           src="/assets/bgHalfHero.jpg"
           alt=""
@@ -135,12 +136,11 @@ export default async function HomePage() {
           priority
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-white/40" />
         <HeroCarousel locale={locale} />
       </section>
 
       {/* Tentang Kami section (bawah) - dua kolom seperti gambar */}
-      <section className="bg-white px-6 py-12 lg:px-12 lg:py-16">
+      <section className="bg-background px-6 py-12 lg:px-12 lg:py-16">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12">
           {/* Kolom kiri: judul, tombol, avatars */}
           <div className="flex flex-col justify-between">
@@ -241,7 +241,7 @@ export default async function HomePage() {
       {/* Produk Section */}
       <section
         id="produk"
-        className="scroll-mt-20 bg-white px-4 py-16 md:px-16 lg:px-24 xl:px-32"
+        className="scroll-mt-20 bg-background px-4 py-16 md:px-16 lg:px-24 xl:px-32"
       >
         <div className="mx-auto max-w-6xl">
           <p
@@ -268,7 +268,7 @@ export default async function HomePage() {
               <Link
                 key={i}
                 href={`/${locale}/produk`}
-                className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg"
+                className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
               >
                 <div className="relative aspect-[4/3] w-full bg-[#408FB4]/10">
                   <Image
@@ -326,212 +326,200 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      {/* <section
-        id="pricing"
-        className="scroll-mt-20 px-4 md:px-16 lg:px-24 xl:px-32"
-      >
-        <p className="mx-auto mt-28 w-max rounded-full border border-pink-800 bg-pink-950/70 px-10 py-2 text-center font-medium text-pink-500">
-          {t("pricing.badge")}
-        </p>
-        <h2 className="mx-auto mt-4 text-center text-3xl font-semibold text-white">
-          {t("pricing.title")}
-        </h2>
-        <p className="mx-auto mt-2 max-w-xl text-center text-slate-300">
-          {t("pricing.subtext")}
-        </p>
+      {/* Klien Section: height 592px area, padding-bottom 64px, bg image 10% opacity + gradient overlay */}
+      <section className="relative min-h-[592px] px-4 pb-16 pt-16 md:px-16 lg:px-24 xl:px-32">
+        {/* Background: jangan pakai -z-10 agar tidak tertutup parent; layer di z-0, konten di atas */}
+        <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+          <Image
+            src="/assets/bgKlien.jpg"
+            alt=""
+            fill
+            className="object-cover object-center opacity-[0.25]"
+            sizes="100vw"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(25.73deg, rgba(255, 255, 255, 0) 6.04%, rgba(255, 255, 255, 0.92) 60.39%)",
+            }}
+          />
+        </div>
 
-        <div className="mt-20 flex flex-wrap items-stretch justify-center gap-8">
-          <div className="w-72 rounded-xl border border-pink-950 bg-pink-950/30 p-6 pb-16 text-center">
-            <p className="font-semibold text-white">{t("pricing.basic")}</p>
-            <h3 className="mt-2 text-3xl font-semibold text-white">
-              $29
-              <span className="text-sm font-normal text-gray-500">
-                {t("pricing.perMonth")}
-              </span>
-            </h3>
-            <ul className="mt-6 list-none space-y-2 text-left text-slate-300">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <CheckIcon className="size-4.5 shrink-0 text-pink-600" />
-                  <span>{t(`pricing.basicFeature${i}`)}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href={`/${locale}/hubungi-kami`}
-              className="mt-7 block w-full rounded-md bg-pink-500 py-2.5 font-medium transition hover:bg-pink-600"
+        <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-8">
+          <div>
+            <p
+              className="text-sm font-normal text-[#6B7280]"
+              style={{
+                fontFamily:
+                  "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
+              }}
             >
-              {t("pricing.getStarted")}
-            </Link>
+              Klien
+            </p>
+            <h2
+              className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl"
+              style={{
+                fontFamily:
+                  "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
+              }}
+            >
+              PEMDA DAN KEMENTERIAN
+            </h2>
           </div>
 
-          <div className="relative w-72 rounded-xl border border-pink-950 bg-pink-950 p-6 pb-16 text-center">
-            <p className="absolute -top-3.5 left-3.5 rounded-full bg-pink-400 px-3 py-1 text-sm text-white">
-              {t("pricing.popular")}
-            </p>
-            <p className="font-semibold text-white">{t("pricing.pro")}</p>
-            <h3 className="mt-2 text-3xl font-semibold text-white">
-              $79
-              <span className="text-sm font-normal text-gray-500">
-                {t("pricing.perMonth")}
-              </span>
-            </h3>
-            <ul className="mt-6 list-none space-y-2 text-left text-slate-300">
-              {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <CheckIcon className="size-4.5 shrink-0 text-pink-600" />
-                  <span>{t(`pricing.proFeature${i}`)}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href={`/${locale}/hubungi-kami`}
-              className="mt-7 block w-full rounded-md bg-white py-2.5 font-medium text-pink-600 transition hover:bg-slate-200"
-            >
-              {t("pricing.getStarted")}
-            </Link>
+          {/* Logo grid - gap 32px */}
+          <div className="grid grid-cols-2 gap-8 gap-x-10 gap-y-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
+            {[
+              { key: "dkiJakarta", label: "DKI Jakarta" },
+              { key: "kabKlungkung", label: "Kab. Klungkung" },
+              { key: "kabBadung", label: "Kab. Badung" },
+              { key: "kabBantul", label: "Kab. Bantul" },
+              { key: "kotaDenpasar", label: "Kota Denpasar" },
+              { key: "kotaBogor", label: "Kota Bogor" },
+              { key: "kabBandung", label: "Kab. Bandung" },
+              { key: "kabAcehTamiang", label: "Kab. Aceh Tamiang" },
+              { key: "kabBogor", label: "Kab. Bogor" },
+              { key: "kotaBanjarmasin", label: "Kota Banjarmasin" },
+            ].map((client) => (
+              <div
+                key={client.key}
+                className="flex flex-col items-center gap-3 text-center"
+              >
+                <div className="relative h-16 w-16 md:h-20 md:w-20">
+                  <Image
+                    src={`/assets/${client.key}.png`}
+                    alt={client.label}
+                    fill
+                    className="object-contain"
+                    sizes="80px"
+                  />
+                </div>
+                <p
+                  className="text-sm font-normal text-[#1E1E1E]"
+                  style={{
+                    fontFamily:
+                      "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
+                  }}
+                >
+                  {client.label}
+                </p>
+              </div>
+            ))}
           </div>
 
-          <div className="w-72 rounded-xl border border-pink-950 bg-pink-950/30 p-6 pb-16 text-center">
-            <p className="font-semibold text-white">
-              {t("pricing.enterprise")}
-            </p>
-            <h3 className="mt-2 text-3xl font-semibold text-white">
-              $199
-              <span className="text-sm font-normal text-gray-500">
-                {t("pricing.perMonth")}
-              </span>
-            </h3>
-            <ul className="mt-6 list-none space-y-2 text-left text-slate-300">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <CheckIcon className="size-4.5 shrink-0 text-pink-600" />
-                  <span>{t(`pricing.enterpriseFeature${i}`)}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href={`/${locale}/hubungi-kami`}
-              className="mt-7 block w-full rounded-md bg-pink-500 py-2.5 font-medium transition hover:bg-pink-600"
-            >
-              {t("pricing.getStarted")}
-            </Link>
+          {/* Stats row */}
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-[#408FB4]">150+</p>
+              <p className="mt-1 text-xs font-normal text-[#6B7280]">
+                Kota / Kabupaten
+              </p>
+            </div>
+            <span className="hidden h-8 w-px bg-[#E5E7EB] md:inline-block" />
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-[#408FB4]">18+</p>
+              <p className="mt-1 text-xs font-normal text-[#6B7280]">
+                Provinsi
+              </p>
+            </div>
+            <span className="hidden h-8 w-px bg-[#E5E7EB] md:inline-block" />
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-[#408FB4]">10+</p>
+              <p className="mt-1 text-xs font-normal text-[#6B7280]">
+                Kementerian
+              </p>
+            </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
-      {/* Contact Section */}
-      {/* <section className="px-4 md:px-16 lg:px-24 xl:px-32">
-        <p className="mx-auto mt-28 w-max rounded-full border border-pink-800 bg-pink-950/70 px-10 py-2 text-center font-medium text-pink-500">
-          {t("contact.badge")}
-        </p>
-        <h2 className="mx-auto mt-4 text-center text-3xl font-semibold text-white">
-          {t("contact.title")}
-        </h2>
-        <p className="mx-auto mt-2 max-w-xl text-center text-slate-300">
-          {t("contact.subtext")}
-        </p>
+      {/* Galeri Section: bgHalfHero 20%, height 620px, padding 64px */}
+      <section className="relative min-h-[620px] px-4 py-16 md:px-16 lg:px-24 xl:px-32">
+        <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+          <Image
+            src="/assets/bgHalfHero.jpg"
+            alt=""
+            fill
+            className="object-cover object-center opacity-20"
+            sizes="100vw"
+          />
+        </div>
+        <div className="relative z-10 mx-auto max-w-6xl">
+          <GalleryCarousel />
+        </div>
+      </section>
 
-        <form
-          action="#"
-          className="mx-auto mt-16 grid w-full max-w-2xl gap-5 text-slate-300 sm:grid-cols-2"
-        >
-          <div>
-            <label htmlFor="contact-name" className="mb-2 block font-medium">
-              {t("contact.nameLabel")}
-            </label>
-            <div className="flex items-center rounded-lg border border-slate-700 pl-3 focus-within:border-pink-500">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="size-5 shrink-0 text-slate-500"
-                aria-hidden
-              >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              <input
-                id="contact-name"
-                type="text"
-                name="name"
-                placeholder={t("contact.namePlaceholder")}
-                className="w-full border-0 bg-transparent p-3 outline-none"
-              />
-            </div>
-          </div>
-          <div>
-            <label htmlFor="contact-email" className="mb-2 block font-medium">
-              {t("contact.emailLabel")}
-            </label>
-            <div className="flex items-center rounded-lg border border-slate-700 pl-3 focus-within:border-pink-500">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="size-5 shrink-0 text-slate-500"
-                aria-hidden
-              >
-                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-              </svg>
-              <input
-                id="contact-email"
-                type="email"
-                name="email"
-                placeholder={t("contact.emailPlaceholder")}
-                className="w-full border-0 bg-transparent p-3 outline-none"
-              />
-            </div>
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="contact-message" className="mb-2 block font-medium">
-              {t("contact.messageLabel")}
-            </label>
-            <textarea
-              id="contact-message"
-              name="message"
-              rows={8}
-              placeholder={t("contact.messagePlaceholder")}
-              className="w-full resize-none rounded-lg border border-slate-700 bg-transparent p-3 outline-none focus:border-pink-500"
-            />
-          </div>
-          <button
-            type="submit"
-            className="flex w-max items-center gap-2 rounded-full bg-pink-600 px-10 py-3 text-white transition hover:bg-pink-700"
-          >
-            {t("contact.submit")}
-            <ArrowRightIcon className="size-5" />
-          </button>
-        </form>
-      </section> */}
-
-      {/* CTA Section */}
-      {/* <div className="mx-4 mt-40 flex max-w-5xl flex-col items-center justify-between gap-6 rounded-2xl bg-linear-to-b from-pink-900 to-pink-950 p-6 py-16 text-white md:mx-auto md:flex-row md:pl-20">
-        <div>
-          <h2 className="bg-linear-to-r from-white to-pink-400 bg-clip-text text-3xl font-semibold text-transparent md:text-4xl md:leading-tight">
-            {t("cta.title")}
+      {/* Artikel Section */}
+      <section className="bg-background px-4 py-16 md:px-16 lg:px-24 xl:px-32">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-sm font-normal text-[#6B7280]">Artikel</p>
+          <h2 className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl">
+            INFORMASI DAN INSPIRASI
           </h2>
-          <p className="mt-2 bg-linear-to-r from-white to-pink-400 bg-clip-text text-lg text-transparent">
-            {t("cta.subtext")}
-          </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                image: "/assets/artikel1.png",
+                category: "Pajak Daerah",
+                title: "Mengenal Apa Itu Pajak Daerah",
+              },
+              {
+                image: "/assets/artikel2.png",
+                category: "Kisah Sukses",
+                title:
+                  "Kabupaten Bandung Raih 3 Penghargaan Top Digital Awards ...",
+              },
+              {
+                image: "/assets/artikel3.png",
+                category: "Teknologi",
+                title: "Digitalisasi Layanan Pemerintah Daerah",
+              },
+              {
+                image: "/assets/artikel4.png",
+                category: "Kisah Sukses",
+                title:
+                  "Digitalisasi Permudah Akses Informasi Bagi Warga Denpasar",
+              },
+            ].map((artikel, i) => (
+              <Link
+                key={i}
+                href={`/${locale}/artikel`}
+                className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
+              >
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-xl">
+                  <Image
+                    src={artikel.image}
+                    alt=""
+                    fill
+                    className="object-cover object-center transition group-hover:opacity-95"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="flex flex-col gap-1 p-4">
+                  <p className="text-xs font-normal text-[#6B7280]">
+                    {artikel.category}
+                  </p>
+                  <h3 className="line-clamp-2 text-base font-semibold text-[#1E1E1E] dark:text-foreground">
+                    {artikel.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <Link
+              href={`/${locale}/artikel`}
+              className="inline-flex items-center gap-2 rounded-full border border-[#408FB4] bg-white px-6 py-3 text-base text-[#408FB4] transition hover:bg-[#408FB4]/5 dark:border-[#408FB4] dark:bg-transparent dark:hover:bg-[#408FB4]/10"
+            >
+              Artikel Lainnya
+              <ChevronRightIcon className="size-4" />
+            </Link>
+          </div>
         </div>
-        <Link
-          href={`/${locale}/hubungi-kami`}
-          className="mt-4 rounded-full bg-white px-12 py-3 text-sm text-slate-800 transition hover:bg-slate-200"
-        >
-          {t("cta.button")}
-        </Link>
-      </div> */}
+      </section>
     </div>
   );
 }

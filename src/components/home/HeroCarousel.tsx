@@ -95,7 +95,7 @@ function SlideContent({ title, locale }: { title: string; locale: string }) {
 
 export function HeroCarousel({ locale }: HeroCarouselProps) {
   return (
-    <div className="hero-swiper relative">
+    <div className="hero-swiper relative w-full overflow-hidden">
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={0}
@@ -106,7 +106,7 @@ export function HeroCarousel({ locale }: HeroCarouselProps) {
           nextEl: ".hero-swiper-next",
         }}
         pagination={{ clickable: true }}
-        className="overflow-visible!"
+        className="overflow-hidden!"
       >
         {SLIDE_TITLES.map((title, i) => (
           <SwiperSlide key={i}>
@@ -117,14 +117,14 @@ export function HeroCarousel({ locale }: HeroCarouselProps) {
       {/* Tombol navigasi kustom: ukuran dan posisi diatur di sini */}
       <button
         type="button"
-        className="hero-swiper-prev absolute left-6 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full text-[#1E1E1E] transition hover:bg-black/5 md:left-8"
+        className="hero-swiper-prev absolute left-6 top-1/2 z-10 flex size-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-[#1E1E1E] transition hover:bg-black/5 md:left-8"
         aria-label="Slide sebelumnya"
       >
         <ChevronLeft className="size-5" />
       </button>
       <button
         type="button"
-        className="hero-swiper-next absolute right-6 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full text-[#1E1E1E] transition hover:bg-black/5 md:right-8"
+        className="hero-swiper-next absolute right-6 top-1/2 z-10 flex size-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-[#1E1E1E] transition hover:bg-black/5 md:right-8"
         aria-label="Slide berikutnya"
       >
         <ChevronRight className="size-5" />
