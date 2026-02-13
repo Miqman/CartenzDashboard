@@ -8,36 +8,54 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 const GALLERY_IMAGES = [
-  { src: "/assets/galeri1.jpg", alt: "Galeri 1" },
-  { src: "/assets/galeri2.png", alt: "Galeri 2" },
-  { src: "/assets/galeri3.jpg", alt: "Galeri 3" },
-  { src: "/assets/galeri4.jpg", alt: "Galeri 4" },
-  { src: "/assets/galeri5.jpg", alt: "Galeri 5" },
+  { src: "/assets/galeri1.jpg", alt: "Galeri 1", caption: "Carteamz", subtitle: "2026" },
+  { src: "/assets/galeri2.png", alt: "Galeri 2", caption: "Carteamz", subtitle: "2026" },
+  { src: "/assets/galeri3.jpg", alt: "Galeri 3", caption: "Carteamz", subtitle: "2026" },
+  { src: "/assets/galeri4.jpg", alt: "Galeri 4", caption: "Carteamz", subtitle: "2026" },
+  { src: "/assets/galeri5.jpg", alt: "Galeri 5", caption: "Carteamz", subtitle: "2026" },
 ];
-
-/** Double assets agar carousel terasa penuh dan loop natural (5 gambar × 2 = 10 slide) */
-const GALLERY_SLIDES = [...GALLERY_IMAGES, ...GALLERY_IMAGES];
 
 const avenirStyle = {
   fontFamily: "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
 };
 
-export function GalleryCarousel() {
+export interface GalleryItemData {
+  imageUrl: string;
+  alt: string;
+  caption?: string;
+  subtitle?: string;
+}
+
+interface GalleryCarouselProps {
+  /** Dari Strapi; jika kosong pakai fallback lokal */
+  items?: GalleryItemData[] | null;
+  sectionBadge?: string;
+  sectionTitle?: string;
+}
+
+export function GalleryCarousel({
+  items,
+  sectionBadge = "Galeri",
+  sectionTitle = "MEMORI PERJALANAN",
+}: GalleryCarouselProps) {
+  const slideItems =
+    items && items.length > 0
+      ? items
+      : GALLERY_IMAGES.map((g) => ({ imageUrl: g.src, alt: g.alt, caption: g.caption, subtitle: g.subtitle }));
+  const gallerySlides = [...slideItems, ...slideItems];
+
   return (
     <div className="galeri-swiper relative w-full overflow-hidden">
       <div className="mb-8 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p
-            className="text-sm font-normal text-[#6B7280]"
-            style={avenirStyle}
-          >
-            Galeri
+          <p className="text-sm font-normal text-[#6B7280]" style={avenirStyle}>
+            {sectionBadge}
           </p>
           <h2
             className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl"
             style={avenirStyle}
           >
-            MEMORI PERJALANAN
+            {sectionTitle}
           </h2>
         </div>
         <div className="mt-4 flex items-center gap-2 sm:mt-0">
@@ -70,11 +88,11 @@ export function GalleryCarousel() {
         }}
         className="!overflow-hidden"
       >
-        {GALLERY_SLIDES.map((item, i) => (
+        {gallerySlides.map((item, i) => (
           <SwiperSlide key={i}>
             <div className="galeri-slide-inner relative">
               <Image
-                src={item.src}
+                src={item.imageUrl}
                 alt={item.alt}
                 fill
                 className="object-cover object-center"
@@ -83,10 +101,10 @@ export function GalleryCarousel() {
             </div>
             <div className="galeri-caption text-[#1E1E1E]">
               <p className="text-base font-medium" style={avenirStyle}>
-                Carteamz
+                {item.caption ?? "Carteamz"}
               </p>
               <p className="text-sm text-[#6B7280]" style={avenirStyle}>
-                2026
+                {item.subtitle ?? "2026"}
               </p>
             </div>
           </SwiperSlide>

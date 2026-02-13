@@ -2,8 +2,16 @@ import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
 import { getLocale } from "next-intl/server";
-import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { GalleryCarousel } from "@/components/home/GalleryCarousel";
+import {
+  getHomepage,
+  getProducts,
+  getClients,
+  getGallery,
+  getArticles,
+  getStrapiMediaUrl,
+} from "@/lib/strapi";
+import { GalleryCarouselWrapper } from "@/components/home/HomeCarousels.client";
+import { HeroCarouselWrapper } from "@/components/home/HomeCarousels.client";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -108,21 +116,150 @@ function ArrowRightIcon({ className }: { className?: string }) {
   );
 }
 
+const FALLBACK_ABOUT = {
+  badge: "Tentang Kami",
+  title: "WE ARE CARTENZ",
+  paragraph:
+    "Cartenz adalah Perusahaan Teknologi Nasionalis yang membantu para pemimpin daerah dalam membangun pemerintahan yang mampu mencapai tujuan melayani masyarakat secara optimal melalui semua instrumen pemerintahan, termasuk anggaran daerah (yang harus substansial), sumber daya manusia (yang harus berkualitas tinggi), dan sistem pendukung (yang harus unggul). Tujuannya adalah untuk mencapai tujuan ini secara efisien dalam hal biaya, waktu, dan sumber daya.",
+  ctaLabel: "Tentang Kami",
+  employeeCount: "150+ karyawan",
+};
+
+const FALLBACK_STATS = [
+  { value: "500+", label: "Proyek Pemerintah Daerah" },
+  { value: "50+", label: "Produk" },
+  { value: "50+", label: "IT Partner di Indonesia" },
+  { value: "300.000+", label: "Pengguna Public" },
+  { value: "2.500.000+", label: "Layanan Tersubmit" },
+  { value: "175+", label: "Klien" },
+];
+
+const FALLBACK_ARTIKEL: { image: string; imageUrl?: string; category: string; title: string; slug?: string }[] = [
+  { image: "/assets/artikel1.png", category: "Pajak Daerah", title: "Mengenal Apa Itu Pajak Daerah" },
+  {
+    image: "/assets/artikel2.png",
+    category: "Kisah Sukses",
+    title: "Kabupaten Bandung Raih 3 Penghargaan Top Digital Awards ...",
+  },
+  {
+    image: "/assets/artikel3.png",
+    category: "Teknologi",
+    title: "Digitalisasi Layanan Pemerintah Daerah",
+  },
+  {
+    image: "/assets/artikel4.png",
+    category: "Kisah Sukses",
+    title: "Digitalisasi Permudah Akses Informasi Bagi Warga Denpasar",
+  },
+];
+
 export default async function HomePage() {
   const t = await getTranslations("home");
   const locale = await getLocale();
 
-  const aboutParagraph =
-    "Cartenz adalah Perusahaan Teknologi Nasionalis yang membantu para pemimpin daerah dalam membangun pemerintahan yang mampu mencapai tujuan melayani masyarakat secara optimal melalui semua instrumen pemerintahan, termasuk anggaran daerah (yang harus substansial), sumber daya manusia (yang harus berkualitas tinggi), dan sistem pendukung (yang harus unggul). Tujuannya adalah untuk mencapai tujuan ini secara efisien dalam hal biaya, waktu, dan sumber daya.";
+  const [homepage, products, clients, gallery, articlesRes] = await Promise.all([
+    getHomepage(),
+    getProducts(),
+    getClients(),
+    getGallery(),
+    getArticles(),
+  ]);
 
-  const stats = [
-    { value: "500+", label: "Proyek Pemerintah Daerah" },
-    { value: "50+", label: "Produk" },
-    { value: "50+", label: "IT Partner di Indonesia" },
-    { value: "300.000+", label: "Pengguna Public" },
-    { value: "2.500.000+", label: "Layanan Tersubmit" },
-    { value: "175+", label: "Klien" },
-  ] as const;
+  const about = homepage?.about;
+  const aboutStats = homepage?.aboutStats?.length ? homepage.aboutStats : FALLBACK_STATS;
+  const aboutBadge = about?.badge ?? FALLBACK_ABOUT.badge;
+  const aboutTitle = about?.title ?? FALLBACK_ABOUT.title;
+  const aboutParagraph = about?.paragraph ?? FALLBACK_ABOUT.paragraph;
+  const aboutCtaLabel = about?.ctaLabel ?? FALLBACK_ABOUT.ctaLabel;
+  const aboutEmployeeCount = about?.employeeCount ?? FALLBACK_ABOUT.employeeCount;
+
+  const produkSection = homepage?.produkSection;
+  const produkBadge = produkSection?.badge ?? t("produkSection.badge");
+  const produkTitle = produkSection?.title ?? t("produkSection.title");
+  const produkViewMore = produkSection?.viewMoreLabel ?? t("produkSection.viewMore");
+
+  const klienSection = homepage?.klienSection;
+  const klienBadge = klienSection?.badge ?? "Klien";
+  const klienTitle = klienSection?.title ?? "PEMDA DAN KEMENTERIAN";
+  const klienStats = homepage?.klienStats?.length
+    ? homepage.klienStats
+    : [
+        { value: "150+", label: "Kota / Kabupaten" },
+        { value: "18+", label: "Provinsi" },
+        { value: "10+", label: "Kementerian" },
+      ];
+
+  const galeriSection = homepage?.galeriSection;
+  const galeriBadge = galeriSection?.badge ?? "Galeri";
+  const galeriTitle = galeriSection?.title ?? "MEMORI PERJALANAN";
+
+  const artikelSection = homepage?.artikelSection;
+  const artikelBadge = artikelSection?.badge ?? "Artikel";
+  const artikelTitle = artikelSection?.title ?? "INFORMASI DAN INSPIRASI";
+  const artikelViewMore = artikelSection?.viewMoreLabel ?? "Artikel Lainnya";
+
+  const heroSlides =
+    homepage?.heroSlides?.length &&
+    homepage.heroSlides.every((s) => s.title || (Array.isArray(s.solutions) && s.solutions.length))
+      ? homepage.heroSlides.map((s) => ({
+          title: s.title ?? "Solusi Pengelolaan Pajak Daerah",
+          solutions: Array.isArray(s.solutions) ? s.solutions : [],
+          logoUrl: getStrapiMediaUrl(s.logo) || undefined,
+        }))
+      : null;
+
+  const productList =
+    products.length >= 1
+      ? products
+          .slice(0, 6)
+          .map((p) => ({
+            title: p.title ?? "",
+            category: p.category ?? "",
+            imageUrl: getStrapiMediaUrl(p.image),
+          }))
+      : null;
+
+  const clientList =
+    clients.length >= 1
+      ? clients.map((c) => ({
+          name: c.name ?? "",
+          logoUrl: getStrapiMediaUrl(c.logo),
+        }))
+      : null;
+
+  const galleryItems =
+    gallery.length >= 1
+      ? gallery.map((g) => ({
+          imageUrl: getStrapiMediaUrl(g.image),
+          alt: g.caption ?? "Galeri",
+          caption: g.caption,
+          subtitle: g.subtitle,
+        }))
+      : null;
+
+  const articlesData = articlesRes?.data;
+  const artikelList =
+    Array.isArray(articlesData) && articlesData.length >= 1
+      ? articlesData.slice(0, 4).map((a) => {
+          const raw = (a ?? {}) as Record<string, unknown>;
+          const attrs = (raw?.attributes ?? raw) as Record<string, unknown>;
+          const cover = (attrs?.cover ?? raw?.cover) as { url?: string } | undefined;
+          const url = cover?.url ?? "";
+          const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+          const imageUrl = url ? (url.startsWith("http") ? url : `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`) : "";
+          const category = (attrs?.category ?? raw?.category) as { name?: string } | undefined;
+          return {
+            imageUrl: imageUrl || "/assets/artikel1.png",
+            category: category?.name ?? "Artikel",
+            title: String(attrs?.title ?? raw?.title ?? ""),
+            slug: String(attrs?.slug ?? raw?.slug ?? ""),
+          };
+        })
+      : null;
+
+  const avenirStyle = {
+    fontFamily: "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
+  };
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
@@ -136,7 +273,11 @@ export default async function HomePage() {
           priority
           sizes="100vw"
         />
-        <HeroCarousel locale={locale} />
+        <HeroCarouselWrapper
+          locale={locale}
+          slides={heroSlides}
+          ctaLabel={aboutCtaLabel}
+        />
       </section>
 
       {/* Tentang Kami section (bawah) - dua kolom seperti gambar */}
@@ -152,28 +293,27 @@ export default async function HomePage() {
                     "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
                 }}
               >
-                Tentang Kami
+                {aboutBadge}
               </p>
               <h2
                 className="mt-2 text-[32px] font-normal uppercase leading-[100%] tracking-[0%] md:text-[40px]"
-                style={{
-                  fontFamily:
-                    "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                }}
+                style={avenirStyle}
               >
-                <span className="text-[#1E1E1E]">WE ARE </span>
-                <span className="text-[#408FB4]">CARTENZ</span>
+                <span className="text-[#1E1E1E]">
+                  {aboutTitle.includes("CARTENZ")
+                    ? aboutTitle.replace("CARTENZ", "").trimEnd() + " "
+                    : ""}
+                </span>
+                <span className="text-[#408FB4]">
+                  {aboutTitle.includes("CARTENZ") ? "CARTENZ" : aboutTitle}
+                </span>
               </h2>
               <Link
                 href={`/${locale}/tentang-kami`}
                 className="mt-4 inline-flex w-max items-center gap-2 rounded-full border border-[#408FB4] bg-white px-4 py-2.5 text-[#408FB4] transition hover:bg-[#408FB4]/5"
-                style={{
-                  fontFamily:
-                    "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                  fontSize: "16px",
-                }}
+                style={{ ...avenirStyle, fontSize: "16px" }}
               >
-                Tentang Kami
+                {aboutCtaLabel}
                 <ArrowRightIcon className="size-4" />
               </Link>
             </div>
@@ -187,14 +327,8 @@ export default async function HomePage() {
                   />
                 ))}
               </div>
-              <span
-                className="text-[16px] font-normal text-[#6B7280]"
-                style={{
-                  fontFamily:
-                    "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                }}
-              >
-                150+ karyawan
+              <span className="text-[16px] font-normal text-[#6B7280]" style={avenirStyle}>
+                {aboutEmployeeCount}
               </span>
             </div>
           </div>
@@ -203,33 +337,24 @@ export default async function HomePage() {
           <div className="flex flex-col">
             <p
               className="text-[16px] font-normal leading-[24px] tracking-[0%] text-[#374151]"
-              style={{
-                fontFamily:
-                  "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-              }}
+              style={avenirStyle}
             >
               {aboutParagraph}
             </p>
             <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
-              {stats.map(({ value, label }) => (
-                <div key={label}>
+              {aboutStats.map((stat, idx) => (
+                <div key={stat.label ? `${stat.label}-${idx}` : `stat-${idx}`}>
                   <p
                     className="text-[24px] font-black leading-[100%] tracking-[0%] text-[#1E1E1E]"
-                    style={{
-                      fontFamily:
-                        "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                    }}
+                    style={avenirStyle}
                   >
-                    {value}
+                    {stat.value}
                   </p>
                   <p
                     className="mt-1 text-[14px] font-normal leading-snug text-[#6B7280]"
-                    style={{
-                      fontFamily:
-                        "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                    }}
+                    style={avenirStyle}
                   >
-                    {label}
+                    {stat.label}
                   </p>
                 </div>
               ))}
@@ -244,82 +369,62 @@ export default async function HomePage() {
         className="scroll-mt-20 bg-background px-4 py-16 md:px-16 lg:px-24 xl:px-32"
       >
         <div className="mx-auto max-w-6xl">
-          <p
-            className="text-[16px] font-normal text-[#6B7280]"
-            style={{
-              fontFamily:
-                "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-            }}
-          >
-            {t("produkSection.badge")}
+          <p className="text-[16px] font-normal text-[#6B7280]" style={avenirStyle}>
+            {produkBadge}
           </p>
           <h2
             className="mt-2 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl"
-            style={{
-              fontFamily:
-                "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-            }}
+            style={avenirStyle}
           >
-            {t("produkSection.title")}
+            {produkTitle}
           </h2>
 
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {([1, 2, 3, 4, 5, 6] as const).map((i) => (
-              <Link
-                key={i}
-                href={`/${locale}/produk`}
-                className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
-              >
-                <div className="relative aspect-[4/3] w-full bg-[#408FB4]/10">
-                  <Image
-                    src="/assets/produk1.png"
-                    alt=""
-                    fill
-                    className="object-cover object-center"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                </div>
-                <div className="flex items-start justify-between gap-3 p-4">
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className="font-semibold text-[#1E1E1E]"
-                      style={{
-                        fontFamily:
-                          "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                        fontSize: "15px",
-                      }}
-                    >
-                      {t(`produkSection.product${i}Title`)}
-                    </p>
-                    <p
-                      className="mt-1 text-[14px] font-normal text-[#6B7280]"
-                      style={{
-                        fontFamily:
-                          "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                      }}
-                    >
-                      {t(`produkSection.product${i}Category`)}
-                    </p>
+            {(productList ?? Array.from({ length: 6 }, (_, i) => i + 1)).map((_, i) => {
+              const idx = (i + 1) as 1 | 2 | 3 | 4 | 5 | 6;
+              const title = productList ? productList[i]?.title ?? "" : t(`produkSection.product${idx}Title`);
+              const category = productList ? productList[i]?.category ?? "" : t(`produkSection.product${idx}Category`);
+              const imageUrl = productList?.[i]?.imageUrl || "/assets/produk1.png";
+              return (
+                <Link
+                  key={i}
+                  href={`/${locale}/produk`}
+                  className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
+                >
+                  <div className="relative aspect-[4/3] w-full bg-[#408FB4]/10">
+                    <Image
+                      src={imageUrl}
+                      alt=""
+                      fill
+                      className="object-cover object-center"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
                   </div>
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-[#408FB4] text-[#408FB4] transition group-hover:bg-[#408FB4] group-hover:text-white">
-                    <ArrowUpRightIcon className="size-4" />
-                  </span>
-                </div>
-              </Link>
-            ))}
+                  <div className="flex items-start justify-between gap-3 p-4">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-[#1E1E1E]" style={{ ...avenirStyle, fontSize: "15px" }}>
+                        {title}
+                      </p>
+                      <p className="mt-1 text-[14px] font-normal text-[#6B7280]" style={avenirStyle}>
+                        {category}
+                      </p>
+                    </div>
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-[#408FB4] text-[#408FB4] transition group-hover:bg-[#408FB4] group-hover:text-white">
+                      <ArrowUpRightIcon className="size-4" />
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="mt-12 flex justify-center">
             <Link
               href={`/${locale}/produk`}
               className="inline-flex items-center gap-2 rounded-full border border-[#408FB4] bg-white px-6 py-3 text-[#408FB4] transition hover:bg-[#408FB4]/5"
-              style={{
-                fontFamily:
-                  "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                fontSize: "16px",
-              }}
+              style={{ ...avenirStyle, fontSize: "16px" }}
             >
-              {t("produkSection.viewMore")}
+              {produkViewMore}
               <ChevronRightIcon className="size-4" />
             </Link>
           </div>
@@ -348,61 +453,46 @@ export default async function HomePage() {
 
         <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-8">
           <div>
-            <p
-              className="text-sm font-normal text-[#6B7280]"
-              style={{
-                fontFamily:
-                  "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-              }}
-            >
-              Klien
+            <p className="text-sm font-normal text-[#6B7280]" style={avenirStyle}>
+              {klienBadge}
             </p>
             <h2
               className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl"
-              style={{
-                fontFamily:
-                  "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-              }}
+              style={avenirStyle}
             >
-              PEMDA DAN KEMENTERIAN
+              {klienTitle}
             </h2>
           </div>
 
           {/* Logo grid - gap 32px */}
           <div className="grid grid-cols-2 gap-8 gap-x-10 gap-y-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
-            {[
-              { key: "dkiJakarta", label: "DKI Jakarta" },
-              { key: "kabKlungkung", label: "Kab. Klungkung" },
-              { key: "kabBadung", label: "Kab. Badung" },
-              { key: "kabBantul", label: "Kab. Bantul" },
-              { key: "kotaDenpasar", label: "Kota Denpasar" },
-              { key: "kotaBogor", label: "Kota Bogor" },
-              { key: "kabBandung", label: "Kab. Bandung" },
-              { key: "kabAcehTamiang", label: "Kab. Aceh Tamiang" },
-              { key: "kabBogor", label: "Kab. Bogor" },
-              { key: "kotaBanjarmasin", label: "Kota Banjarmasin" },
-            ].map((client) => (
+            {(clientList ?? [
+              { name: "DKI Jakarta", logoUrl: "/assets/dkiJakarta.png" },
+              { name: "Kab. Klungkung", logoUrl: "/assets/kabKlungkung.png" },
+              { name: "Kab. Badung", logoUrl: "/assets/kabBadung.png" },
+              { name: "Kab. Bantul", logoUrl: "/assets/kabBantul.png" },
+              { name: "Kota Denpasar", logoUrl: "/assets/kotaDenpasar.png" },
+              { name: "Kota Bogor", logoUrl: "/assets/kotaBogor.png" },
+              { name: "Kab. Bandung", logoUrl: "/assets/kabBandung.png" },
+              { name: "Kab. Aceh Tamiang", logoUrl: "/assets/kabAcehTamiang.png" },
+              { name: "Kab. Bogor", logoUrl: "/assets/kabBogor.png" },
+              { name: "Kota Banjarmasin", logoUrl: "/assets/kotaBanjarmasin.png" },
+            ]).map((client, i) => (
               <div
-                key={client.key}
+                key={`${client.name}-${i}`}
                 className="flex flex-col items-center gap-3 text-center"
               >
                 <div className="relative h-16 w-16 md:h-20 md:w-20">
                   <Image
-                    src={`/assets/${client.key}.png`}
-                    alt={client.label}
+                    src={client.logoUrl || "/assets/default-image.png"}
+                    alt={client.name}
                     fill
                     className="object-contain"
                     sizes="80px"
                   />
                 </div>
-                <p
-                  className="text-sm font-normal text-[#1E1E1E]"
-                  style={{
-                    fontFamily:
-                      "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                  }}
-                >
-                  {client.label}
+                <p className="text-sm font-normal text-[#1E1E1E]" style={avenirStyle}>
+                  {client.name}
                 </p>
               </div>
             ))}
@@ -410,26 +500,15 @@ export default async function HomePage() {
 
           {/* Stats row */}
           <div className="mt-12 flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            <div className="text-center">
-              <p className="text-2xl font-semibold text-[#408FB4]">150+</p>
-              <p className="mt-1 text-xs font-normal text-[#6B7280]">
-                Kota / Kabupaten
-              </p>
-            </div>
-            <span className="hidden h-8 w-px bg-[#E5E7EB] md:inline-block" />
-            <div className="text-center">
-              <p className="text-2xl font-semibold text-[#408FB4]">18+</p>
-              <p className="mt-1 text-xs font-normal text-[#6B7280]">
-                Provinsi
-              </p>
-            </div>
-            <span className="hidden h-8 w-px bg-[#E5E7EB] md:inline-block" />
-            <div className="text-center">
-              <p className="text-2xl font-semibold text-[#408FB4]">10+</p>
-              <p className="mt-1 text-xs font-normal text-[#6B7280]">
-                Kementerian
-              </p>
-            </div>
+            {klienStats.map((stat, i) => (
+              <div key={`klien-stat-${i}`} className="flex items-center gap-8 md:gap-12">
+                {i > 0 && <span className="hidden h-8 w-px bg-[#E5E7EB] md:inline-block" />}
+                <div className="text-center">
+                  <p className="text-2xl font-semibold text-[#408FB4]">{stat.value}</p>
+                  <p className="mt-1 text-xs font-normal text-[#6B7280]">{stat.label}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -446,51 +525,32 @@ export default async function HomePage() {
           />
         </div>
         <div className="relative z-10 mx-auto max-w-6xl">
-          <GalleryCarousel />
+          <GalleryCarouselWrapper
+            items={galleryItems}
+            sectionBadge={galeriBadge}
+            sectionTitle={galeriTitle}
+          />
         </div>
       </section>
 
       {/* Artikel Section */}
       <section className="bg-background px-4 py-16 md:px-16 lg:px-24 xl:px-32">
         <div className="mx-auto max-w-6xl">
-          <p className="text-sm font-normal text-[#6B7280]">Artikel</p>
+          <p className="text-sm font-normal text-[#6B7280]">{artikelBadge}</p>
           <h2 className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl">
-            INFORMASI DAN INSPIRASI
+            {artikelTitle}
           </h2>
 
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                image: "/assets/artikel1.png",
-                category: "Pajak Daerah",
-                title: "Mengenal Apa Itu Pajak Daerah",
-              },
-              {
-                image: "/assets/artikel2.png",
-                category: "Kisah Sukses",
-                title:
-                  "Kabupaten Bandung Raih 3 Penghargaan Top Digital Awards ...",
-              },
-              {
-                image: "/assets/artikel3.png",
-                category: "Teknologi",
-                title: "Digitalisasi Layanan Pemerintah Daerah",
-              },
-              {
-                image: "/assets/artikel4.png",
-                category: "Kisah Sukses",
-                title:
-                  "Digitalisasi Permudah Akses Informasi Bagi Warga Denpasar",
-              },
-            ].map((artikel, i) => (
+            {(artikelList ?? FALLBACK_ARTIKEL).map((artikel, i) => (
               <Link
                 key={i}
-                href={`/${locale}/artikel`}
+                href={("slug" in artikel && artikel.slug) ? `/${locale}/artikel/${artikel.slug}` : `/${locale}/artikel`}
                 className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-xl">
                   <Image
-                    src={artikel.image}
+                    src={"imageUrl" in artikel && artikel.imageUrl ? artikel.imageUrl : (artikel as { image?: string }).image ?? "/assets/artikel1.png"}
                     alt=""
                     fill
                     className="object-cover object-center transition group-hover:opacity-95"
@@ -514,7 +574,7 @@ export default async function HomePage() {
               href={`/${locale}/artikel`}
               className="inline-flex items-center gap-2 rounded-full border border-[#408FB4] bg-white px-6 py-3 text-base text-[#408FB4] transition hover:bg-[#408FB4]/5 dark:border-[#408FB4] dark:bg-transparent dark:hover:bg-[#408FB4]/10"
             >
-              Artikel Lainnya
+              {artikelViewMore}
               <ChevronRightIcon className="size-4" />
             </Link>
           </div>

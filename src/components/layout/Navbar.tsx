@@ -23,11 +23,16 @@ function isActivePath(pathname: string, locale: string, path: string): boolean {
   return pathname === `${prefix}${path}` || pathname.startsWith(`${prefix}${path}/`);
 }
 
-export function Navbar() {
+const DEFAULT_NAVBAR_LOGO = "/assets/logoCartenzBlack.svg";
+
+export function Navbar({ logoUrl }: { logoUrl?: string }) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const logoSrc = logoUrl || DEFAULT_NAVBAR_LOGO;
+  
+  console.log(logoSrc, "logoNavbar");
 
   const closeMobile = () => setMobileOpen(false);
 
@@ -39,14 +44,17 @@ export function Navbar() {
           className="flex shrink-0 items-center"
           onClick={closeMobile}
         >
-          <Image
-            src="/assets/logoCartenzBlack.svg"
-            alt="Cartenz Technology"
-            width={160}
-            height={40}
-            className="h-8 w-auto md:h-[34px]"
-            priority
-          />
+          <div className="relative h-8 w-40 md:h-[34px] md:w-44">
+            <Image
+              src={logoSrc}
+              alt="Cartenz Technology"
+              fill
+              className="object-contain object-left"
+              sizes="176px"
+              priority
+              unoptimized={logoSrc.startsWith("http")}
+            />
+          </div>
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">

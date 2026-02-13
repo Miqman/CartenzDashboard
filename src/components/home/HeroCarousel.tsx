@@ -30,21 +30,49 @@ const avenirStyle = {
   fontFamily: "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
 };
 
-interface HeroCarouselProps {
-  locale: string;
+export interface HeroSlideData {
+  title: string;
+  solutions: string[];
+  /** URL logo dari Strapi; jika kosong pakai fallback /assets/smartgov_logo_hero.svg */
+  logoUrl?: string;
 }
 
-function SlideContent({ title, locale }: { title: string; locale: string }) {
+interface HeroCarouselProps {
+  locale: string;
+  /** Dari Strapi; jika kosong pakai fallback hardcoded */
+  slides?: HeroSlideData[] | null;
+  ctaLabel?: string;
+}
+
+const DEFAULT_HERO_LOGO = "/assets/smartgov_logo_hero.svg";
+
+function SlideContent({
+  title,
+  solutions,
+  locale,
+  ctaLabel,
+  logoUrl,
+}: {
+  title: string;
+  solutions: string[];
+  locale: string;
+  ctaLabel: string;
+  logoUrl?: string;
+}) {
+  const logoSrc = logoUrl || DEFAULT_HERO_LOGO;
   return (
     <div className="flex min-h-[calc(100dvh-72px)] min-h-[calc(100vh-72px)] flex-col items-center justify-center px-4 py-12 md:min-h-[50vh] md:px-8">
       <div className="relative z-10 w-full max-w-7xl text-center">
-        <Image
-          src="/assets/smartgov_logo_hero.svg"
-          alt="SmartGov"
-          width={100}
-          height={40}
-          className="mx-auto mb-4 h-8 w-auto md:mb-5 md:h-10"
-        />
+        <div className="relative mx-auto mb-4 h-8 w-24 md:mb-5 md:h-10 md:w-28">
+          <Image
+            src={logoSrc}
+            alt="Logo"
+            fill
+            className="object-contain object-center"
+            sizes="112px"
+            unoptimized={logoSrc.startsWith("http")}
+          />
+        </div>
         <h1
           className="text-[28px] leading-[100%] tracking-[0%] text-[#1E1E1E] md:text-[48px]"
           style={{ ...avenirStyle, textAlign: "center" }}
@@ -55,7 +83,7 @@ function SlideContent({ title, locale }: { title: string; locale: string }) {
           className="mx-auto mt-4 flex md:w-full flex-wrap items-center justify-center gap-[12px] md:mt-5"
           style={avenirStyle}
         >
-          {HERO_SOLUTIONS.flatMap((item, i) =>
+          {solutions.flatMap((item, i) =>
             i === 0
               ? [
                   <span
@@ -85,7 +113,8 @@ function SlideContent({ title, locale }: { title: string; locale: string }) {
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#408FB4] px-6 py-3 text-white transition hover:opacity-90 md:mt-8"
           style={avenirStyle}
         >
-          Lihat Selengkapnya
+          {/* {ctaLabel} */}
+          {"Lihat Selengkapnya"}
           <ArrowRight className="size-5" aria-hidden />
         </Link>
       </div>
@@ -93,7 +122,16 @@ function SlideContent({ title, locale }: { title: string; locale: string }) {
   );
 }
 
-export function HeroCarousel({ locale }: HeroCarouselProps) {
+export function HeroCarousel({ locale, slides, ctaLabel = "Lihat Selengkapnya" }: HeroCarouselProps) {
+  const slideList =
+    slides && slides.length > 0
+      ? slides.map((s) => ({
+          title: s.title ?? "Solusi Pengelolaan Pajak Daerah",
+          solutions: Array.isArray(s.solutions) ? s.solutions : HERO_SOLUTIONS,
+          logoUrl: s.logoUrl,
+        }))
+      : SLIDE_TITLES.map((title) => ({ title, solutions: HERO_SOLUTIONS, logoUrl: undefined }));
+
   return (
     <div className="hero-swiper relative w-full overflow-hidden">
       <Swiper
@@ -108,9 +146,15 @@ export function HeroCarousel({ locale }: HeroCarouselProps) {
         pagination={{ clickable: true }}
         className="overflow-hidden!"
       >
-        {SLIDE_TITLES.map((title, i) => (
+        {slideList.map((slide, i) => (
           <SwiperSlide key={i}>
-            <SlideContent title={title} locale={locale} />
+            <SlideContent
+              title={slide.title}
+              solutions={slide.solutions}
+              locale={locale}
+              ctaLabel={ctaLabel}
+              logoUrl={slide.logoUrl}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

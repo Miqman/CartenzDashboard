@@ -1,5 +1,42 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Backend: Strapi Cloud
+
+Dashboard ini mengambil konten dari **Strapi CMS**. Untuk sementara menggunakan **Strapi Cloud** (hosted).
+
+### Setup Strapi Cloud
+
+1. **Deploy CMS ke Strapi Cloud**
+   - Buka [cloud.strapi.io](https://cloud.strapi.io) → login (GitHub/Google/GitLab).
+   - Buat project baru, pilih plan (Free/Essential dll.).
+   - Connect repo **cartenz-cms** (GitHub/GitLab). Strapi Cloud butuh **PostgreSQL**; pastikan project Strapi memakai `DATABASE_CLIENT=postgres` dan env database di-set di Strapi Cloud.
+   - Setelah deploy selesai, catat **URL environment** (bentuk: `https://<project>.strapiapp.com`).
+
+2. **Atur env di project ini (CartenzDashboard)**
+   - Copy `.env.example` ke `.env.local` (atau edit `.env.local` yang sudah ada).
+   - Set `NEXT_PUBLIC_STRAPI_URL` ke URL Strapi Cloud dari langkah 1, contoh:
+     ```env
+     NEXT_PUBLIC_STRAPI_URL=https://cartenz-cms.strapiapp.com
+     ```
+   - Jangan pakai trailing slash.
+
+3. **Jalankan dashboard**
+   ```bash
+   npm install
+   npm run dev
+   ```
+   Buka [http://localhost:3000](http://localhost:3000). Konten artikel dll. diambil dari API Strapi Cloud.
+
+### Development lokal (tanpa Strapi Cloud)
+
+Kalau mau pakai Strapi lokal (`cartenz-cms` jalan di `http://localhost:1337`), set di `.env.local`:
+
+```env
+NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+```
+
+---
+
 ## Getting Started
 
 First, run the development server:
