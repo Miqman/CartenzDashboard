@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LanguageSwitch } from "@/components/ui/LanguageSwitch";
+import { MegaMenu } from "@/components/layout/MegaMenu";
 
 const navItems = [
   { path: "/", key: "home" },
@@ -30,15 +31,18 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
   const locale = useLocale();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [megaMenuOpen, setMegaMenuOpen] = useState(false);
+  const produkTriggerRef = useRef<HTMLButtonElement>(null);
   const logoSrc = logoUrl || DEFAULT_NAVBAR_LOGO;
-  
-  console.log(logoSrc, "logoNavbar");
 
   const closeMobile = () => setMobileOpen(false);
 
   return (
     <>
-      <nav className="fixed top-0 z-50 flex w-full items-center justify-between px-6 py-4 backdrop-blur md:px-16 lg:px-24 xl:px-32">
+      <nav
+        className="fixed top-0 z-50 flex w-full items-center justify-between px-6 py-4 backdrop-blur md:px-16 lg:px-24 xl:px-32"
+        style={{ "--navbar-height": "72px" } as React.CSSProperties}
+      >
         <Link
           href={`/${locale}`}
           className="flex shrink-0 items-center"
@@ -60,6 +64,28 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
         <div className="hidden items-center gap-8 md:flex">
           {navItems.map(({ path, key }) => {
             const active = isActivePath(pathname, locale, path);
+            if (key === "products") {
+              return (
+                <div key={key} className="relative flex items-center">
+                  <button
+                    ref={produkTriggerRef}
+                    type="button"
+                    onClick={() => setMegaMenuOpen((o) => !o)}
+                    className={`flex items-center gap-1 text-[#1E1E1E] transition hover:text-[#408FB4] ${megaMenuOpen ? "font-bold text-[#408FB4]" : ""} ${active ? "font-bold" : ""}`}
+                    aria-expanded={megaMenuOpen}
+                    aria-haspopup="true"
+                  >
+                    {t(key)}
+                    <ChevronDown className="size-4 shrink-0" />
+                  </button>
+                  <MegaMenu
+                    open={megaMenuOpen}
+                    onClose={() => setMegaMenuOpen(false)}
+                    anchorRef={produkTriggerRef}
+                  />
+                </div>
+              );
+            }
             return (
               <Link
                 key={key}
