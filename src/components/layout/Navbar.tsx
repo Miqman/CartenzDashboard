@@ -70,12 +70,6 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
               </Link>
             );
           })}
-          <Link
-            href={`/${locale}/artikel`}
-            className={`text-[#1E1E1E] transition hover:text-[#408FB4] ${isActivePath(pathname, locale, "/artikel") ? "font-bold" : ""}`}
-          >
-            {t("articles")}
-          </Link>
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
@@ -114,13 +108,6 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
             </Link>
           );
         })}
-        <Link
-          href={`/${locale}/artikel`}
-          onClick={closeMobile}
-          className={`text-white transition hover:text-[#408FB4] ${isActivePath(pathname, locale, "/artikel") ? "font-bold" : ""}`}
-        >
-          {t("articles")}
-        </Link>
         <div className="mt-4 flex items-center gap-3">
           <LanguageSwitch />
           <ThemeToggle />

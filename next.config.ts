@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "localhost", port: "1337", pathname: "/uploads/**" },
       { protocol: "https", hostname: "**.strapiapp.com", pathname: "/**" },
       { protocol: "https", hostname: "**.media.strapiapp.com", pathname: "/**" },
+      { protocol: "https", hostname: "picsum.photos", pathname: "/**" },
     ],
     // Diperlukan saat Strapi jalan di localhost (127.0.0.1); Next.js memblokir fetch ke IP pribadi secara default.
     dangerouslyAllowLocalIP: true,
