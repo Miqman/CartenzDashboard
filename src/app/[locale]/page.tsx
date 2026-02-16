@@ -10,8 +10,8 @@ import {
   getArticles,
   getStrapiMediaUrl,
 } from "@/lib/strapi";
-import { GalleryCarouselWrapper } from "@/components/home/HomeCarousels.client";
-import { HeroCarouselWrapper } from "@/components/home/HomeCarousels.client";
+import { GalleryCarouselWrapper, HeroCarouselWrapper } from "@/components/home/HomeCarousels.client";
+import { KlienSectionClient } from "@/components/home/KlienSection.client";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -225,7 +225,22 @@ export default async function HomePage() {
           name: c.name ?? "",
           logoUrl: getStrapiMediaUrl(c.logo),
         }))
-      : null;
+      : [];
+
+  const testimoniList = [
+    {
+      text: "Hadirnya aplikasi Palapa adalah tonggak penting dalam transformasi digital di daerah kami. Melalui platform ini, kita meruntuhkan sekat-sekat birokrasi yang kaku dan menggantinya dengan sistem yang transparan, cepat, dan akuntabel.",
+      name: "drs. H. Haerul Warisin, M.SI.",
+      status: "Bupati Lombok Timur",
+      imageUrl: "/assets/ulasanBupatiLombokTimur.png",
+    },
+    {
+      text: "Kolaborasi dengan Cartenz membawa efisiensi dan transparansi dalam layanan publik. Kami berharap kerja sama ini terus berkembang untuk kemajuan daerah.",
+      name: "Dr. Jane Doe, M.Si.",
+      status: "Kepala Dinas Komunikasi dan Informatika",
+      imageUrl: "/assets/ulasanBupatiLombokTimur.png",
+    },
+  ];
 
   const galleryItems =
     gallery.length >= 1
@@ -288,16 +303,11 @@ export default async function HomePage() {
             <div>
               <p
                 className="text-[16px] font-normal leading-[100%] tracking-[0%] text-[#6B7280]"
-                style={{
-                  fontFamily:
-                    "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-                }}
               >
                 {aboutBadge}
               </p>
               <h2
                 className="mt-2 text-[32px] font-normal uppercase leading-[100%] tracking-[0%] md:text-[40px]"
-                style={avenirStyle}
               >
                 <span className="text-[#1E1E1E]">
                   {aboutTitle.includes("CARTENZ")
@@ -337,7 +347,7 @@ export default async function HomePage() {
           <div className="flex flex-col">
             <p
               className="text-[16px] font-normal leading-[24px] tracking-[0%] text-[#374151]"
-              style={avenirStyle}
+
             >
               {aboutParagraph}
             </p>
@@ -346,13 +356,13 @@ export default async function HomePage() {
                 <div key={stat.label ? `${stat.label}-${idx}` : `stat-${idx}`}>
                   <p
                     className="text-[24px] font-black leading-[100%] tracking-[0%] text-[#1E1E1E]"
-                    style={avenirStyle}
+      
                   >
                     {stat.value}
                   </p>
                   <p
                     className="mt-1 text-[14px] font-normal leading-snug text-[#6B7280]"
-                    style={avenirStyle}
+      
                   >
                     {stat.label}
                   </p>
@@ -431,8 +441,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Klien Section: height 592px area, padding-bottom 64px, bg image 10% opacity + gradient overlay */}
-      <section className="relative min-h-[592px] px-4 pb-16 pt-16 md:px-16 lg:px-24 xl:px-32">
+      {/* Klien Section: height 816 area, padding-bottom 64px, bg image 10% opacity + gradient overlay */}
+      <section className="relative min-h-[816px] px-4 pb-16 pt-16 md:px-16 lg:px-24 xl:px-32">
         {/* Background: jangan pakai -z-10 agar tidak tertutup parent; layer di z-0, konten di atas */}
         <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
           <Image
@@ -451,66 +461,14 @@ export default async function HomePage() {
           />
         </div>
 
-        <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-8">
-          <div>
-            <p className="text-sm font-normal text-[#6B7280]" style={avenirStyle}>
-              {klienBadge}
-            </p>
-            <h2
-              className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl"
-              style={avenirStyle}
-            >
-              {klienTitle}
-            </h2>
-          </div>
-
-          {/* Logo grid - gap 32px */}
-          <div className="grid grid-cols-2 gap-8 gap-x-10 gap-y-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
-            {(clientList ?? [
-              { name: "DKI Jakarta", logoUrl: "/assets/dkiJakarta.png" },
-              { name: "Kab. Klungkung", logoUrl: "/assets/kabKlungkung.png" },
-              { name: "Kab. Badung", logoUrl: "/assets/kabBadung.png" },
-              { name: "Kab. Bantul", logoUrl: "/assets/kabBantul.png" },
-              { name: "Kota Denpasar", logoUrl: "/assets/kotaDenpasar.png" },
-              { name: "Kota Bogor", logoUrl: "/assets/kotaBogor.png" },
-              { name: "Kab. Bandung", logoUrl: "/assets/kabBandung.png" },
-              { name: "Kab. Aceh Tamiang", logoUrl: "/assets/kabAcehTamiang.png" },
-              { name: "Kab. Bogor", logoUrl: "/assets/kabBogor.png" },
-              { name: "Kota Banjarmasin", logoUrl: "/assets/kotaBanjarmasin.png" },
-            ]).map((client, i) => (
-              <div
-                key={`${client.name}-${i}`}
-                className="flex flex-col items-center gap-3 text-center"
-              >
-                <div className="relative h-16 w-16 md:h-20 md:w-20">
-                  <Image
-                    src={client.logoUrl || "/assets/default-image.png"}
-                    alt={client.name}
-                    fill
-                    className="object-contain"
-                    sizes="80px"
-                  />
-                </div>
-                <p className="text-sm font-normal text-[#1E1E1E]" style={avenirStyle}>
-                  {client.name}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Stats row */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            {klienStats.map((stat, i) => (
-              <div key={`klien-stat-${i}`} className="flex items-center gap-8 md:gap-12">
-                {i > 0 && <span className="hidden h-8 w-px bg-[#E5E7EB] md:inline-block" />}
-                <div className="text-center">
-                  <p className="text-2xl font-semibold text-[#408FB4]">{stat.value}</p>
-                  <p className="mt-1 text-xs font-normal text-[#6B7280]">{stat.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <KlienSectionClient
+          klienBadge={klienBadge}
+          klienTitle={klienTitle}
+          clientList={clientList}
+          klienStats={klienStats.map((s) => ({ value: s.value ?? "", label: s.label ?? "" }))}
+          testimoniList={testimoniList}
+          avenirStyle={avenirStyle}
+        />
       </section>
 
       {/* Galeri Section: bgHalfHero 20%, height 620px, padding 64px */}

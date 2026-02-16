@@ -64,14 +64,14 @@ export function GalleryCarousel({
             className="galeri-swiper-prev flex size-10 cursor-pointer items-center justify-center rounded-full text-[#1E1E1E] transition hover:bg-black/5"
             aria-label="Slide sebelumnya"
           >
-            <ChevronLeft className="size-6" />
+            <ChevronLeft className="size-10" />
           </button>
           <button
             type="button"
             className="galeri-swiper-next flex size-10 cursor-pointer items-center justify-center rounded-full text-[#1E1E1E] transition hover:bg-black/5"
             aria-label="Slide berikutnya"
           >
-            <ChevronRight className="size-6" />
+            <ChevronRight className="size-10" />
           </button>
         </div>
       </div>
