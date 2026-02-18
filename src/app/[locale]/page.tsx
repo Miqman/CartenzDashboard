@@ -10,7 +10,10 @@ import {
   getArticles,
   getStrapiMediaUrl,
 } from "@/lib/strapi";
-import { GalleryCarouselWrapper, HeroCarouselWrapper } from "@/components/home/HomeCarousels.client";
+import {
+  GalleryCarouselWrapper,
+  HeroCarouselWrapper,
+} from "@/components/home/HomeCarousels.client";
 import { KlienSectionClient } from "@/components/home/KlienSection.client";
 
 function CheckIcon({ className }: { className?: string }) {
@@ -134,8 +137,18 @@ const FALLBACK_STATS = [
   { value: "175+", label: "Klien" },
 ];
 
-const FALLBACK_ARTIKEL: { image: string; imageUrl?: string; category: string; title: string; slug?: string }[] = [
-  { image: "/assets/artikel1.png", category: "Pajak Daerah", title: "Mengenal Apa Itu Pajak Daerah" },
+const FALLBACK_ARTIKEL: {
+  image: string;
+  imageUrl?: string;
+  category: string;
+  title: string;
+  slug?: string;
+}[] = [
+  {
+    image: "/assets/artikel1.png",
+    category: "Pajak Daerah",
+    title: "Mengenal Apa Itu Pajak Daerah",
+  },
   {
     image: "/assets/artikel2.png",
     category: "Kisah Sukses",
@@ -157,26 +170,26 @@ export default async function HomePage() {
   const t = await getTranslations("home");
   const locale = await getLocale();
 
-  const [homepage, products, clients, gallery, articlesRes] = await Promise.all([
-    getHomepage(),
-    getProducts(),
-    getClients(),
-    getGallery(),
-    getArticles(),
-  ]);
+  const [homepage, products, clients, gallery, articlesRes] = await Promise.all(
+    [getHomepage(), getProducts(), getClients(), getGallery(), getArticles()],
+  );
 
   const about = homepage?.about;
-  const aboutStats = homepage?.aboutStats?.length ? homepage.aboutStats : FALLBACK_STATS;
+  const aboutStats = homepage?.aboutStats?.length
+    ? homepage.aboutStats
+    : FALLBACK_STATS;
   const aboutBadge = about?.badge ?? FALLBACK_ABOUT.badge;
   const aboutTitle = about?.title ?? FALLBACK_ABOUT.title;
   const aboutParagraph = about?.paragraph ?? FALLBACK_ABOUT.paragraph;
   const aboutCtaLabel = about?.ctaLabel ?? FALLBACK_ABOUT.ctaLabel;
-  const aboutEmployeeCount = about?.employeeCount ?? FALLBACK_ABOUT.employeeCount;
+  const aboutEmployeeCount =
+    about?.employeeCount ?? FALLBACK_ABOUT.employeeCount;
 
   const produkSection = homepage?.produkSection;
   const produkBadge = produkSection?.badge ?? t("produkSection.badge");
   const produkTitle = produkSection?.title ?? t("produkSection.title");
-  const produkViewMore = produkSection?.viewMoreLabel ?? t("produkSection.viewMore");
+  const produkViewMore =
+    produkSection?.viewMoreLabel ?? t("produkSection.viewMore");
 
   const klienSection = homepage?.klienSection;
   const klienBadge = klienSection?.badge ?? "Klien";
@@ -200,7 +213,9 @@ export default async function HomePage() {
 
   const heroSlides =
     homepage?.heroSlides?.length &&
-    homepage.heroSlides.every((s) => s.title || (Array.isArray(s.solutions) && s.solutions.length))
+    homepage.heroSlides.every(
+      (s) => s.title || (Array.isArray(s.solutions) && s.solutions.length),
+    )
       ? homepage.heroSlides.map((s) => ({
           title: s.title ?? "Solusi Pengelolaan Pajak Daerah",
           solutions: Array.isArray(s.solutions) ? s.solutions : [],
@@ -210,13 +225,11 @@ export default async function HomePage() {
 
   const productList =
     products.length >= 1
-      ? products
-          .slice(0, 6)
-          .map((p) => ({
-            title: p.title ?? "",
-            category: p.category ?? "",
-            imageUrl: getStrapiMediaUrl(p.image),
-          }))
+      ? products.slice(0, 6).map((p) => ({
+          title: p.title ?? "",
+          category: p.category ?? "",
+          imageUrl: getStrapiMediaUrl(p.image),
+        }))
       : null;
 
   const clientList =
@@ -258,11 +271,20 @@ export default async function HomePage() {
       ? articlesData.slice(0, 4).map((a) => {
           const raw = (a ?? {}) as Record<string, unknown>;
           const attrs = (raw?.attributes ?? raw) as Record<string, unknown>;
-          const cover = (attrs?.cover ?? raw?.cover) as { url?: string } | undefined;
+          const cover = (attrs?.cover ?? raw?.cover) as
+            | { url?: string }
+            | undefined;
           const url = cover?.url ?? "";
-          const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
-          const imageUrl = url ? (url.startsWith("http") ? url : `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`) : "";
-          const category = (attrs?.category ?? raw?.category) as { name?: string } | undefined;
+          const baseUrl =
+            process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+          const imageUrl = url
+            ? url.startsWith("http")
+              ? url
+              : `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`
+            : "";
+          const category = (attrs?.category ?? raw?.category) as
+            | { name?: string }
+            | undefined;
           return {
             imageUrl: imageUrl || "/assets/artikel1.png",
             category: category?.name ?? "Artikel",
@@ -284,9 +306,9 @@ export default async function HomePage() {
           src="/assets/bgHalfHero.jpg"
           alt=""
           fill
-          className="object-cover object-center"
+          className="object-none"
           priority
-          sizes="100vw"
+          sizes="220vw"
         />
         <HeroCarouselWrapper
           locale={locale}
@@ -301,14 +323,10 @@ export default async function HomePage() {
           {/* Kolom kiri: judul, tombol, avatars */}
           <div className="flex flex-col justify-between">
             <div>
-              <p
-                className="text-[16px] font-normal leading-[100%] tracking-[0%] text-[#6B7280]"
-              >
+              <p className="text-[16px] font-normal leading-[100%] tracking-[0%] text-[#6B7280]">
                 {aboutBadge}
               </p>
-              <h2
-                className="mt-2 text-[32px] font-normal uppercase leading-[100%] tracking-[0%] md:text-[40px]"
-              >
+              <h2 className="mt-2 text-[32px] font-normal uppercase leading-[100%] tracking-[0%] md:text-[40px]">
                 <span className="text-[#1E1E1E]">
                   {aboutTitle.includes("CARTENZ")
                     ? aboutTitle.replace("CARTENZ", "").trimEnd() + " "
@@ -337,7 +355,10 @@ export default async function HomePage() {
                   />
                 ))}
               </div>
-              <span className="text-[16px] font-normal text-[#6B7280]" style={avenirStyle}>
+              <span
+                className="text-[16px] font-normal text-[#6B7280]"
+                style={avenirStyle}
+              >
                 {aboutEmployeeCount}
               </span>
             </div>
@@ -345,25 +366,16 @@ export default async function HomePage() {
 
           {/* Kolom kanan: paragraf + grid statistik 3 kolom */}
           <div className="flex flex-col">
-            <p
-              className="text-[16px] font-normal leading-[24px] tracking-[0%] text-[#374151]"
-
-            >
+            <p className="text-[16px] font-normal leading-[24px] tracking-[0%] text-[#374151]">
               {aboutParagraph}
             </p>
             <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
               {aboutStats.map((stat, idx) => (
                 <div key={stat.label ? `${stat.label}-${idx}` : `stat-${idx}`}>
-                  <p
-                    className="text-[24px] font-black leading-[100%] tracking-[0%] text-[#1E1E1E]"
-      
-                  >
+                  <p className="text-[24px] font-black leading-[100%] tracking-[0%] text-[#1E1E1E]">
                     {stat.value}
                   </p>
-                  <p
-                    className="mt-1 text-[14px] font-normal leading-snug text-[#6B7280]"
-      
-                  >
+                  <p className="mt-1 text-[14px] font-normal leading-snug text-[#6B7280]">
                     {stat.label}
                   </p>
                 </div>
@@ -379,7 +391,10 @@ export default async function HomePage() {
         className="scroll-mt-20 bg-background px-4 py-16 md:px-16 lg:px-24 xl:px-32"
       >
         <div className="mx-auto max-w-6xl">
-          <p className="text-[16px] font-normal text-[#6B7280]" style={avenirStyle}>
+          <p
+            className="text-[16px] font-normal text-[#6B7280]"
+            style={avenirStyle}
+          >
             {produkBadge}
           </p>
           <h2
@@ -390,42 +405,55 @@ export default async function HomePage() {
           </h2>
 
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {(productList ?? Array.from({ length: 6 }, (_, i) => i + 1)).map((_, i) => {
-              const idx = (i + 1) as 1 | 2 | 3 | 4 | 5 | 6;
-              const title = productList ? productList[i]?.title ?? "" : t(`produkSection.product${idx}Title`);
-              const category = productList ? productList[i]?.category ?? "" : t(`produkSection.product${idx}Category`);
-              const imageUrl = productList?.[i]?.imageUrl || "/assets/produk1.png";
-              return (
-                <Link
-                  key={i}
-                  href={`/${locale}/produk`}
-                  className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
-                >
-                  <div className="relative aspect-[4/3] w-full bg-[#408FB4]/10">
-                    <Image
-                      src={imageUrl}
-                      alt=""
-                      fill
-                      className="object-cover object-center"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  </div>
-                  <div className="flex items-start justify-between gap-3 p-4">
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-[#1E1E1E]" style={{ ...avenirStyle, fontSize: "15px" }}>
-                        {title}
-                      </p>
-                      <p className="mt-1 text-[14px] font-normal text-[#6B7280]" style={avenirStyle}>
-                        {category}
-                      </p>
+            {(productList ?? Array.from({ length: 6 }, (_, i) => i + 1)).map(
+              (_, i) => {
+                const idx = (i + 1) as 1 | 2 | 3 | 4 | 5 | 6;
+                const title = productList
+                  ? (productList[i]?.title ?? "")
+                  : t(`produkSection.product${idx}Title`);
+                const category = productList
+                  ? (productList[i]?.category ?? "")
+                  : t(`produkSection.product${idx}Category`);
+                const imageUrl =
+                  productList?.[i]?.imageUrl || "/assets/produk1.png";
+                return (
+                  <Link
+                    key={i}
+                    href={`/${locale}/produk`}
+                    className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
+                  >
+                    <div className="relative aspect-[4/3] w-full bg-[#408FB4]/10">
+                      <Image
+                        src={imageUrl}
+                        alt=""
+                        fill
+                        className="object-cover object-center"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
                     </div>
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-[#408FB4] text-[#408FB4] transition group-hover:bg-[#408FB4] group-hover:text-white">
-                      <ArrowUpRightIcon className="size-4" />
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
+                    <div className="flex items-start justify-between gap-3 p-4">
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className="font-semibold text-[#1E1E1E]"
+                          style={{ ...avenirStyle, fontSize: "15px" }}
+                        >
+                          {title}
+                        </p>
+                        <p
+                          className="mt-1 text-[14px] font-normal text-[#6B7280]"
+                          style={avenirStyle}
+                        >
+                          {category}
+                        </p>
+                      </div>
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-[#408FB4] text-[#408FB4] transition group-hover:bg-[#408FB4] group-hover:text-white">
+                        <ArrowUpRightIcon className="size-4" />
+                      </span>
+                    </div>
+                  </Link>
+                );
+              },
+            )}
           </div>
 
           <div className="mt-12 flex justify-center">
@@ -465,7 +493,10 @@ export default async function HomePage() {
           klienBadge={klienBadge}
           klienTitle={klienTitle}
           clientList={clientList}
-          klienStats={klienStats.map((s) => ({ value: s.value ?? "", label: s.label ?? "" }))}
+          klienStats={klienStats.map((s) => ({
+            value: s.value ?? "",
+            label: s.label ?? "",
+          }))}
           testimoniList={testimoniList}
           avenirStyle={avenirStyle}
         />
@@ -503,12 +534,21 @@ export default async function HomePage() {
             {(artikelList ?? FALLBACK_ARTIKEL).map((artikel, i) => (
               <Link
                 key={i}
-                href={("slug" in artikel && artikel.slug) ? `/${locale}/artikel/${artikel.slug}` : `/${locale}/artikel`}
+                href={
+                  "slug" in artikel && artikel.slug
+                    ? `/${locale}/artikel/${artikel.slug}`
+                    : `/${locale}/artikel`
+                }
                 className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-xl">
                   <Image
-                    src={"imageUrl" in artikel && artikel.imageUrl ? artikel.imageUrl : (artikel as { image?: string }).image ?? "/assets/artikel1.png"}
+                    src={
+                      "imageUrl" in artikel && artikel.imageUrl
+                        ? artikel.imageUrl
+                        : ((artikel as { image?: string }).image ??
+                          "/assets/artikel1.png")
+                    }
                     alt=""
                     fill
                     className="object-cover object-center transition group-hover:opacity-95"

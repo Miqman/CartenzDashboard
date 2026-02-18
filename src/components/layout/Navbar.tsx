@@ -6,8 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
+import { AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LanguageSwitch } from "@/components/ui/LanguageSwitch";
 import { MegaMenu } from "@/components/layout/MegaMenu";
 
@@ -21,7 +21,9 @@ const navItems = [
 function isActivePath(pathname: string, locale: string, path: string): boolean {
   const prefix = `/${locale}`;
   if (path === "/") return pathname === prefix || pathname === `${prefix}/`;
-  return pathname === `${prefix}${path}` || pathname.startsWith(`${prefix}${path}/`);
+  return (
+    pathname === `${prefix}${path}` || pathname.startsWith(`${prefix}${path}/`)
+  );
 }
 
 const DEFAULT_NAVBAR_LOGO = "/assets/logoCartenzBlack.svg";
@@ -61,7 +63,7 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
           </div>
         </Link>
 
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center text-sm gap-8 md:flex">
           {navItems.map(({ path, key }) => {
             const active = isActivePath(pathname, locale, path);
             if (key === "products") {
@@ -76,13 +78,21 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
                     aria-haspopup="true"
                   >
                     {t(key)}
-                    <ChevronDown className="size-4 shrink-0" />
+                    <ChevronDown
+                      className={`size-4 shrink-0 transition-transform duration-200 ${megaMenuOpen ? "rotate-180" : ""}`}
+                      aria-hidden
+                    />
                   </button>
-                  <MegaMenu
-                    open={megaMenuOpen}
-                    onClose={() => setMegaMenuOpen(false)}
-                    anchorRef={produkTriggerRef}
-                  />
+                  <AnimatePresence>
+                    {megaMenuOpen && (
+                      <MegaMenu
+                        key="mega-menu"
+                        open={megaMenuOpen}
+                        onClose={() => setMegaMenuOpen(false)}
+                        anchorRef={produkTriggerRef}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
               );
             }
@@ -100,7 +110,6 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
 
         <div className="hidden items-center gap-2 md:flex">
           <LanguageSwitch />
-          <ThemeToggle />
         </div>
 
         <button
@@ -136,7 +145,6 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
         })}
         <div className="mt-4 flex items-center gap-3">
           <LanguageSwitch />
-          <ThemeToggle />
         </div>
         <button
           type="button"

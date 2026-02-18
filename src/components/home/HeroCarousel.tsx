@@ -122,7 +122,11 @@ function SlideContent({
   );
 }
 
-export function HeroCarousel({ locale, slides, ctaLabel = "Lihat Selengkapnya" }: HeroCarouselProps) {
+export function HeroCarousel({
+  locale,
+  slides,
+  ctaLabel = "Lihat Selengkapnya",
+}: HeroCarouselProps) {
   const slideList =
     slides && slides.length > 0
       ? slides.map((s) => ({
@@ -130,7 +134,11 @@ export function HeroCarousel({ locale, slides, ctaLabel = "Lihat Selengkapnya" }
           solutions: Array.isArray(s.solutions) ? s.solutions : HERO_SOLUTIONS,
           logoUrl: s.logoUrl,
         }))
-      : SLIDE_TITLES.map((title) => ({ title, solutions: HERO_SOLUTIONS, logoUrl: undefined }));
+      : SLIDE_TITLES.map((title) => ({
+          title,
+          solutions: HERO_SOLUTIONS,
+          logoUrl: undefined,
+        }));
 
   return (
     <div className="hero-swiper relative w-full overflow-hidden">

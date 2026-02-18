@@ -20,11 +20,17 @@ export function getStrapiMediaUrl(media: StrapiMedia | undefined): string {
   return url.startsWith("http") ? url : `${getStrapiUrl()}${url.startsWith("/") ? "" : "/"}${url}`;
 }
 
-export async function fetchApi<T>(path: string): Promise<T> {
+export type FetchApiOptions = {
+  /** ISR: revalidate in seconds. Menu/nav jarang berubah bisa 300; konten halaman 60. */
+  revalidate?: number;
+};
+
+export async function fetchApi<T>(path: string, options?: FetchApiOptions): Promise<T> {
   const baseUrl = getStrapiUrl();
   const url = path.startsWith("http") ? path : `${baseUrl}/api/${path}`;
+  const revalidate = options?.revalidate ?? 60;
   const res = await fetch(url, {
-    next: { revalidate: 60 },
+    next: { revalidate },
     headers: {
       "Content-Type": "application/json",
     },

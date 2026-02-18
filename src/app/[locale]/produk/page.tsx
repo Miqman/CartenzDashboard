@@ -1,13 +1,14 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
+import { getProductSlugs, getFirstSubSlug } from "@/data/productDetailData";
 
-export default async function ProductsPage() {
-  const t = await getTranslations("products");
-  return (
-    <div className="mx-auto max-w-6xl px-4 py-12">
-      <h1 className="mb-4 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-        {t("title")}
-      </h1>
-      <p className="text-zinc-600 dark:text-zinc-400">{t("content")}</p>
-    </div>
-  );
+export default async function ProdukRootPage() {
+  const locale = await getLocale();
+  const slugs = getProductSlugs();
+  const firstProductSlug = slugs[0] ?? "solusi-pajak";
+  const firstSub = getFirstSubSlug(firstProductSlug);
+  const path = firstSub
+    ? `/produk/${firstProductSlug}/${firstSub}`
+    : `/produk/${firstProductSlug}`;
+  redirect({ href: path, locale });
 }

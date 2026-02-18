@@ -19,7 +19,7 @@ export interface MegaMenuItem {
 
 export const megaMenuData: MegaMenuItem[] = [
   {
-    id: "solusi-pajak",
+    id: "smartgov",
     label: "Solusi Pengelolaan Pajak Daerah",
     children: [
       {
@@ -29,14 +29,16 @@ export const megaMenuData: MegaMenuItem[] = [
         contentSubtitle: "Solusi Pengelolaan Pajak Daerah",
         details: [
           {
-            title: "Sistem pengelolaan pajak bumi dan bangunan perdesaan dan perkotaan",
+            title:
+              "Sistem pengelolaan pajak bumi dan bangunan perdesaan dan perkotaan",
             items: [
               "Sistem pengelolaan objek pajak spasial",
               "Sistem pendataan objek pajak digital mobile",
             ],
           },
           {
-            title: "Sistem pengelolaan Bea Perolehan Hak atas Tanah dan Bangunan",
+            title:
+              "Sistem pengelolaan Bea Perolehan Hak atas Tanah dan Bangunan",
             items: [],
           },
           {
@@ -93,8 +95,7 @@ export const megaMenuData: MegaMenuItem[] = [
         label: "Sistem monitoring pajak daerah",
         details: [
           {
-            title:
-              "Sistem pengawasan Objek Pajak Barang dan Jasa Tertentu",
+            title: "Sistem pengawasan Objek Pajak Barang dan Jasa Tertentu",
             items: [],
           },
           {
@@ -103,8 +104,7 @@ export const megaMenuData: MegaMenuItem[] = [
             items: [],
           },
           {
-            title:
-              "Sistem pengawasan Objek Pajak Air Tanah dan permukaan",
+            title: "Sistem pengawasan Objek Pajak Air Tanah dan permukaan",
             items: [],
           },
         ],
@@ -170,18 +170,18 @@ export const megaMenuData: MegaMenuItem[] = [
     ],
   },
   {
-    id: "monitoring-pajak",
+    id: "efd",
     label: "Solusi Monitoring Pajak Daerah",
-    children: []
+    children: [],
   },
   {
-    id: "digitalisasi-layanan",
+    id: "palapa",
     label: "Digitalisasi Layanan Pemerintah Terintegrasi",
-    children: []
+    children: [],
   },
   {
     id: "strategic-consulting",
     label: "Strategic Consulting",
-    children: []
-  }
+    children: [],
+  },
 ];
