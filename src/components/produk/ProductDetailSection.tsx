@@ -236,8 +236,8 @@ export function ProductDetailSection({
                 {activeSubMenu.title}
               </h3>
 
-              {/* Horizontal tabs (Level 3) — disembunyikan jika sidebarAsFlat (EFD/Palapa) */}
-              {!isFlatSidebar && activeSubMenu.tabs.length > 0 && (
+              {/* Horizontal tabs (Level 3) — disembunyikan jika sidebarAsFlat atau hanya 1 tab */}
+              {!isFlatSidebar && activeSubMenu.tabs.length > 1 && (
                 <div className="mb-5 border-b border-[#E2E8F0]">
                   <ul className="flex flex-wrap gap-1" role="tablist">
                     {activeSubMenu.tabs.map((tab, idx) => {

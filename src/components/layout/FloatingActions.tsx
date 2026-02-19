@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUp, MessageCircle } from "lucide-react";
+import { ArrowUp, MessageCircle, Phone } from "lucide-react";
 
 export function FloatingActions() {
   const handleScrollTop = () => {
@@ -20,24 +20,24 @@ export function FloatingActions() {
         <ArrowUp className="size-5" />
       </button>
 
-      {/* Tombol WhatsApp */}
+      {/* Tombol WhatsApp: mobile = icon saja, desktop = icon + text */}
       <a
         href="https://wa.me/6281234567890"
         target="_blank"
         rel="noreferrer"
-        className="pointer-events-auto flex items-center gap-3 rounded-full bg-white px-4 py-2 shadow-md transition hover:bg-sky-50"
+        className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md transition hover:bg-sky-50 md:h-auto md:w-auto md:justify-start md:gap-3 md:px-4 md:py-2"
         aria-label="Hubungi kami via WhatsApp"
       >
-        <span className="flex size-7 items-center justify-center rounded-full bg-[#25D366] text-xs font-semibold text-white">
-          W
+        <span className="flex size-7 items-center justify-center rounded-full bg-[#25D366] text-white">
+          <Phone className="size-4" />
         </span>
-        <div className="flex flex-col">
+        <div className="hidden flex-col md:flex">
           <span className="text-sm font-semibold text-[#1E1E1E]">
             Hubungi Kami
           </span>
           <span className="text-xs text-[#6B7280]">Konsultasi Gratis</span>
         </div>
-        <MessageCircle className="size-4 text-[#408FB4]" />
+        <MessageCircle className="hidden size-4 text-[#408FB4] md:block" />
       </a>
     </div>
   );

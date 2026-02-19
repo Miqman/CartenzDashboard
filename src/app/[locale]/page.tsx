@@ -349,11 +349,19 @@ export default async function HomePage() {
 
             <div className="mt-6 flex items-center gap-3">
               <div className="flex -space-x-2">
-                {[1, 2, 3].map((i) => (
+                {["karyawan1.png", "karyawan2.png", "karyawan3.png", "karyawan4.png"].map((src) => (
                   <div
-                    key={i}
-                    className="size-10 rounded-full border-2 border-white bg-[#408FB4]/20 shadow-sm"
-                  />
+                    key={src}
+                    className="relative size-10 shrink-0 overflow-hidden rounded-full shadow-sm"
+                  >
+                    <Image
+                      src={`/assets/${src}`}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="40px"
+                    />
+                  </div>
                 ))}
               </div>
               <span
@@ -578,6 +586,57 @@ export default async function HomePage() {
               {artikelViewMore}
               <ChevronRightIcon className="size-4" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Sertifikat Section */}
+      <section className="bg-background px-4 pb-16 md:px-16 lg:px-24 xl:px-32">
+        <div className="mx-auto max-w-6xl space-y-6">
+          {/* Baris atas: 2 logo + teks */}
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:gap-12">
+            <div className="flex shrink-0 flex-wrap items-center gap-4 md:gap-6">
+              <div className="relative h-20 w-20 md:h-24 md:w-24">
+                <Image
+                  src="/assets/sertifikat1.png"
+                  alt="ISO 27001 Certified"
+                  fill
+                  className="object-contain"
+                  sizes="96px"
+                />
+              </div>
+              <div className="relative h-20 w-20 md:h-24 md:w-24">
+                <Image
+                  src="/assets/sertifikat2.png"
+                  alt="BSSN Republik Indonesia"
+                  fill
+                  className="object-contain"
+                  sizes="96px"
+                />
+              </div>
+            </div>
+            <p className="text-[20px] leading-relaxed md:min-w-0">
+              PT. Cartenz Tekno Lab telah tersertifikasi ISO 27001:2022 untuk
+              standar internasional manajemen keamanan informasi dalam
+              lingkup Layanan Perangkat Lunak di Seluruh Dunia.
+            </p>
+          </div>
+
+          {/* Baris bawah: 1 logo + teks */}
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:gap-12">
+            <div className="relative h-20 w-32 shrink-0 md:h-[91px] md:w-[231px]">
+              <Image
+                src="/assets/sertifikat3.png"
+                alt="Balai Sertifikasi Elektronik"
+                fill
+                className="object-contain object-left"
+                sizes="231px"
+              />
+            </div>
+            <p className="text-[20px] leading-relaxed md:min-w-0">
+              Solusi Palapa lulus uji keamanan BSSN pada tahun 2024, dan
+              beberapa wilayah afiliasinya telah terintegrasi dengan BSrE.
+            </p>
           </div>
         </div>
       </section>
