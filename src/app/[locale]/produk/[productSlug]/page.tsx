@@ -33,19 +33,34 @@ function hasAnySectionContent(
 }
 
 export default async function ProdukProductSlugPage({ params }: PageProps) {
-  const locale = await getLocale();
-  const { productSlug } = await params;
+  let locale: string;
+  let productSlug: string;
+  try {
+    locale = await getLocale();
+    const p = await params;
+    productSlug = p.productSlug;
+  } catch {
+    notFound();
+  }
 
   const validSlugs = getProductSlugs();
   if (!validSlugs.includes(productSlug)) notFound();
 
-  const strapiPage = await getProductPageBySlug(productSlug);
+  let strapiPage: Awaited<ReturnType<typeof getProductPageBySlug>> = null;
+  try {
+    strapiPage = await getProductPageBySlug(productSlug);
+  } catch {
+    strapiPage = null;
+  }
   const fallbackDetail = getProductDetailData(productSlug);
   const clients = getProductClients(productSlug);
 
   const useStrapi =
     strapiPage != null && strapiPage.detail.categories.length > 0;
-  const data = useStrapi ? strapiPage.detail : fallbackDetail;
+  const data =
+    strapiPage != null && strapiPage.detail.categories.length > 0
+      ? strapiPage.detail
+      : fallbackDetail;
 
   const hasContent =
     productSlug === "strategic-consulting" ||
@@ -90,7 +105,7 @@ export default async function ProdukProductSlugPage({ params }: PageProps) {
       categories={data.categories}
       initialExpandedCategoryIds={initialExpandedCategoryIds}
       initialTabIndex={0}
-      initialHero={useStrapi ? strapiPage!.hero : null}
+      initialHero={strapiPage != null ? strapiPage.hero : null}
     />
   );
 }

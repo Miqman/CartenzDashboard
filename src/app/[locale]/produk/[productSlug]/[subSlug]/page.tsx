@@ -41,20 +41,35 @@ function findSubInCategories(
 }
 
 export default async function ProdukSubPage({ params, searchParams }: PageProps) {
-  const locale = await getLocale();
-  const { productSlug, subSlug } = await params;
-  const { tab: tabParam } = await searchParams;
+  let locale: string;
+  let productSlug: string;
+  let subSlug: string;
+  let tabParam: string | undefined;
+  try {
+    locale = await getLocale();
+    const p = await params;
+    const sp = await searchParams;
+    productSlug = p.productSlug;
+    subSlug = p.subSlug;
+    tabParam = sp.tab;
+  } catch {
+    notFound();
+  }
 
   const validProducts = getProductSlugs();
   if (!validProducts.includes(productSlug)) notFound();
 
-  const strapiPage = await getProductPageBySlug(productSlug);
+  let strapiPage: Awaited<ReturnType<typeof getProductPageBySlug>> = null;
+  try {
+    strapiPage = await getProductPageBySlug(productSlug);
+  } catch {
+    strapiPage = null;
+  }
   const useStrapi =
-    strapiPage &&
-    strapiPage.detail.categories.length > 0;
+    strapiPage != null && strapiPage.detail.categories.length > 0;
 
   const data = useStrapi
-    ? strapiPage.detail
+    ? strapiPage!.detail
     : getProductDetailData(productSlug);
   const found = findSubInCategories(data.categories, subSlug);
   if (!found) notFound();
@@ -77,7 +92,7 @@ export default async function ProdukSubPage({ params, searchParams }: PageProps)
       categories={data.categories}
       initialExpandedCategoryIds={initialExpandedCategoryIds}
       initialTabIndex={tabNum}
-      initialHero={useStrapi ? strapiPage.hero : null}
+      initialHero={strapiPage != null ? strapiPage.hero : null}
     />
   );
 }

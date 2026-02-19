@@ -261,10 +261,20 @@ export type GetProductPageBySlugOptions = { revalidate?: number };
  * Prefer struktur baru (categories); fallback ke detail JSON (legacy).
  * Return null jika tidak ada data atau hero tidak ada.
  */
+/** Di production (Vercel) jangan fetch ke localhost; pakai fallback. */
+function isStrapiReachable(): boolean {
+  const url = getStrapiUrl();
+  if (url.startsWith("http://localhost") || url.startsWith("http://127.0.0.1")) {
+    return process.env.NODE_ENV === "development";
+  }
+  return true;
+}
+
 export async function getProductPageBySlug(
   slug: string,
   options?: GetProductPageBySlugOptions
 ): Promise<{ hero: ProductHeroData; detail: ProductDetailData } | null> {
+  if (!isStrapiReachable()) return null;
   try {
     const encodedSlug = encodeURIComponent(slug);
     const revalidate = options?.revalidate ?? 60;
