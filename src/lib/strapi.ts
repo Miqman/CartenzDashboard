@@ -6,7 +6,14 @@ import type {
   StrapiClientData,
   StrapiGalleryData,
   StrapiMedia,
+  StrapiProductPageData,
 } from "@/types/strapi";
+import type { ProductHeroData } from "@/data/productsPageData";
+import type { ProductDetailData } from "@/data/productDetailData";
+import {
+  DEFAULT_HERO_IMAGE,
+  DEFAULT_LOGO,
+} from "@/data/productsPageData";
 
 export function getStrapiUrl(): string {
   return process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
@@ -147,5 +154,83 @@ export async function getArticleBySlug(
     );
   } catch {
     return { data: null };
+  }
+}
+
+const DEFAULT_TAB_IMAGE = DEFAULT_HERO_IMAGE;
+
+/** Isi image kosong di tab content dengan default. */
+function fillDefaultDetailImages(detail: ProductDetailData): ProductDetailData {
+  const categories = detail.categories.map((cat) => ({
+    ...cat,
+    subMenus: cat.subMenus.map((sub) => ({
+      ...sub,
+      tabs: sub.tabs.map((tab) => ({
+        ...tab,
+        content: {
+          ...tab.content,
+          image: tab.content.image?.trim() ? tab.content.image : DEFAULT_TAB_IMAGE,
+        },
+      })),
+    })),
+  }));
+  return { categories };
+}
+
+export type GetProductPageBySlugOptions = { revalidate?: number };
+
+/**
+ * Fetch product page dari Strapi by slug. Map ke { hero, detail }.
+ * Return null jika tidak ada data atau categories kosong.
+ */
+export async function getProductPageBySlug(
+  slug: string,
+  options?: GetProductPageBySlugOptions
+): Promise<{ hero: ProductHeroData; detail: ProductDetailData } | null> {
+  try {
+    const encodedSlug = encodeURIComponent(slug);
+    const revalidate = options?.revalidate ?? 60;
+    const res = await fetchApi<{ data: unknown }>(
+      `product-pages?filters[slug][$eq]=${encodedSlug}&populate[0]=hero&populate[1]=hero.paragraphs&populate[2]=hero.logo&populate[3]=hero.heroImage`,
+      { revalidate }
+    );
+    const data = res?.data;
+    const list = Array.isArray(data) ? data : [];
+    const raw = list[0];
+    if (!raw) return null;
+    const doc = normalizeDoc<StrapiProductPageData>(raw);
+    if (!doc?.slug) return null;
+
+    const heroAttr = doc.hero;
+    const paragraphs: string[] = Array.isArray(heroAttr?.paragraphs)
+      ? heroAttr.paragraphs
+          .map((p) => (p && typeof p === "object" && "text" in p ? (p as { text?: string }).text : undefined))
+          .filter((t): t is string => typeof t === "string" && t.length > 0)
+      : [];
+    const hero: ProductHeroData = {
+      title: heroAttr?.title?.trim() ?? "",
+      paragraphs: paragraphs.length > 0 ? paragraphs : [""],
+      demoUrl: heroAttr?.demoUrl?.trim() || undefined,
+      logoUrl: getStrapiMediaUrl(heroAttr?.logo) || DEFAULT_LOGO,
+      heroImageUrl: getStrapiMediaUrl(heroAttr?.heroImage) || DEFAULT_HERO_IMAGE,
+    };
+
+    const detailRaw = doc.detail;
+    if (!detailRaw || typeof detailRaw !== "object" || !Array.isArray((detailRaw as { categories?: unknown[] }).categories)) {
+      return null;
+    }
+    const categories = (detailRaw as { categories: unknown[] }).categories;
+    if (categories.length === 0) return null;
+
+    const detail: ProductDetailData = fillDefaultDetailImages({
+      categories: categories as ProductDetailData["categories"],
+    });
+
+    return { hero, detail };
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[getProductPageBySlug] Gagal:", err instanceof Error ? err.message : err);
+    }
+    return null;
   }
 }

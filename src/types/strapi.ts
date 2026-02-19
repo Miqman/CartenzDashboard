@@ -119,3 +119,23 @@ export interface StrapiGalleryData {
   order?: number;
   image?: StrapiMedia;
 }
+
+// --- Product Page (collection) - halaman produk per slug ---
+export interface StrapiProductPageParagraph {
+  text?: string;
+}
+
+export interface StrapiProductPageHero {
+  title?: string;
+  paragraphs?: StrapiProductPageParagraph[];
+  demoUrl?: string;
+  logo?: StrapiMedia;
+  heroImage?: StrapiMedia;
+}
+
+export interface StrapiProductPageData {
+  documentId?: string;
+  slug?: string;
+  hero?: StrapiProductPageHero;
+  detail?: { categories?: unknown[] };
+}

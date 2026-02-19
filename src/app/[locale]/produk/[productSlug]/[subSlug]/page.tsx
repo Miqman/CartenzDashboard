@@ -3,7 +3,9 @@ import {
   getProductDetailData,
   getProductSlugs,
 } from "@/data/productDetailData";
+import type { ProductDetailCategory } from "@/data/productDetailData";
 import { getLocale } from "next-intl/server";
+import { getProductPageBySlug } from "@/lib/strapi";
 import { ProductDetailPageClient } from "@/components/produk/ProductDetailPageClient";
 
 interface PageProps {
@@ -12,11 +14,10 @@ interface PageProps {
 }
 
 function findSubInCategories(
-  productId: string,
+  categories: ProductDetailCategory[],
   subSlug: string
 ): { categoryId: string } | null {
-  const data = getProductDetailData(productId);
-  for (const cat of data.categories) {
+  for (const cat of categories) {
     if (cat.subMenus.some((s) => s.id === subSlug)) {
       return { categoryId: cat.id };
     }
@@ -32,8 +33,15 @@ export default async function ProdukSubPage({ params, searchParams }: PageProps)
   const validProducts = getProductSlugs();
   if (!validProducts.includes(productSlug)) notFound();
 
-  const data = getProductDetailData(productSlug);
-  const found = findSubInCategories(productSlug, subSlug);
+  const strapiPage = await getProductPageBySlug(productSlug);
+  const useStrapi =
+    strapiPage &&
+    strapiPage.detail.categories.length > 0;
+
+  const data = useStrapi
+    ? strapiPage.detail
+    : getProductDetailData(productSlug);
+  const found = findSubInCategories(data.categories, subSlug);
   if (!found) notFound();
 
   const cat = data.categories.find((c) => c.id === found.categoryId);
@@ -54,6 +62,7 @@ export default async function ProdukSubPage({ params, searchParams }: PageProps)
       categories={data.categories}
       initialExpandedCategoryIds={initialExpandedCategoryIds}
       initialTabIndex={tabNum}
+      initialHero={useStrapi ? strapiPage.hero : null}
     />
   );
 }

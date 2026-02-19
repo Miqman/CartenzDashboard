@@ -39,6 +39,9 @@ export function ProductDetailSection({
   const locale = useLocale();
   const useLinks = Boolean(productSlug);
 
+  const isFlatSidebar =
+    categories.length === 1 && Boolean(categories[0].sidebarAsFlat);
+
   const { activeSubMenu, activeTab } = useMemo(() => {
     for (const cat of categories) {
       const sub = cat.subMenus.find((s) => s.id === activeSubMenuId);
@@ -73,6 +76,63 @@ export function ProductDetailSection({
               <p className="px-2 py-4 text-sm text-[#62748E]">
                 Belum ada sub-solusi untuk kategori ini.
               </p>
+            ) : categories.length === 1 && categories[0].sidebarAsFlat ? (
+              <ul className="space-y-0.5">
+                {categories[0].subMenus.map((sub) => {
+                  const isActive = sub.id === activeSubMenuId;
+                  const subHref =
+                    useLinks && productSlug
+                      ? getProductPageUrl(locale, productSlug, sub.id)
+                      : undefined;
+                  const subContent = (
+                    <>
+                      <span
+                        className={`size-1.5 shrink-0 rounded-full ${
+                          isActive
+                            ? "bg-white"
+                            : "bg-(--color-cartenz-blue)"
+                        }`}
+                        aria-hidden
+                      />
+                      <span className="line-clamp-2">{sub.title}</span>
+                    </>
+                  );
+                  return (
+                    <li key={sub.id}>
+                      {subHref ? (
+                        <Link
+                          href={subHref}
+                          scroll={false}
+                          className={`flex w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition ${
+                            isActive
+                              ? "bg-(--color-cartenz-blue) font-medium text-white"
+                              : "hover:bg-white/80"
+                          }`}
+                          aria-current={isActive ? "true" : undefined}
+                        >
+                          {subContent}
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onSelectSubMenu(sub.id);
+                            onSelectTabIndex(0);
+                          }}
+                          className={`flex w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition ${
+                            isActive
+                              ? "bg-(--color-cartenz-blue) font-medium text-white"
+                              : "hover:bg-white/80"
+                          }`}
+                          aria-current={isActive ? "true" : undefined}
+                        >
+                          {subContent}
+                        </button>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
             ) : (
               <ul className="space-y-0.5">
                 {categories.map((cat) => {
@@ -177,8 +237,8 @@ export function ProductDetailSection({
                 {activeSubMenu.title}
               </h3>
 
-              {/* Horizontal tabs (Level 3) */}
-              {activeSubMenu.tabs.length > 0 && (
+              {/* Horizontal tabs (Level 3) — disembunyikan jika sidebarAsFlat (EFD/Palapa) */}
+              {!isFlatSidebar && activeSubMenu.tabs.length > 0 && (
                 <div className="mb-5 border-b border-[#E2E8F0]">
                   <ul className="flex flex-wrap gap-1" role="tablist">
                     {activeSubMenu.tabs.map((tab, idx) => {
@@ -205,15 +265,19 @@ export function ProductDetailSection({
                 </div>
               )}
 
-              {/* Sub-judul (label tab aktif) + deskripsi */}
+              {/* Sub-judul (label tab aktif, hanya bila bukan flat) + deskripsi */}
               {activeTab && (
                 <>
-                  <h4 className="mb-2 text-sm font-bold ">
-                    {activeTab.tabLabel}
-                  </h4>
-                  <p className="mb-6 text-sm leading-relaxed ">
-                    {activeTab.content.description}
-                  </p>
+                  {!isFlatSidebar && (
+                    <h4 className="mb-2 text-sm font-bold ">
+                      {activeTab.tabLabel}
+                    </h4>
+                  )}
+                  {activeTab.content.description ? (
+                    <p className="mb-6 text-sm leading-relaxed ">
+                      {activeTab.content.description}
+                    </p>
+                  ) : null}
                 </>
               )}
 
@@ -294,7 +358,7 @@ function ContentBlockRenderer({ block }: { block: ContentBlock }) {
       return <p className="text-sm leading-relaxed ">{block.text}</p>;
     case "heading": {
       const level = block.level ?? 4;
-      const className = "mb-2 text-sm font-bold uppercase tracking-wide ";
+      const className = "mb-2 text-sm font-bold tracking-wide ";
       if (level === 1) return <h1 className={className}>{block.text}</h1>;
       if (level === 2) return <h2 className={className}>{block.text}</h2>;
       if (level === 3) return <h3 className={className}>{block.text}</h3>;

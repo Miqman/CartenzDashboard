@@ -39,13 +39,272 @@ export interface ProductDetailCategory {
   megaMenuChildId?: string;
   isExpanded?: boolean;
   subMenus: ProductSubMenu[];
+  /** Jika true, sidebar hanya menampilkan daftar subMenus sebagai menu level 1 (tanpa accordion kategori). Untuk EFD/Palapa. */
+  sidebarAsFlat?: boolean;
 }
 
 export type ProductDetailData = {
   categories: ProductDetailCategory[];
 };
 
+/** Input untuk produk flat (EFD/Palapa): satu topik = satu label + content. */
+export interface FlatTopicContent {
+  description?: string;
+  descricption?: string; // typo support
+  image?: string;
+  details?: string[];
+  blocks?: ContentBlock[];
+}
+
+export interface FlatTopic {
+  id?: string;
+  label: string;
+  content: FlatTopicContent;
+}
+
 const fallbackImage = "/assets/galeri5.jpg";
+
+/** Slug dari string (untuk sub id unik). */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+}
+
+/**
+ * Normalisasi array topik flat jadi ProductDetailData: 1 kategori, N subMenus, masing-masing 1 tab.
+ * Dipakai untuk EFD/Palapa yang tidak punya hierarchy kategori.
+ */
+export function normalizeFlatTopicsToDetailData(
+  topics: FlatTopic[],
+  sectionLabel: string,
+  productId: string,
+  defaultImage: string = fallbackImage,
+): ProductDetailData {
+  const categoryId = "detail";
+  const subMenus: ProductSubMenu[] = topics.map((topic, index) => {
+    const id = topic.id ?? `${productId}-${slugify(topic.label)}`;
+    const desc = topic.content.description ?? topic.content.descricption ?? "";
+    const content: TabContent = {
+      description: desc,
+      image: topic.content.image?.trim() ? topic.content.image : defaultImage,
+      details: topic.content.details ?? [],
+      blocks: topic.content.blocks,
+    };
+    return {
+      id,
+      title: topic.label,
+      tabs: [
+        {
+          tabId: "tab-1",
+          tabLabel: topic.label,
+          content,
+        },
+      ],
+    };
+  });
+  return {
+    categories: [
+      {
+        id: categoryId,
+        label: sectionLabel,
+        isExpanded: true,
+        sidebarAsFlat: true,
+        subMenus,
+      },
+    ],
+  };
+}
+
+// Contoh data EFD (flat topics) → dinormalisasi ke ProductDetailData
+const efdData: FlatTopic[] = [
+  {
+    id: "efd-pajak-bjtt",
+    label: "Sistem pengawasan Objek Pajak Barang dan Jasa Tertentu",
+    content: {
+      description:
+        "Solusi ini Merekam dan memonitor transaksi wajib pajak hotel, restoran, kafe, hiburan, parkir, dan lainnya",
+      image: "",
+      details: [],
+      blocks: [
+        {
+          type: "list",
+          items: [
+            "Jenis solusi perekaman yang dipasang dapat disesuaikan dengan kondisi wajib pajak",
+            "POS Online (Android based) untuk WP yang belum menggunakan sistem penjualan online",
+            "Web Service/Software untuk WP yang telah menggunakan POS berbasis cloud",
+            "Interceptor Box/Software EFD untuk WP yang menggunakan sistem basis data",
+            "Perekaman dapat bersifat real-time dan/atau tergantung dengan kondisi dan availabilitas data wajib pajak",
+            "POS Online mencakup aplikasi rekam transaksi khusus seperti sistem rekam transaksi kafe, restoran, retribusi, pariwisata, parkir, dan hotel, atau simple kalkulator online, sesuai kebutuhan operasional bisnis dan dapat digunakan secara hybrid offline/online",
+            "POS Online dapat melakukan pembayaran dengan QRIS, Debit/Credit, dan E Money, selain itu dapat membayar PPOB",
+            "Interceptor Box dan Software EFD dapat mengakomodir 100+ jenis basis data, 100+ jenis online pos, serta merekam transaksi platform order online seperti - - GrabFood, GoFood, Shopee Food.",
+            "Software EFD juga menyediakan perekaman transaksi melalui API atau File Sharing seperti FTP/SFTP, Google Drive dan lainnya.",
+          ],
+        },
+        {
+          type: "heading",
+          text: "Kit Sistem",
+          level: 4,
+        },
+        {
+          type: "list",
+          items: [
+            "User Manual Mesin",
+            "User Manual Aplikasi",
+            "Instalasi pada server yang disepakati",
+            "Maintenance Alat dan Aplikasi",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    id: "efd-mineral-mblb",
+    label: "Sistem pengawasan Objek Pajak Mineral Bukan Logam dan Batuan",
+    content: {
+      description:
+        "Solusi ini memberikan platform untuk mempermudah wajib pajak dan pemerintah untuk melakukan pelaporan pajak dan monitoring pajak MBLB untuk mengoptimasi penerimaan MBLB",
+      image: "",
+      details: [],
+      blocks: [
+        {
+          type: "heading",
+          text: "Standard Process",
+          level: 4,
+        },
+        {
+          type: "paragraph",
+          text: "Seluruh transaksi mineral tercatat dalam perekaman digital melalui sistem POS online dan mencetak faktur penjualan.",
+        },
+        {
+          type: "heading",
+          text: "Field Surveillance",
+          level: 4,
+        },
+        {
+          type: "paragraph",
+          text: "Kamera yang dipasang merekam plat nomor & menghitung setiap kendaraan jenis truk yang lewat di jalan tambang.",
+        },
+        {
+          type: "heading",
+          text: "Analytics",
+          level: 4,
+        },
+        {
+          type: "paragraph",
+          text: "Seluruh data yang didapat dari sistem POS online, kamera CCTV dan pelaporan pajak bulanan, di tampilkan secara langsung melalui dashboard analisis",
+        },
+        {
+          type: "heading",
+          text: "Field Monitoring",
+          level: 4,
+        },
+        {
+          type: "paragraph",
+          text: "Aplikasi mobile untuk petugas melakukan pemeriksaan truk di jalan/pos penjagaan",
+        },
+      ],
+    },
+  },
+  {
+    id: "efd-air-tanah",
+    label: "Sistem pengawasan Objek Pajak Air Tanah dan permukaan",
+    content: {
+      description:
+        "Smart Water Meter adalah solusi untuk mendapatkan data riil konsumsi air tanah / air permukaan pada WP dengan bisnis yang berpotensi menggunakan air dalam jumlah besar (seperti hotel, mall, kantor, dan sebagainya) sebagai dasar perhitungan pajak air dan memonitor penggunaan air tanah melalui dashboard, selain itu juga.",
+      image: "",
+      details: [],
+      blocks: [
+        {
+          type: "heading",
+          text: "Terdapat 3 jenis solusi smart water meter yang dapat diimplementasikan, yaitu:",
+          level: 4,
+        },
+        {
+          type: "list",
+          items: [
+            "EFD Pulse Water Meter Reader, pemasangan pada alat water meter yang sudah compatible dengan alat pengiriman data.",
+            "EFD Water Meter Smart Tap, pemasangan pada pipa besar yang sulit untuk di tap oleh meteran",
+            "EFD Smart Water Meter Device, pemasangan water meter terhadap wp yang belum menggunakan atau menggunakan water meter yang compatible dengan alat pengiriman data.",
+          ],
+        },
+        {
+          type: "heading",
+          text: "Detail Solusi",
+          level: 4,
+        },
+        {
+          type: "list",
+          items: [
+            "Selain dari solusi yang ditawarkan, Cartenz menyediakan opsi untuk menggunakan GSM, NB-IOT maupun LoRaWAN  untuk menjangkau berbagai area tergantung dengan kondisi lokasi pipa",
+            "Dashboard kami berisikan berbagai informasi dari data Air maupun data Alat, seperti Overview dan Details terkait seperti jumlah, berapa yang aktif dan tidak aktif, berapa yang mengirim data dan tidak, serta kondisi operasional bila terjadi isu di lapangan, apakah tim sedang/sudah menyelesaikan.",
+            "Dashboard juga berisikan informasi secara geospatial bila dibutuhkan.",
+            "Dashboard berisikan informasi terkait penggunaan air dan  perpajakannya seperti berapa banyak air yang digunakan pada area tersebut dan  potensi pendapatan pajaknya.",
+            "Informasi di Dashboard dapat dilihat atau filter per area atau per wajib pajak, sehingga bisa dilakukan analisa lebih spesifik bila dibutuhkan",
+          ],
+        },
+      ],
+    },
+  },
+];
+
+const palapaData: FlatTopic[] = [
+  {
+    id: "palapa-kendali-kinerja",
+    label: "Kendali Kinerja dan Pelayanan Pemerintah",
+    content: {
+      description:
+        "Memastikan kinerja pelayanan pemerintah berjalan sesuai prosedur tanpa khawatir keterlambatan kendala serta OPD bergerak sendiri-sendiri. PALAPA membantu pimpinan melihat progres program prioritas secara ringkas dan real, lintas OPD, sehingga hambatan cepat terdeteksi dan koreksi bisa dilakukan sebelum masalah membesar.",
+      image: "",
+      details: [],
+      blocks: [
+        {
+          type: "heading",
+          text: "Detail Solusi:",
+          level: 4,
+        },
+        {
+          type: "list",
+          items: [
+            "Ringkasan progres lintas OPD dalam satu tampilan",
+            "Catatan hambatan dan tindak lanjut yang bisa ditelusuri",
+            "Pantau kinerja berdasarkan aktivitas nyata, bukan sekadar laporan",
+            "Sistem kepuasan dan umpan balik masyarakat",
+            "Tanda peringatan dini untuk program yang mulai terlambat",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    id: "palapa-perizinan-investasi",
+    label: "Perizinan & Investasi Lebih Terserap",
+    content: {
+      description:
+        "Perizinan adalah wajah ekonomi daerah. Ketika izin lambat dan proses tidak jelas, investor mundur, pelaku usaha mengeluh, dan ekonomi ikut melambat. PALAPA membantu perizinan daerah lebih tertib, mudah dipantau, dan lebih cepat diselesaikan. Ini bukan hanya soal aplikasi, tapi soal menciptakan iklim usaha yang lebih percaya dan lebih nyaman.",
+      image: "",
+      details: [],
+      blocks: [
+        {
+          type: "heading",
+          text: "Detail Solusi:",
+          level: 4,
+        },
+        {
+          type: "list",
+          items: [
+            "Perizinan non-OSS berjalan lebih terukur",
+            "Monitoring proses perizinan dari awal sampai selesai",
+            "Antrean MPP lebih rapi (online dan offline)",
+            "Kiosk pelayanan untuk membantu warga yang butuh pendampingan",
+            "Pendataan potensi investasi daerah",
+          ],
+        },
+      ],
+    },
+  },
+];
 
 /** Data per product id. Tambahkan entri untuk monitoring-pajak, digitalisasi-layanan, strategic-consulting sesuai kebutuhan. */
 export const productDetailByProductId: Record<string, ProductDetailData> = {
@@ -212,7 +471,7 @@ export const productDetailByProductId: Record<string, ProductDetailData> = {
           },
           {
             id: "retribusi-jasa-usaha",
-            title: "Sistem pengelolaan retribusi jasa usaha		",
+            title: "Sistem pengelolaan retribusi jasa usaha",
             tabs: [
               {
                 tabId: "tab-1",
@@ -291,8 +550,16 @@ export const productDetailByProductId: Record<string, ProductDetailData> = {
       },
     ],
   },
-  efd: { categories: [] },
-  palapa: { categories: [] },
+  efd: normalizeFlatTopicsToDetailData(
+    efdData,
+    "Solusi yang kami tawarkan",
+    "efd",
+  ),
+  palapa: normalizeFlatTopicsToDetailData(
+    palapaData,
+    "Solusi yang kami tawarkan",
+    "palapa",
+  ),
   "strategic-consulting": { categories: [] },
 };
 
