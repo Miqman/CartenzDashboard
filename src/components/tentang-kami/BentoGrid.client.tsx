@@ -92,6 +92,7 @@ export function BentoGridClient() {
                     fill
                     className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                     sizes={isLarge ? "(max-width: 768px) 100vw, 33vw" : "(max-width: 768px) 50vw, 33vw"}
+                    priority
                   />
                   <div
                     className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20"
