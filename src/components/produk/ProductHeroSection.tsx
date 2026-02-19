@@ -25,7 +25,7 @@ export function ProductHeroSection({
         {/* Kiri ~70%: logo, tombol demo, judul, paragraf */}
         <div className="flex flex-col">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div className="relative h-12 w-32 shrink-0 md:h-14 md:w-36">
+            <div className="relative h-12 w-32 shrink-0 md:h-[69px] md:w-72">
               <Image
                 src={logoUrl}
                 alt=""

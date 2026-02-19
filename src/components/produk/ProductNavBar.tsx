@@ -32,14 +32,16 @@ export function ProductNavBar({ activeId, locale, onSelect }: Props) {
       <div className="hidden w-full grid-cols-2 gap-8 px-4 sm:grid md:grid-cols-4">
         {PRODUCT_NAV_ITEMS.map((item) => {
           const isActive = activeId === item.id;
-          const href = useLinks ? getProductPageUrl(locale, item.id) : undefined;
+          const href = useLinks
+            ? getProductPageUrl(locale, item.id)
+            : undefined;
           const content = (
             <>
               <span
                 className={`relative block h-4 w-10 shrink-0 md:h-[20px] md:w-[104px] ${!isActive ? "opacity-50" : "opacity-100"}`}
               >
                 <Image
-                  src={PRODUCT_PAGE_ASSETS.logo}
+                  src={item.logo}
                   alt=""
                   fill
                   className="object-contain object-left"
