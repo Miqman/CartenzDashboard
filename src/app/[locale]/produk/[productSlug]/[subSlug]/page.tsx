@@ -28,6 +28,9 @@ export function generateStaticParams() {
   return params;
 }
 
+/** Selalu render di server per request agar getLocale() dan fetch Strapi aman di Vercel. */
+export const dynamic = "force-dynamic";
+
 function findSubInCategories(
   categories: ProductDetailCategory[],
   subSlug: string

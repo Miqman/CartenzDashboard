@@ -20,6 +20,9 @@ export function generateStaticParams() {
   return getProductSlugs().map((productSlug) => ({ productSlug }));
 }
 
+/** Selalu render di server per request agar getLocale() dan fetch Strapi aman di Vercel. */
+export const dynamic = "force-dynamic";
+
 /** Ada konten jika salah satu section punya data: Strapi (hero/detail), fallback detail, atau klien. */
 function hasAnySectionContent(
   strapiCategories: ProductDetailCategory[],

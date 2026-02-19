@@ -39,6 +39,8 @@ export function getStrapiMediaUrl(media: StrapiMedia | undefined): string {
 export type FetchApiOptions = {
   /** ISR: revalidate in seconds. Menu/nav jarang berubah bisa 300; konten halaman 60. */
   revalidate?: number;
+  /** AbortSignal mis. AbortSignal.timeout(ms) agar tidak hang di Vercel. */
+  signal?: AbortSignal;
 };
 
 export async function fetchApi<T>(path: string, options?: FetchApiOptions): Promise<T> {
@@ -47,6 +49,7 @@ export async function fetchApi<T>(path: string, options?: FetchApiOptions): Prom
   const revalidate = options?.revalidate ?? 60;
   const res = await fetch(url, {
     next: { revalidate },
+    signal: options?.signal,
     headers: {
       "Content-Type": "application/json",
     },
@@ -261,12 +264,13 @@ export type GetProductPageBySlugOptions = { revalidate?: number };
  * Prefer struktur baru (categories); fallback ke detail JSON (legacy).
  * Return null jika tidak ada data atau hero tidak ada.
  */
-/** Di production (Vercel) jangan fetch ke localhost; pakai fallback. */
+/** Di production (Vercel) jangan fetch ke localhost; pakai fallback. Skip juga URL placeholder. */
 function isStrapiReachable(): boolean {
   const url = getStrapiUrl();
   if (url.startsWith("http://localhost") || url.startsWith("http://127.0.0.1")) {
     return process.env.NODE_ENV === "development";
   }
+  if (url.includes("your-strapi-url.com")) return false;
   return true;
 }
 
@@ -283,10 +287,17 @@ export async function getProductPageBySlug(
       "&populate[4]=categories&populate[5]=categories.subMenus&populate[6]=categories.subMenus.tabs" +
       "&populate[7]=categories.subMenus.tabs.content&populate[8]=categories.subMenus.tabs.content.image" +
       "&populate[9]=categories.subMenus.tabs.content.blocks";
-    const res = await fetchApi<{ data: unknown }>(
-      `product-pages?filters[slug][$eq]=${encodedSlug}&${populate}`,
-      { revalidate }
-    );
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    let res: { data: unknown };
+    try {
+      res = await fetchApi<{ data: unknown }>(
+        `product-pages?filters[slug][$eq]=${encodedSlug}&${populate}`,
+        { revalidate, signal: controller.signal }
+      );
+    } finally {
+      clearTimeout(timeoutId);
+    }
     const data = res?.data;
     const list = Array.isArray(data) ? data : [];
     const raw = list[0];
