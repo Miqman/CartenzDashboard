@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { Swiper, SwiperSlide } from "swiper/react";
