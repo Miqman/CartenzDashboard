@@ -11,16 +11,22 @@ export interface MegaMenuChild {
   details: MegaMenuDetail[];
 }
 
+/** single = klik Level 1 langsung ke halaman; flat = Level 1 → daftar link ke section; nested = Level 1 → Level 2 → Level 3 detail */
+export type MegaMenuType = "single" | "flat" | "nested";
+
 export interface MegaMenuItem {
   id: string;
   label: string;
   children: MegaMenuChild[];
+  /** Default: inferred (no children → single; children with details → nested; else flat) */
+  menuType?: MegaMenuType;
 }
 
 export const megaMenuData: MegaMenuItem[] = [
   {
     id: "smartgov",
     label: "Solusi Pengelolaan Pajak Daerah",
+    menuType: "nested",
     children: [
       {
         id: "sistem-kota-kab",
@@ -172,16 +178,46 @@ export const megaMenuData: MegaMenuItem[] = [
   {
     id: "efd",
     label: "Solusi Monitoring Pajak Daerah",
-    children: [],
+    menuType: "flat",
+    children: [
+      {
+        id: "efd-pajak-bjtt",
+        label: "Sistem pengawasan Objek Pajak Barang dan Jasa Tertentu",
+        details: [],
+      },
+      {
+        id: "efd-mineral-mblb",
+        label: "Sistem pengawasan Objek Pajak Mineral Bukan Logam dan Batuan",
+        details: [],
+      },
+      {
+        id: "efd-air-tanah",
+        label: "Sistem pengawasan Objek Pajak Air Tanah dan permukaan",
+        details: [],
+      },
+    ],
   },
   {
     id: "palapa",
     label: "Digitalisasi Layanan Pemerintah Terintegrasi",
-    children: [],
+    menuType: "flat",
+    children: [
+      {
+        id: "palapa-kendali-kinerja",
+        label: "Kendali Kinerja dan Pelayanan Pemerintah",
+        details: [],
+      },
+      {
+        id: "palapa-perizinan-investasi",
+        label: "Perizinan & Investasi Lebih Terserap",
+        details: [],
+      },
+    ],
   },
   {
     id: "strategic-consulting",
     label: "Strategic Consulting",
+    menuType: "single",
     children: [],
   },
 ];

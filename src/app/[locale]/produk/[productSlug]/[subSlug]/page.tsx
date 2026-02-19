@@ -13,6 +13,21 @@ interface PageProps {
   searchParams: Promise<{ tab?: string }>;
 }
 
+/** Pre-compile known product+sub paths to reduce dev "Compiling..." on each visit. */
+export function generateStaticParams() {
+  const productSlugs = getProductSlugs();
+  const params: { productSlug: string; subSlug: string }[] = [];
+  for (const productSlug of productSlugs) {
+    const data = getProductDetailData(productSlug);
+    for (const cat of data.categories) {
+      for (const sub of cat.subMenus) {
+        params.push({ productSlug, subSlug: sub.id });
+      }
+    }
+  }
+  return params;
+}
+
 function findSubInCategories(
   categories: ProductDetailCategory[],
   subSlug: string

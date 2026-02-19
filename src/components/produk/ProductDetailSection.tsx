@@ -88,9 +88,7 @@ export function ProductDetailSection({
                     <>
                       <span
                         className={`size-1.5 shrink-0 rounded-full ${
-                          isActive
-                            ? "bg-white"
-                            : "bg-(--color-cartenz-blue)"
+                          isActive ? "bg-white" : "bg-(--color-cartenz-blue)"
                         }`}
                         aria-hidden
                       />
@@ -368,11 +366,11 @@ function ContentBlockRenderer({ block }: { block: ContentBlock }) {
       return (
         <div>
           {block.title && (
-            <h4 className="mb-3 text-sm font-bold uppercase tracking-wide ">
+            <h4 className="mb-3 text-sm font-bold capitalize tracking-wide ">
               {block.title}
             </h4>
           )}
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             {block.items.map((item, i) => (
               <SolutionListItem key={i} text={item} />
             ))}

@@ -15,6 +15,11 @@ interface PageProps {
   params: Promise<{ productSlug: string }>;
 }
 
+/** Pre-compile known product slugs to reduce dev "Compiling..." on each visit. */
+export function generateStaticParams() {
+  return getProductSlugs().map((productSlug) => ({ productSlug }));
+}
+
 /** Ada konten jika salah satu section punya data: Strapi (hero/detail), fallback detail, atau klien. */
 function hasAnySectionContent(
   strapiCategories: ProductDetailCategory[],
@@ -42,11 +47,13 @@ export default async function ProdukProductSlugPage({ params }: PageProps) {
     strapiPage != null && strapiPage.detail.categories.length > 0;
   const data = useStrapi ? strapiPage.detail : fallbackDetail;
 
-  const hasContent = hasAnySectionContent(
-    strapiPage?.detail.categories ?? [],
-    fallbackDetail.categories,
-    clients != null
-  );
+  const hasContent =
+    productSlug === "strategic-consulting" ||
+    hasAnySectionContent(
+      strapiPage?.detail.categories ?? [],
+      fallbackDetail.categories,
+      clients != null
+    );
 
   if (!hasContent) {
     return (

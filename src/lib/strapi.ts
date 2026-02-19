@@ -7,9 +7,18 @@ import type {
   StrapiGalleryData,
   StrapiMedia,
   StrapiProductPageData,
+  StrapiProductPageCategory,
+  StrapiProductPageBlock,
 } from "@/types/strapi";
 import type { ProductHeroData } from "@/data/productsPageData";
-import type { ProductDetailData } from "@/data/productDetailData";
+import type {
+  ProductDetailData,
+  ProductDetailCategory,
+  ProductSubMenu,
+  ProductTab,
+  TabContent,
+  ContentBlock,
+} from "@/data/productDetailData";
 import {
   DEFAULT_HERO_IMAGE,
   DEFAULT_LOGO,
@@ -159,6 +168,74 @@ export async function getArticleBySlug(
 
 const DEFAULT_TAB_IMAGE = DEFAULT_HERO_IMAGE;
 
+/** Map block dari Strapi dynamic zone ke ContentBlock. */
+function mapStrapiBlockToContentBlock(block: StrapiProductPageBlock): ContentBlock | null {
+  if (!block || typeof block !== "object") return null;
+  const comp = (block as { __component?: string }).__component;
+  if (comp === "product-page.block-paragraph") {
+    const b = block as { text?: string };
+    return { type: "paragraph", text: b.text ?? "" };
+  }
+  if (comp === "product-page.block-heading") {
+    const b = block as { text?: string; level?: 1 | 2 | 3 | 4 | string };
+    const level = b.level != null ? (typeof b.level === "string" ? parseInt(b.level, 10) : b.level) : 4;
+    const levelNum = (level >= 1 && level <= 4 ? level : 4) as 1 | 2 | 3 | 4;
+    return { type: "heading", text: b.text ?? "", level: levelNum };
+  }
+  if (comp === "product-page.block-list") {
+    const b = block as { title?: string; items?: string[] };
+    return { type: "list", title: b.title, items: Array.isArray(b.items) ? b.items : [] };
+  }
+  return null;
+}
+
+/** Map categories dari Strapi (struktur baru) ke ProductDetailData. */
+function mapStrapiCategoriesToDetailData(
+  categories: StrapiProductPageCategory[] | undefined,
+  getMediaUrl: (m: StrapiMedia | undefined) => string
+): ProductDetailData {
+  if (!Array.isArray(categories) || categories.length === 0) {
+    return { categories: [] };
+  }
+  const out: ProductDetailCategory[] = categories.map((cat) => {
+    const subMenus: ProductSubMenu[] = (cat.subMenus ?? []).map((sub, subIdx) => {
+      const tabs: ProductTab[] = (sub.tabs ?? []).map((tab, tabIdx) => {
+        const c = tab.content;
+        const description = c?.description ?? "";
+        const image = c?.image ? getMediaUrl(c.image) : "";
+        const details = Array.isArray(c?.details) ? c.details : [];
+        const blocks: ContentBlock[] = (c?.blocks ?? [])
+          .map((b) => mapStrapiBlockToContentBlock(b))
+          .filter((x): x is ContentBlock => x != null);
+        const content: TabContent = {
+          description,
+          image: image || DEFAULT_TAB_IMAGE,
+          details,
+          blocks: blocks.length > 0 ? blocks : undefined,
+        };
+        return {
+          tabId: `tab-${tabIdx + 1}`,
+          tabLabel: tab.tabLabel ?? "",
+          content,
+        };
+      });
+      return {
+        id: sub.subSlug ?? `sub-${subIdx}`,
+        title: sub.title ?? "",
+        tabs,
+      };
+    });
+    return {
+      id: cat.categoryId ?? `cat-${cat.label ?? "unknown"}`,
+      label: cat.label ?? "",
+      megaMenuChildId: cat.megaMenuChildId,
+      sidebarAsFlat: cat.sidebarAsFlat ?? false,
+      subMenus,
+    };
+  });
+  return { categories: out };
+}
+
 /** Isi image kosong di tab content dengan default. */
 function fillDefaultDetailImages(detail: ProductDetailData): ProductDetailData {
   const categories = detail.categories.map((cat) => ({
@@ -181,7 +258,8 @@ export type GetProductPageBySlugOptions = { revalidate?: number };
 
 /**
  * Fetch product page dari Strapi by slug. Map ke { hero, detail }.
- * Return null jika tidak ada data atau categories kosong.
+ * Prefer struktur baru (categories); fallback ke detail JSON (legacy).
+ * Return null jika tidak ada data atau hero tidak ada.
  */
 export async function getProductPageBySlug(
   slug: string,
@@ -190,8 +268,13 @@ export async function getProductPageBySlug(
   try {
     const encodedSlug = encodeURIComponent(slug);
     const revalidate = options?.revalidate ?? 60;
+    const populate =
+      "populate[0]=hero&populate[1]=hero.paragraphs&populate[2]=hero.logo&populate[3]=hero.heroImage" +
+      "&populate[4]=categories&populate[5]=categories.subMenus&populate[6]=categories.subMenus.tabs" +
+      "&populate[7]=categories.subMenus.tabs.content&populate[8]=categories.subMenus.tabs.content.image" +
+      "&populate[9]=categories.subMenus.tabs.content.blocks";
     const res = await fetchApi<{ data: unknown }>(
-      `product-pages?filters[slug][$eq]=${encodedSlug}&populate[0]=hero&populate[1]=hero.paragraphs&populate[2]=hero.logo&populate[3]=hero.heroImage`,
+      `product-pages?filters[slug][$eq]=${encodedSlug}&${populate}`,
       { revalidate }
     );
     const data = res?.data;
@@ -215,16 +298,19 @@ export async function getProductPageBySlug(
       heroImageUrl: getStrapiMediaUrl(heroAttr?.heroImage) || DEFAULT_HERO_IMAGE,
     };
 
-    const detailRaw = doc.detail;
-    if (!detailRaw || typeof detailRaw !== "object" || !Array.isArray((detailRaw as { categories?: unknown[] }).categories)) {
-      return null;
+    let detail: ProductDetailData;
+    if (Array.isArray(doc.categories) && doc.categories.length > 0) {
+      detail = fillDefaultDetailImages(
+        mapStrapiCategoriesToDetailData(doc.categories, getStrapiMediaUrl)
+      );
+    } else if (doc.detail && typeof doc.detail === "object" && Array.isArray((doc.detail as { categories?: unknown[] }).categories)) {
+      const legacyCategories = (doc.detail as { categories: unknown[] }).categories;
+      detail = fillDefaultDetailImages({
+        categories: (legacyCategories.length > 0 ? legacyCategories : []) as ProductDetailData["categories"],
+      });
+    } else {
+      detail = { categories: [] };
     }
-    const categories = (detailRaw as { categories: unknown[] }).categories;
-    if (categories.length === 0) return null;
-
-    const detail: ProductDetailData = fillDefaultDetailImages({
-      categories: categories as ProductDetailData["categories"],
-    });
 
     return { hero, detail };
   } catch (err) {

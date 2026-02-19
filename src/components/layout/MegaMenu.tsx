@@ -5,11 +5,18 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { X, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
-import { megaMenuData, type MegaMenuDetail } from "@/data/megaMenuData";
+import { megaMenuData, type MegaMenuDetail, type MegaMenuItem, type MegaMenuType } from "@/data/megaMenuData";
 import { getProductDetailSelectionFromMegaMenu } from "@/data/productDetailData";
 import { getProductPageUrl } from "@/lib/productNavigation";
 
 const ACCENT_BLUE = "#3b82f6";
+
+function getMenuType(item: MegaMenuItem): MegaMenuType {
+  if (item.menuType) return item.menuType;
+  if (!item.children?.length) return "single";
+  const hasDetails = item.children.some((c) => (c.details?.length ?? 0) > 0);
+  return hasDetails ? "nested" : "flat";
+}
 
 type Props = {
   open: boolean;
@@ -110,6 +117,25 @@ export function MegaMenu({ open, onClose, anchorRef }: Props) {
                   <ul className="space-y-0.5">
                     {megaMenuData.map((item) => {
                       const isActive = item.id === level1Id;
+                      const menuType = getMenuType(item);
+                      const isSingle = menuType === "single";
+                      if (isSingle) {
+                        return (
+                          <li key={item.id}>
+                            <Link
+                              href={getProductPageUrl(locale, item.id)}
+                              onClick={onClose}
+                              className={`flex w-full items-center rounded-lg px-3 py-2.5 text-left text-sm transition ${
+                                isActive
+                                  ? "bg-white font-medium text-gray-900"
+                                  : "text-gray-600 hover:bg-white hover:text-gray-800"
+                              }`}
+                            >
+                              {item.label}
+                            </Link>
+                          </li>
+                        );
+                      }
                       return (
                         <li key={item.id}>
                           <button
@@ -136,70 +162,105 @@ export function MegaMenu({ open, onClose, anchorRef }: Props) {
                   </ul>
                 </nav>
 
-                {/* Level 2 (Tengah): hanya muncul jika menu Level 1 sudah dipilih (diklik) */}
-                {activeCategory && activeCategory.children?.length > 0 ? (
+                {/* Level 2 (Tengah): flat = daftar link; nested = daftar sub + Level 3 */}
+                {activeCategory &&
+                activeCategory.children?.length > 0 &&
+                (getMenuType(activeCategory) === "flat" ||
+                  getMenuType(activeCategory) === "nested") ? (
                   <div className="flex min-w-0 flex-1 flex-col bg-white p-3 rounded-lg shrink-0 w-[max(18rem,280px)]">
-                    {/* Header (SMARTGOV + subtitle) */}
-                    {activeChild?.contentTitle != null && (
-                      <div className="mb-4 flex items-center gap-3 pb-4">
-                        <div
-                          className="flex size-9 shrink-0 items-center justify-center rounded-md"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #3b82f6 50%, #f97316 50%)",
-                          }}
-                          aria-hidden
-                        />
-                        <div>
-                          <p className="text-sm font-bold uppercase tracking-wide text-gray-900">
-                            {activeChild.contentTitle}
-                          </p>
-                          {activeChild.contentSubtitle && (
-                            <p className="text-xs text-[#62748E]">
-                              {activeChild.contentSubtitle}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    <nav
-                      className="flex-1 overflow-auto"
-                      aria-label="Sub kategori"
-                    >
-                      <ul className="space-y-0.5">
-                        {activeCategory.children.map((child) => {
-                          const isActive = child.id === level2Id;
-                          return (
+                    {getMenuType(activeCategory) === "flat" ? (
+                      <nav
+                        className="flex-1 overflow-auto"
+                        aria-label="Daftar solusi"
+                      >
+                        <ul className="space-y-0.5">
+                          {activeCategory.children.map((child) => (
                             <li key={child.id}>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setLevel2Id(child.id);
-                                  setExpandedDetailIndex(-1);
-                                }}
-                                className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition ${
-                                  isActive
-                                    ? "bg-[#F1F5F9] font-medium text-gray-900"
-                                    : "text-gray-600 hover:bg-[#F1F5F9] hover:text-gray-800"
-                                }`}
+                              <Link
+                                href={getProductPageUrl(
+                                  locale,
+                                  activeCategory.id,
+                                  child.id
+                                )}
+                                onClick={onClose}
+                                className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition text-gray-600 hover:bg-[#F1F5F9] hover:text-gray-800"
                               >
                                 <span className="line-clamp-2">
                                   {child.label}
                                 </span>
-                                {child.details?.length ? (
-                                  <ChevronRight className="size-4 shrink-0 text-gray-400" />
-                                ) : null}
-                              </button>
+                                <ChevronRight className="size-4 shrink-0 text-gray-400" />
+                              </Link>
                             </li>
-                          );
-                        })}
-                      </ul>
-                    </nav>
+                          ))}
+                        </ul>
+                      </nav>
+                    ) : (
+                      <>
+                        {activeChild?.contentTitle != null && (
+                          <div className="mb-4 flex items-center gap-3 pb-4">
+                            <div
+                              className="flex size-9 shrink-0 items-center justify-center rounded-md"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #3b82f6 50%, #f97316 50%)",
+                              }}
+                              aria-hidden
+                            />
+                            <div>
+                              <p className="text-sm font-bold uppercase tracking-wide text-gray-900">
+                                {activeChild.contentTitle}
+                              </p>
+                              {activeChild.contentSubtitle && (
+                                <p className="text-xs text-[#62748E]">
+                                  {activeChild.contentSubtitle}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        <nav
+                          className="flex-1 overflow-auto"
+                          aria-label="Sub kategori"
+                        >
+                          <ul className="space-y-0.5">
+                            {activeCategory.children.map((child) => {
+                              const isActive = child.id === level2Id;
+                              return (
+                                <li key={child.id}>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setLevel2Id(child.id);
+                                      setExpandedDetailIndex(-1);
+                                    }}
+                                    className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition ${
+                                      isActive
+                                        ? "bg-[#F1F5F9] font-medium text-gray-900"
+                                        : "text-gray-600 hover:bg-[#F1F5F9] hover:text-gray-800"
+                                    }`}
+                                  >
+                                    <span className="line-clamp-2">
+                                      {child.label}
+                                    </span>
+                                    {child.details?.length ? (
+                                      <ChevronRight className="size-4 shrink-0 text-gray-400" />
+                                    ) : null}
+                                  </button>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </nav>
+                      </>
+                    )}
                   </div>
                 ) : null}
 
-                {/* Level 3 (Kanan): link ke halaman produk dengan tab sesuai detail yang diklik */}
-                {activeChild && details.length > 0 && activeCategory ? (
+                {/* Level 3 (Kanan): hanya untuk nested (SmartGov), link ke halaman produk + tab */}
+                {activeChild &&
+                details.length > 0 &&
+                activeCategory &&
+                getMenuType(activeCategory) === "nested" ? (
                   <div
                     className="min-w-0 flex-1 pl-4 shrink-0 w-[min(22rem,100%)]"
                     aria-label="Detail fitur"

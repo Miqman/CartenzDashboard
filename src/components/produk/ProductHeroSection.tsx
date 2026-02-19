@@ -70,6 +70,7 @@ export function ProductHeroSection({
             className="object-cover"
             sizes="(max-width: 1024px) 100vw, 30vw"
             unoptimized={heroImageUrl.startsWith("http")}
+            priority
           />
         </div>
       </div>

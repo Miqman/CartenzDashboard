@@ -133,9 +133,62 @@ export interface StrapiProductPageHero {
   heroImage?: StrapiMedia;
 }
 
+/** Block dalam dynamic zone: __component + fields */
+export interface StrapiProductPageBlockParagraph {
+  __component?: "product-page.block-paragraph";
+  text?: string;
+}
+export interface StrapiProductPageBlockHeading {
+  __component?: "product-page.block-heading";
+  text?: string;
+  /** Di Strapi disimpan sebagai string "1"|"2"|"3"|"4"; di frontend dipetakan ke number. */
+  level?: 1 | 2 | 3 | 4 | string;
+}
+export interface StrapiProductPageBlockList {
+  __component?: "product-page.block-list";
+  title?: string;
+  items?: string[];
+}
+
+export type StrapiProductPageBlock =
+  | StrapiProductPageBlockParagraph
+  | StrapiProductPageBlockHeading
+  | StrapiProductPageBlockList;
+
+export interface StrapiProductPageTabContent {
+  description?: string;
+  image?: StrapiMedia;
+  details?: string[];
+  blocks?: StrapiProductPageBlock[];
+}
+
+export interface StrapiProductPageTab {
+  tabLabel?: string;
+  content?: StrapiProductPageTabContent;
+}
+
+export interface StrapiProductPageSubMenu {
+  /** Nama field di Strapi: subSlug (id reserved). Dipetakan ke id di frontend. */
+  subSlug?: string;
+  title?: string;
+  tabs?: StrapiProductPageTab[];
+}
+
+export interface StrapiProductPageCategory {
+  /** Nama field di Strapi: categoryId (id reserved). Dipetakan ke id di frontend. */
+  categoryId?: string;
+  label?: string;
+  megaMenuChildId?: string;
+  sidebarAsFlat?: boolean;
+  subMenus?: StrapiProductPageSubMenu[];
+}
+
 export interface StrapiProductPageData {
   documentId?: string;
   slug?: string;
   hero?: StrapiProductPageHero;
+  /** Baru: struktur berjenjang dari CMS */
+  categories?: StrapiProductPageCategory[];
+  /** Legacy: JSON fallback */
   detail?: { categories?: unknown[] };
 }
