@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
+// Nama file harus sama persis (case-sensitive di Linux/Vercel): gunakan "Tentangkami" (k kecil) jika file di public/assets begitu.
 const BENTO_ITEMS = [
   { src: "/assets/gambarTentangKami1.png", alt: "Kegiatan tim Cartenz" },
-  { src: "/assets/gambarTentangKami2.png", alt: "Kegiatan tim Cartenz" },
+  { src: "/assets/gambarTentangkami2.png", alt: "Kegiatan tim Cartenz" },
   { src: "/assets/gambarTentangKami3.png", alt: "Kegiatan tim Cartenz" },
   { type: "text" as const, text: "KAMI ADALAH CARTEAMZ" },
   { src: "/assets/gambarTentangKami5.png", alt: "Kegiatan tim Cartenz", large: true },
