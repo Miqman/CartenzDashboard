@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { getLocale } from "next-intl/server";
 import {
   getHomepage,
@@ -423,12 +424,13 @@ export default async function HomePage() {
                     className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
                   >
                     <div className="relative aspect-[4/3] w-full bg-[#408FB4]/10">
-                      <Image
+                      <ImageWithFallback
                         src={imageUrl}
                         alt=""
                         fill
                         className="object-cover object-center"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        fallbackSrc="/assets/produk1.png"
                       />
                     </div>
                     <div className="flex items-start justify-between gap-3 p-4">
@@ -542,7 +544,7 @@ export default async function HomePage() {
                 className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-xl">
-                  <Image
+                  <ImageWithFallback
                     src={
                       "imageUrl" in artikel && artikel.imageUrl
                         ? artikel.imageUrl
@@ -553,6 +555,7 @@ export default async function HomePage() {
                     fill
                     className="object-cover object-center transition group-hover:opacity-95"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    fallbackSrc="/assets/artikel1.png"
                   />
                 </div>
                 <div className="flex flex-col gap-1 p-4">

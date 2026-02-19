@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { AnimatePresence } from "framer-motion";
@@ -51,14 +52,14 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
           onClick={closeMobile}
         >
           <div className="relative h-8 w-40 md:h-[34px] md:w-44">
-            <Image
+            <ImageWithFallback
               src={logoSrc}
               alt="Cartenz Technology"
               fill
               className="object-contain object-left"
               sizes="176px"
               priority
-              unoptimized={logoSrc.startsWith("http")}
+              fallbackSrc={DEFAULT_NAVBAR_LOGO}
             />
           </div>
         </Link>

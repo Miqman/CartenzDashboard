@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { useLocale } from "next-intl";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type {
@@ -282,13 +283,13 @@ export function ProductDetailSection({
               {/* Hero image */}
               {activeTab?.content?.image && (
                 <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-lg bg-[#E2E8F0]">
-                  <Image
+                  <ImageWithFallback
                     src={activeTab.content.image}
                     alt=""
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 70vw"
-                    unoptimized={activeTab.content.image.startsWith("http")}
+                    fallbackSrc="/assets/galeri5.jpg"
                   />
                 </div>
               )}

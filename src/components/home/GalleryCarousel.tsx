@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
@@ -91,12 +92,13 @@ export function GalleryCarousel({
         {gallerySlides.map((item, i) => (
           <SwiperSlide key={i}>
             <div className="galeri-slide-inner relative">
-              <Image
+              <ImageWithFallback
                 src={item.imageUrl}
                 alt={item.alt}
                 fill
                 className="object-cover object-center"
                 sizes="278px"
+                fallbackSrc="/assets/galeri5.jpg"
               />
             </div>
             <div className="galeri-caption text-[#1E1E1E]">

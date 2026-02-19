@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { PRODUCT_PAGE_ASSETS } from "@/data/productsPageData";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { ChevronRight } from "lucide-react";
 
 type Props = {
@@ -26,13 +27,13 @@ export function ProductHeroSection({
         <div className="flex flex-col">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="relative h-12 w-32 shrink-0 md:h-[69px] md:w-72">
-              <Image
+              <ImageWithFallback
                 src={logoUrl}
                 alt=""
                 fill
                 className="object-contain object-left"
                 sizes="144px"
-                unoptimized={logoUrl.startsWith("http")}
+                fallbackSrc={PRODUCT_PAGE_ASSETS.logo}
               />
             </div>
             {demoUrl && (
@@ -63,13 +64,13 @@ export function ProductHeroSection({
         </div>
         {/* Kanan ~30%: gambar */}
         <div className="relative aspect-4/3 w-full overflow-hidden rounded-lg bg-[#F1F5F9] lg:aspect-auto lg:min-h-[280px]">
-          <Image
+          <ImageWithFallback
             src={heroImageUrl}
             alt=""
             fill
             className="object-cover"
             sizes="(max-width: 1024px) 100vw, 30vw"
-            unoptimized={heroImageUrl.startsWith("http")}
+            fallbackSrc={PRODUCT_PAGE_ASSETS.heroImage}
             priority
           />
         </div>
