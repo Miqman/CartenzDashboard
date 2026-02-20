@@ -616,7 +616,7 @@ export default async function HomePage() {
               </div>
             </div>
             <p className="text-[20px] leading-relaxed md:min-w-0">
-              PT. Cartenz Tekno Lab telah tersertifikasi ISO 27001:2022 untuk
+              PT. Cartenz Technology telah tersertifikasi ISO 27001:2022 untuk
               standar internasional manajemen keamanan informasi dalam
               lingkup Layanan Perangkat Lunak di Seluruh Dunia.
             </p>

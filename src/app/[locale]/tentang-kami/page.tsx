@@ -45,11 +45,11 @@ const NILAI_INTI = [
 ];
 
 const TIM_KAMI = [
-  { name: "Gita Wahyudi", jabatan: "Founder, Chairman" },
-  { name: "Daniel Winarto Alam", jabatan: "Board Member" },
+  { name: "Gito Wahyudi", jabatan: "Founder, Chairman" },
+  // { name: "Daniel Winarto Alam", jabatan: "Board Member" },
   { name: "Andrew Ryan P", jabatan: "Managing Director" },
   { name: "Dewlady Pratama", jabatan: "Director" },
-  { name: "Enggar Baskoro", jabatan: "Director" },
+  // { name: "Enggar Baskoro", jabatan: "Director" },
   { name: "Muhammad Fajar", jabatan: "Consulting Head" },
 ];
 
@@ -132,7 +132,7 @@ export default function TentangKamiPage() {
           <h2 className="mt-1 text-4xl font-normal leading-tight uppercase tracking-tight text-cartenz-black md:text-3xl">
             Berdedikasi untuk negeri
           </h2>
-          <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {TIM_KAMI.map((member, i) => (
               <div
                 key={i}
