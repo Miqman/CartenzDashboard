@@ -302,7 +302,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       {/* Hero section: mobile full screen, konten tidak tertutup navbar */}
-      <section className="relative min-h-[100dvh] min-h-[100vh] overflow-x-hidden bg-[#1E1E1E] pt-[72px] md:min-h-[50vh] md:pt-0">
+      <section className="relative min-h-[100dvh] min-h-[100vh] overflow-x-hidden bg-[#1E1E1E] pt-[72px] pb-8 md:min-h-[50vh]">
         <Image
           src="/assets/bgHalfHero.jpg"
           alt=""

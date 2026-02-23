@@ -61,7 +61,7 @@ function SlideContent({
 }) {
   const logoSrc = logoUrl || DEFAULT_HERO_LOGO;
   return (
-    <div className="flex min-h-[calc(100dvh-72px)] min-h-[calc(100vh-72px)] flex-col items-center justify-center px-4 py-12 md:min-h-[50vh] md:px-8">
+    <div className="flex min-h-[calc(100dvh-72px)] min-h-[calc(100vh-72px)] flex-col items-center justify-center px-4 md:min-h-[50vh] md:px-8">
       <div className="relative z-10 w-full max-w-7xl text-center">
         <div className="relative mx-auto mb-4 h-8 w-24 md:mb-5 md:h-10 md:w-28">
           <Image
