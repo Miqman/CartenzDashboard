@@ -1,10 +1,5 @@
 import Image from "next/image";
-import {
-  Award,
-  Zap,
-  Target,
-  Users,
-} from "lucide-react";
+import { Award, Zap, Target, Users } from "lucide-react";
 import { BentoGridClient } from "@/components/tentang-kami/BentoGrid.client";
 
 const SEJARAH_TEXT =
@@ -48,7 +43,7 @@ const TIM_KAMI = [
   { name: "Gito Wahyudi", jabatan: "Founder, Chairman" },
   // { name: "Daniel Winarto Alam", jabatan: "Board Member" },
   { name: "Andrew Ryan P", jabatan: "Managing Director" },
-  { name: "Dewlady Pratama", jabatan: "Director" },
+  { name: "Devriady Pratama", jabatan: "Director" },
   // { name: "Enggar Baskoro", jabatan: "Director" },
   { name: "Muhammad Fajar", jabatan: "Consulting Head" },
 ];
@@ -69,9 +64,7 @@ export default function TentangKamiPage() {
               priority
             />
           </div>
-          <p className="text-center text-base text-[#1E1E1E]">
-            {SEJARAH_TEXT}
-          </p>
+          <p className="text-center text-base text-[#1E1E1E]">{SEJARAH_TEXT}</p>
         </div>
       </section>
 
@@ -134,10 +127,7 @@ export default function TentangKamiPage() {
           </h2>
           <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {TIM_KAMI.map((member, i) => (
-              <div
-                key={i}
-                className="flex flex-col overflow-hidden rounded-lg"
-              >
+              <div key={i} className="flex flex-col overflow-hidden rounded-lg">
                 <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-[#408FB4] to-emerald-600">
                   <Image
                     src="/assets/timKamiFrame.png"
