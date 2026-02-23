@@ -347,7 +347,8 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-6 flex items-center gap-3">
+            {/* Jumlah karyawan - di hide sementara */}
+            {/* <div className="mt-6 flex items-center gap-3">
               <div className="flex -space-x-2">
                 {["karyawan1.png", "karyawan2.png", "karyawan3.png", "karyawan4.png"].map((src) => (
                   <div
@@ -370,7 +371,7 @@ export default async function HomePage() {
               >
                 {aboutEmployeeCount}
               </span>
-            </div>
+            </div> */}
           </div>
 
           {/* Kolom kanan: paragraf + grid statistik 3 kolom */}
@@ -617,8 +618,8 @@ export default async function HomePage() {
             </div>
             <p className="text-[20px] leading-relaxed md:min-w-0">
               PT. Cartenz Technology telah tersertifikasi ISO 27001:2022 untuk
-              standar internasional manajemen keamanan informasi dalam
-              lingkup Layanan Perangkat Lunak di Seluruh Dunia.
+              standar internasional manajemen keamanan informasi dalam lingkup
+              Layanan Perangkat Lunak di Seluruh Dunia.
             </p>
           </div>
 
