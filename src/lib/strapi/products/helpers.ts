@@ -47,8 +47,8 @@ function mapStrapiBlockToContentBlock(block: StrapiProductPageBlock): ContentBlo
   return null;
 }
 
-/** Strapi category/subMenu/tab shape (dari detail-categories collection) */
-interface StrapiCategoryRaw {
+/** Strapi category/subMenu/tab shape (dari detail-categories collection). Dipakai oleh efd, palapa, smartgov. */
+export interface StrapiCategoryRaw {
   categoryId?: string;
   label?: string;
   megaMenuChildId?: string;
@@ -60,9 +60,9 @@ interface StrapiCategoryRaw {
       tabLabel?: string;
       content?: {
         description?: string;
-        image?: StrapiMedia;
+        image?: StrapiMedia | { url?: string };
         details?: string[];
-        blocks?: StrapiProductPageBlock[];
+        blocks?: unknown[];
       };
     }>;
   }>;
@@ -81,10 +81,10 @@ export function mapStrapiCategoriesToDetailData(
       const tabs: ProductTab[] = (sub.tabs ?? []).map((tab, tabIdx) => {
         const c = tab.content;
         const description = c?.description ?? "";
-        const image = c?.image ? getMediaUrl(c.image) : "";
+        const image = c?.image ? getMediaUrl(c.image as StrapiMedia) : "";
         const details = Array.isArray(c?.details) ? c.details : [];
         const blocks: ContentBlock[] = (c?.blocks ?? [])
-          .map((b) => mapStrapiBlockToContentBlock(b))
+          .map((b) => mapStrapiBlockToContentBlock(b as StrapiProductPageBlock))
           .filter((x): x is ContentBlock => x != null);
         const content: TabContent = {
           description,
