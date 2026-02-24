@@ -10,6 +10,9 @@ import { ProductKlienSection } from "@/components/produk/ProductKlienSection";
 import { ProductStrategicProjectsSection } from "@/components/produk/ProductStrategicProjectsSection";
 import { ProductKlienCardSection } from "@/components/produk/ProductKlienCardSection";
 import type { ProductDetailCategory } from "@/data/productDetailData";
+import type { ProductClientsData } from "@/data/productClientsData";
+import type { StrategicConsultingProject } from "@/data/strategicConsultingProjectsData";
+import type { PalapaKlienSectionPayload } from "@/lib/strapi/products";
 import { STRATEGIC_CONSULTING_PROJECTS } from "@/data/strategicConsultingProjectsData";
 import {
   PALAPA_KLIEN_CARDS,
@@ -25,8 +28,14 @@ type Props = {
   categories: ProductDetailCategory[];
   initialExpandedCategoryIds: string[];
   initialTabIndex?: number;
-  /** Jika dari Strapi, hero bisa di-pass dari server. */
+  /** Hero dari Strapi (per-product API) atau fallback lokal. */
   initialHero?: ProductHeroData | null;
+  /** Klien dari Strapi atau fallback lokal (untuk smartgov, efd, strategic-consulting). */
+  initialClients?: ProductClientsData | null;
+  /** Project cards dari Strapi (strategic-consulting). */
+  initialStrategicProjects?: StrategicConsultingProject[] | null;
+  /** Section klien Palapa dari Strapi (badge, title, rating, cards). */
+  initialPalapaKlien?: PalapaKlienSectionPayload | null;
 };
 
 export function ProductDetailPageClient({
@@ -37,6 +46,9 @@ export function ProductDetailPageClient({
   initialExpandedCategoryIds,
   initialTabIndex = 0,
   initialHero,
+  initialClients,
+  initialStrategicProjects,
+  initialPalapaKlien,
 }: Props) {
   const [expandedCategoryIds, setExpandedCategoryIds] = useState<string[]>(
     initialExpandedCategoryIds,
@@ -44,7 +56,14 @@ export function ProductDetailPageClient({
   const [activeTabIndex, setActiveTabIndex] = useState(initialTabIndex);
 
   const hero = initialHero ?? getProductHero(productSlug);
-  const productClients = getProductClients(productSlug);
+  const productClients = initialClients ?? getProductClients(productSlug);
+  const strategicProjects = initialStrategicProjects ?? STRATEGIC_CONSULTING_PROJECTS;
+  const palapaKlienSection = initialPalapaKlien ?? {
+    badge: PALAPA_KLIEN_SECTION.badge,
+    title: PALAPA_KLIEN_SECTION.title,
+    rating: PALAPA_KLIEN_SECTION.rating,
+    cards: PALAPA_KLIEN_CARDS,
+  };
 
   const handleToggleCategory = useCallback((categoryId: string) => {
     setExpandedCategoryIds((prev) =>
@@ -106,17 +125,17 @@ export function ProductDetailPageClient({
 
       {productSlug === "strategic-consulting" && (
         <ProductStrategicProjectsSection
-          projects={STRATEGIC_CONSULTING_PROJECTS}
+          projects={strategicProjects}
         />
       )}
 
       {/* section klien: tampilan card hanya untuk palapa */}
       {productSlug === "palapa" && (
         <ProductKlienCardSection
-          badge={PALAPA_KLIEN_SECTION.badge}
-          title={PALAPA_KLIEN_SECTION.title}
-          rating={PALAPA_KLIEN_SECTION.rating}
-          items={PALAPA_KLIEN_CARDS}
+          badge={palapaKlienSection.badge ?? PALAPA_KLIEN_SECTION.badge}
+          title={palapaKlienSection.title ?? PALAPA_KLIEN_SECTION.title}
+          rating={palapaKlienSection.rating ?? PALAPA_KLIEN_SECTION.rating}
+          items={palapaKlienSection.cards}
         />
       )}
 

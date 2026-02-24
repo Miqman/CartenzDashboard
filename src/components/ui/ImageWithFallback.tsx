@@ -19,7 +19,8 @@ export function ImageWithFallback({
   alt,
   ...rest
 }: ImageWithFallbackProps) {
-  const [currentSrc, setCurrentSrc] = useState(src);
+  const effectiveSrc = (typeof src === "string" && src.trim()) || fallbackSrc;
+  const [currentSrc, setCurrentSrc] = useState(effectiveSrc);
   const isExternal = typeof currentSrc === "string" && currentSrc.startsWith("http");
 
   return (

@@ -10,6 +10,10 @@ const IMAGE_WIDTH = 378;
 const IMAGE_HEIGHT = 184;
 const LOGO_SIZE = 60;
 
+/** Placeholder saat gambar/logo dari CMS kosong (dummyimage.com: background hitam #000, teks putih #fff) */
+const PLACEHOLDER_IMAGE = `https://dummyimage.com/${IMAGE_WIDTH}x${IMAGE_HEIGHT}/000/fff`;
+const PLACEHOLDER_LOGO = `https://dummyimage.com/${LOGO_SIZE}x${LOGO_SIZE}/000/fff`;
+
 type Props = {
   badge: string;
   title: string;
@@ -18,6 +22,8 @@ type Props = {
 };
 
 function KlienCard({ item }: { item: PalapaKlienCardItem }) {
+  const gambarSrc = item.gambar?.trim() || PLACEHOLDER_IMAGE;
+  const logoSrc = item.logo?.trim() || PLACEHOLDER_LOGO;
   return (
     <article className="flex flex-col">
       <div
@@ -29,12 +35,12 @@ function KlienCard({ item }: { item: PalapaKlienCardItem }) {
         }}
       >
         <Image
-          src={item.gambar}
+          src={gambarSrc}
           alt={item.title}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 378px"
-          unoptimized={item.gambar.startsWith("http")}
+          unoptimized={gambarSrc.startsWith("http")}
         />
       </div>
       <div className="mt-3 flex items-center gap-3">
@@ -43,12 +49,12 @@ function KlienCard({ item }: { item: PalapaKlienCardItem }) {
           style={{ width: LOGO_SIZE, height: LOGO_SIZE }}
         >
           <Image
-            src={item.logo}
+            src={logoSrc}
             alt=""
             fill
             className="object-contain p-1"
             sizes="60px"
-            unoptimized={item.logo.startsWith("http")}
+            unoptimized={logoSrc.startsWith("http")}
           />
         </div>
         <div className="min-w-0 flex-1">

@@ -6,7 +6,7 @@ import {
 } from "@/data/productDetailData";
 import type { ProductDetailCategory } from "@/data/productDetailData";
 import { getLocale } from "next-intl/server";
-import { getProductPageBySlug } from "@/lib/strapi";
+import { getProductPageData } from "@/lib/strapi/products";
 import { getProductClients } from "@/data/productClientsData";
 import { ProductDetailPageClient } from "@/components/produk/ProductDetailPageClient";
 import { ProductNavBar } from "@/components/produk/ProductNavBar";
@@ -49,26 +49,27 @@ export default async function ProdukProductSlugPage({ params }: PageProps) {
   const validSlugs = getProductSlugs();
   if (!validSlugs.includes(productSlug)) notFound();
 
-  let strapiPage: Awaited<ReturnType<typeof getProductPageBySlug>> = null;
+  let payload: Awaited<ReturnType<typeof getProductPageData>>;
   try {
-    strapiPage = await getProductPageBySlug(productSlug);
+    payload = await getProductPageData(productSlug);
   } catch {
-    strapiPage = null;
+    payload = {
+      hero: null,
+      detail: getProductDetailData(productSlug),
+      clients: getProductClients(productSlug),
+      strategicProjects: null,
+      palapaKlien: null,
+    };
   }
   const fallbackDetail = getProductDetailData(productSlug);
-  const clients = getProductClients(productSlug);
-
-  const useStrapi =
-    strapiPage != null && strapiPage.detail.categories.length > 0;
-  const data =
-    strapiPage != null && strapiPage.detail.categories.length > 0
-      ? strapiPage.detail
-      : fallbackDetail;
+  const fallbackClients = getProductClients(productSlug);
+  const data = payload.detail.categories.length > 0 ? payload.detail : fallbackDetail;
+  const clients = payload.clients ?? fallbackClients;
 
   const hasContent =
     productSlug === "strategic-consulting" ||
     hasAnySectionContent(
-      strapiPage?.detail.categories ?? [],
+      payload.detail.categories,
       fallbackDetail.categories,
       clients != null
     );
@@ -110,7 +111,10 @@ export default async function ProdukProductSlugPage({ params }: PageProps) {
       categories={data.categories}
       initialExpandedCategoryIds={initialExpandedCategoryIds}
       initialTabIndex={0}
-      initialHero={strapiPage != null ? strapiPage.hero : null}
+      initialHero={payload.hero}
+      initialClients={clients}
+      initialStrategicProjects={payload.strategicProjects}
+      initialPalapaKlien={payload.palapaKlien}
     />
   );
 }

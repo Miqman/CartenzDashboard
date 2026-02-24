@@ -5,7 +5,7 @@ import {
 } from "@/data/productDetailData";
 import type { ProductDetailCategory } from "@/data/productDetailData";
 import { getLocale } from "next-intl/server";
-import { getProductPageBySlug } from "@/lib/strapi";
+import { getProductPageData } from "@/lib/strapi/products";
 import { ProductDetailPageClient } from "@/components/produk/ProductDetailPageClient";
 
 interface PageProps {
@@ -62,18 +62,22 @@ export default async function ProdukSubPage({ params, searchParams }: PageProps)
   const validProducts = getProductSlugs();
   if (!validProducts.includes(productSlug)) notFound();
 
-  let strapiPage: Awaited<ReturnType<typeof getProductPageBySlug>> = null;
+  let payload: Awaited<ReturnType<typeof getProductPageData>>;
   try {
-    strapiPage = await getProductPageBySlug(productSlug);
+    payload = await getProductPageData(productSlug);
   } catch {
-    strapiPage = null;
+    payload = {
+      hero: null,
+      detail: getProductDetailData(productSlug),
+      clients: null,
+      strategicProjects: null,
+      palapaKlien: null,
+    };
   }
-  const useStrapi =
-    strapiPage != null && strapiPage.detail.categories.length > 0;
-
-  const data = useStrapi
-    ? strapiPage!.detail
-    : getProductDetailData(productSlug);
+  const data =
+    payload.detail.categories.length > 0
+      ? payload.detail
+      : getProductDetailData(productSlug);
   const found = findSubInCategories(data.categories, subSlug);
   if (!found) notFound();
 
@@ -95,7 +99,10 @@ export default async function ProdukSubPage({ params, searchParams }: PageProps)
       categories={data.categories}
       initialExpandedCategoryIds={initialExpandedCategoryIds}
       initialTabIndex={tabNum}
-      initialHero={strapiPage != null ? strapiPage.hero : null}
+      initialHero={payload.hero}
+      initialClients={payload.clients ?? null}
+      initialStrategicProjects={payload.strategicProjects}
+      initialPalapaKlien={payload.palapaKlien}
     />
   );
 }
