@@ -88,7 +88,9 @@ export default async function ProdukProductSlugPage({ params }: PageProps) {
 
   const firstSub =
     data.categories[0]?.subMenus?.[0]?.id ?? getFirstSubSlug(productSlug);
-  const displaySubSlug = firstSub ?? "";
+  // Smartgov: di URL /produk/smartgov (tanpa subSlug) tampilkan daftar menu Lv1 dulu, jangan pilih sub otomatis
+  const displaySubSlug =
+    productSlug === "smartgov" ? "" : (firstSub ?? "");
   const found = displaySubSlug
     ? data.categories.find((c) =>
         c.subMenus.some((s) => s.id === displaySubSlug)
