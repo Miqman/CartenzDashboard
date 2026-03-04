@@ -301,13 +301,13 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
-      {/* Hero section: mobile full screen, konten tidak tertutup navbar */}
-      <section className="relative min-h-[100dvh] min-h-[100vh] overflow-x-hidden bg-[#1E1E1E] pt-[72px] pb-8 md:min-h-[50vh]">
+      {/* Hero section: mobile full screen, background full dari atas (di belakang navbar) sampai indikator swiper */}
+      <section className="relative min-h-[100dvh] min-h-[100vh] overflow-x-hidden bg-[#1E1E1E] pt-8 pb-8 md:min-h-[50vh]">
         <Image
           src="/assets/bgHalfHero.jpg"
           alt=""
           fill
-          className="object-none"
+          className="object-cover object-center md:object-none min-w-full min-h-full"
           priority
           sizes="220vw"
         />
