@@ -5,7 +5,12 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { X, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
-import { megaMenuData, type MegaMenuDetail, type MegaMenuItem, type MegaMenuType } from "@/data/megaMenuData";
+import {
+  megaMenuData,
+  type MegaMenuDetail,
+  type MegaMenuItem,
+  type MegaMenuType,
+} from "@/data/megaMenuData";
 import { getProductDetailSelectionFromMegaMenu } from "@/data/productDetailData";
 import { getProductPageUrl } from "@/lib/productNavigation";
 
@@ -22,17 +27,19 @@ type Props = {
   open: boolean;
   onClose: () => void;
   anchorRef: React.RefObject<HTMLElement | null>;
+  items?: MegaMenuItem[];
 };
 
-export function MegaMenu({ open, onClose, anchorRef }: Props) {
+export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
   const locale = useLocale();
   const [level1Id, setLevel1Id] = useState<string | null>(null);
   const [level2Id, setLevel2Id] = useState<string | null>(null);
   const [expandedDetailIndex, setExpandedDetailIndex] = useState<number>(-1);
   const panelRef = useRef<HTMLDivElement>(null);
 
+  const menuItems = items && items.length ? items : megaMenuData;
   const activeCategory = level1Id
-    ? megaMenuData.find((c) => c.id === level1Id)
+    ? menuItems.find((c) => c.id === level1Id)
     : null;
   const activeChild =
     activeCategory?.children.find((c) => c.id === level2Id) ?? null;
@@ -75,10 +82,7 @@ export function MegaMenu({ open, onClose, anchorRef }: Props) {
       style={{ top: "var(--navbar-height, 72px)" }}
     >
       {/* Backdrop: full width */}
-      <div
-        className="absolute inset-0 bg-[#F1F5F9]"
-        aria-hidden
-      />
+      <div className="absolute inset-0 bg-[#F1F5F9]" aria-hidden />
       {/* Wrapper full width, isi mega menu (kartu) di tengah */}
       <div className="relative z-50 flex justify-center">
         <div
@@ -115,7 +119,7 @@ export function MegaMenu({ open, onClose, anchorRef }: Props) {
                   aria-label="Kategori utama"
                 >
                   <ul className="space-y-0.5">
-                    {megaMenuData.map((item) => {
+                    {menuItems.map((item) => {
                       const isActive = item.id === level1Id;
                       const menuType = getMenuType(item);
                       const isSingle = menuType === "single";
@@ -180,7 +184,7 @@ export function MegaMenu({ open, onClose, anchorRef }: Props) {
                                 href={getProductPageUrl(
                                   locale,
                                   activeCategory.id,
-                                  child.id
+                                  child.id,
                                 )}
                                 onClick={onClose}
                                 className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition text-gray-600 hover:bg-[#F1F5F9] hover:text-gray-800"
@@ -268,12 +272,17 @@ export function MegaMenu({ open, onClose, anchorRef }: Props) {
                     <div className="rounded-lg bg-white p-4">
                       <ul>
                         {(() => {
-                          const selection = getProductDetailSelectionFromMegaMenu(
-                            activeCategory.id,
-                            activeChild.id
-                          );
+                          const selection =
+                            getProductDetailSelectionFromMegaMenu(
+                              activeCategory.id,
+                              activeChild.id,
+                            );
                           const baseUrl = selection
-                            ? getProductPageUrl(locale, activeCategory.id, selection.subMenuId)
+                            ? getProductPageUrl(
+                                locale,
+                                activeCategory.id,
+                                selection.subMenuId,
+                              )
                             : getProductPageUrl(locale, activeCategory.id);
                           return details.map((detail, idx) => (
                             <DetailSection
@@ -286,7 +295,9 @@ export function MegaMenu({ open, onClose, anchorRef }: Props) {
                                   i === idx ? -1 : idx,
                                 )
                               }
-                              productPageUrl={idx > 0 ? `${baseUrl}?tab=${idx}` : baseUrl}
+                              productPageUrl={
+                                idx > 0 ? `${baseUrl}?tab=${idx}` : baseUrl
+                              }
                               onClose={onClose}
                               accentBlue={ACCENT_BLUE}
                             />

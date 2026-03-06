@@ -11,6 +11,7 @@ import { AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { LanguageSwitch } from "@/components/ui/LanguageSwitch";
 import { MegaMenu } from "@/components/layout/MegaMenu";
+import type { MegaMenuItem } from "@/data/megaMenuData";
 
 const navItems = [
   { path: "/", key: "home" },
@@ -29,7 +30,7 @@ function isActivePath(pathname: string, locale: string, path: string): boolean {
 
 const DEFAULT_NAVBAR_LOGO = "/assets/logoCartenzBlack.svg";
 
-export function Navbar({ logoUrl }: { logoUrl?: string }) {
+export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuItems?: MegaMenuItem[] }) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const pathname = usePathname();
@@ -91,6 +92,7 @@ export function Navbar({ logoUrl }: { logoUrl?: string }) {
                         open={megaMenuOpen}
                         onClose={() => setMegaMenuOpen(false)}
                         anchorRef={produkTriggerRef}
+                        items={megaMenuItems}
                       />
                     )}
                   </AnimatePresence>
