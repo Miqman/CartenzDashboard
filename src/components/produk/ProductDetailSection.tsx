@@ -349,6 +349,7 @@ export function ProductDetailSection({
                     ) : null}
                   </>
                 )}
+                
 
                 {activeTab?.content?.image && (
                   <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-lg bg-[#E2E8F0]">
@@ -359,6 +360,7 @@ export function ProductDetailSection({
                       className="object-cover"
                       sizes="(max-width: 1024px) 100vw, 70vw"
                       fallbackSrc="/assets/galeri5.jpg"
+                      loading="eager"
                     />
                   </div>
                 )}

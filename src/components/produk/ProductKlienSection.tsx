@@ -119,7 +119,7 @@ export function ProductKlienSection({
           >
             <div className="relative h-16 w-16 md:h-20 md:w-20">
               <Image
-                src={client.logoUrl || "/assets/default-image.png"}
+                src={client.logoUrl || "/assets/galeri5.jpg"}
                 alt={client.name}
                 fill
                 className="object-contain"
