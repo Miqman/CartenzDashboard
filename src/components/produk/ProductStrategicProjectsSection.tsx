@@ -18,36 +18,47 @@ type Props = {
 };
 
 function ProjectCard({ project }: { project: StrategicConsultingProject }) {
+  const hasLogo = Boolean(project.logoUrl);
+  const hasImage = Boolean(project.imageUrl);
+
   return (
     <div className="flex h-full flex-col rounded-xl bg-white p-5 border border-[#CAD5E2]">
       <div className="mb-4 flex items-center gap-3">
-        <div className="relative h-5 w-4 shrink-0 md:h-10 md:w-8">
-          <Image
-            src={project.logoUrl}
-            alt=""
-            fill
-            className="object-contain object-left"
-            sizes="56px"
-            unoptimized={project.logoUrl.startsWith("http")}
-          />
-        </div>
+        {hasLogo && (
+          <div className="relative h-5 w-4 shrink-0 md:h-10 md:w-8">
+            <Image
+              src={project.logoUrl}
+              alt=""
+              fill
+              className="object-contain object-left"
+              sizes="56px"
+              unoptimized={project.logoUrl.startsWith("http")}
+            />
+          </div>
+        )}
         <h3 className="text-lg">{project.name}</h3>
       </div>
       <Link
-        href={project.productUrl}
+        href={project.productUrl || "#"}
         target="_blank"
         rel="noopener noreferrer"
         className="relative mt-auto block aspect-video w-full overflow-hidden rounded-lg bg-[#F1F5F9]"
         aria-label={`Buka website ${project.name}`}
       >
-        <Image
-          src={project.imageUrl}
-          alt={project.name}
-          fill
-          className="object-cover transition hover:opacity-95"
-          sizes="(max-width: 768px) 100vw, 33vw"
-          unoptimized={project.imageUrl.startsWith("http")}
-        />
+        {hasImage ? (
+          <Image
+            src={project.imageUrl}
+            alt={project.name}
+            fill
+            className="object-cover transition hover:opacity-95"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            unoptimized={project.imageUrl.startsWith("http")}
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-sm text-gray-400">
+            No preview
+          </div>
+        )}
       </Link>
     </div>
   );

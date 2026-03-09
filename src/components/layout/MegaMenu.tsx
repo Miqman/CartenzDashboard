@@ -171,7 +171,7 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
                 activeCategory.children?.length > 0 &&
                 (getMenuType(activeCategory) === "flat" ||
                   getMenuType(activeCategory) === "nested") ? (
-                  <div className="flex min-w-0 flex-1 flex-col bg-white p-3 rounded-lg shrink-0 w-[max(18rem,280px)]">
+                  <div className="flex min-w-0 flex-1 flex-col bg-white p-3 rounded-lg shrink-0 w-[max(18rem,280px)] max-h-80">
                     {getMenuType(activeCategory) === "flat" ? (
                       <nav
                         className="flex-1 overflow-auto"
@@ -266,7 +266,7 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
                 activeCategory &&
                 getMenuType(activeCategory) === "nested" ? (
                   <div
-                    className="min-w-0 flex-1 pl-4 shrink-0 w-[min(22rem,100%)]"
+                    className="min-w-0 flex-1 pl-4 shrink-0 w-[min(22rem,100%)] max-h-80"
                     aria-label="Detail fitur"
                   >
                     <div className="rounded-lg bg-white p-4">
