@@ -11,6 +11,7 @@ import { AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { LanguageSwitch } from "@/components/ui/LanguageSwitch";
 import { MegaMenu } from "@/components/layout/MegaMenu";
+import { MobileProductMenu } from "@/components/layout/MobileProductMenu";
 import type { MegaMenuItem } from "@/data/megaMenuData";
 
 const navItems = [
@@ -35,11 +36,15 @@ export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuI
   const locale = useLocale();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileProductOpen, setMobileProductOpen] = useState(false);
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const produkTriggerRef = useRef<HTMLButtonElement>(null);
   const logoSrc = logoUrl || DEFAULT_NAVBAR_LOGO;
 
-  const closeMobile = () => setMobileOpen(false);
+  const closeMobile = () => {
+    setMobileOpen(false);
+    setMobileProductOpen(false);
+  };
 
   return (
     <>
@@ -129,12 +134,39 @@ export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuI
       {/* Mobile nav overlay */}
       <div
         id="mobile-navlinks"
-        className={`fixed inset-0 z-100 flex flex-col items-center justify-center gap-8 bg-black/40 text-lg backdrop-blur transition-transform duration-400 md:hidden ${
+        className={`fixed inset-0 z-100 flex flex-col items-center gap-6 overflow-y-auto bg-black/40 px-6 pb-10 pt-24 text-lg backdrop-blur transition-transform duration-400 md:hidden ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {navItems.map(({ path, key }) => {
           const active = isActivePath(pathname, locale, path);
+
+          if (key === "products") {
+            return (
+              <div key={key} className="flex w-full max-w-xs flex-col items-center">
+                <button
+                  type="button"
+                  onClick={() => setMobileProductOpen((o) => !o)}
+                  className={`flex items-center gap-1.5 text-white transition hover:text-[#408FB4] ${active ? "font-bold" : ""}`}
+                >
+                  {t(key)}
+                  <ChevronDown
+                    className={`size-4 shrink-0 transition-transform duration-200 ${mobileProductOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {mobileProductOpen && (
+                  <div className="mt-3 w-full">
+                    <MobileProductMenu
+                      items={megaMenuItems}
+                      locale={locale}
+                      onNavigate={closeMobile}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           return (
             <Link
               key={key}
