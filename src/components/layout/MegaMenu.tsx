@@ -11,10 +11,18 @@ import {
   type MegaMenuItem,
   type MegaMenuType,
 } from "@/data/megaMenuData";
-import { getProductDetailSelectionFromMegaMenu } from "@/data/productDetailData";
 import { getProductPageUrl } from "@/lib/productNavigation";
 
 const ACCENT_BLUE = "#3b82f6";
+
+/** Ubah title jadi slug: lowercase, spasi/slash jadi strip. */
+function titleToSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[\s/]+/g, "-")
+    .replace(/-+/g, "-");
+}
 
 function getMenuType(item: MegaMenuItem): MegaMenuType {
   if (item.menuType) return item.menuType;
@@ -38,6 +46,8 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   const menuItems = items && items.length ? items : megaMenuData;
+  console.log("[MegaMenu] data dari Strapi (items):", items);
+  console.log("[MegaMenu] data yang dipakai (menuItems):", menuItems);
   const activeCategory = level1Id
     ? menuItems.find((c) => c.id === level1Id)
     : null;
@@ -260,7 +270,7 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
                   </div>
                 ) : null}
 
-                {/* Level 3 (Kanan): hanya untuk nested (SmartGov), link ke halaman produk + tab */}
+                {/* Level 3 (Kanan): hanya untuk nested (SmartGov), link dari detail title (slug) + items pakai ?tab= */}
                 {activeChild &&
                 details.length > 0 &&
                 activeCategory &&
@@ -271,20 +281,15 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
                   >
                     <div className="rounded-lg bg-white p-4">
                       <ul>
-                        {(() => {
-                          const selection =
-                            getProductDetailSelectionFromMegaMenu(
-                              activeCategory.id,
-                              activeChild.id,
-                            );
-                          const baseUrl = selection
-                            ? getProductPageUrl(
-                                locale,
-                                activeCategory.id,
-                                selection.subMenuId,
-                              )
-                            : getProductPageUrl(locale, activeCategory.id);
-                          return details.map((detail, idx) => (
+                        {details.map((detail, idx) => {
+                          const baseDetailUrl = getProductPageUrl(
+                            locale,
+                            activeCategory!.id,
+                            activeChild!.id,
+                          );
+                          const detailSlug = titleToSlug(detail.title);
+                          const detailPageUrl = `${baseDetailUrl}/${detailSlug}`;
+                          return (
                             <DetailSection
                               key={idx}
                               detail={detail}
@@ -295,14 +300,12 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
                                   i === idx ? -1 : idx,
                                 )
                               }
-                              productPageUrl={
-                                idx > 0 ? `${baseUrl}?tab=${idx}` : baseUrl
-                              }
+                              productPageUrl={detailPageUrl}
                               onClose={onClose}
                               accentBlue={ACCENT_BLUE}
                             />
-                          ));
-                        })()}
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>
@@ -365,7 +368,7 @@ function DetailSection({
           {detail.items.map((item, i) => (
             <li key={i}>
               <Link
-                href={productPageUrl}
+                href={`${productPageUrl}?tab=${i}`}
                 onClick={onClose}
                 className="flex cursor-pointer items-start gap-2 py-1.5 text-sm transition hover:opacity-80"
                 style={{ color: accentBlue }}

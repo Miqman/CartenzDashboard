@@ -12,6 +12,15 @@ type Props = {
   onNavigate: () => void;
 };
 
+/** Slug dari title: lowercase, spasi/slash jadi strip (sama dengan MegaMenu). */
+function titleToSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[\s/]+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 function getMenuType(item: MegaMenuItem): MegaMenuType {
   if (item.menuType) return item.menuType;
   if (!item.children?.length) return "single";
@@ -129,20 +138,40 @@ export function MobileProductMenu({ items, locale, onNavigate }: Props) {
 
                       {isL2Open && (
                         <div className="ml-2 mt-0.5 space-y-0.5 border-l border-white/15 pl-2">
-                          {child.details.map((detail, idx) => (
-                            <Link
-                              key={idx}
-                              href={getProductPageUrl(
-                                locale,
-                                item.id,
-                                child.id
-                              )}
-                              onClick={onNavigate}
-                              className="block rounded px-2 py-1.5 text-[11px] leading-tight text-white/60 transition hover:bg-white/10 hover:text-white"
-                            >
-                              {detail.title}
-                            </Link>
-                          ))}
+                          {child.details.map((detail, idx) => {
+                            const baseDetailUrl = getProductPageUrl(
+                              locale,
+                              item.id,
+                              child.id,
+                            );
+                            const detailSlug = titleToSlug(detail.title);
+                            const detailPageUrl = `${baseDetailUrl}/${detailSlug}`;
+                            return (
+                              <div key={idx}>
+                                <Link
+                                  href={detailPageUrl}
+                                  onClick={onNavigate}
+                                  className="block rounded px-2 py-1.5 text-[11px] font-medium leading-tight text-white/60 transition hover:bg-white/10 hover:text-white"
+                                >
+                                  {detail.title}
+                                </Link>
+                                {detail.items && detail.items.length > 0 && (
+                                  <div className="ml-2 mt-0.5 space-y-0.5 border-l border-white/10 pl-2">
+                                    {detail.items.map((subItem, subIdx) => (
+                                      <Link
+                                        key={subIdx}
+                                        href={`${detailPageUrl}?tab=${subIdx}`}
+                                        onClick={onNavigate}
+                                        className="block rounded px-2 py-1 text-[11px] leading-tight text-white/50 transition hover:bg-white/10 hover:text-white"
+                                      >
+                                        {subItem}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
