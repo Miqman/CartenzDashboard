@@ -6,11 +6,24 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      { protocol: "http", hostname: "localhost", port: "1337", pathname: "/uploads/**" },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "1337",
+        pathname: "/uploads/**",
+      },
       { protocol: "https", hostname: "cms.cartenz.co.id", pathname: "/**" },
       { protocol: "https", hostname: "**.strapiapp.com", pathname: "/**" },
-      { protocol: "https", hostname: "**.media.strapiapp.com", pathname: "/**" },
-      { protocol: "https", hostname: "**.cos.ap-jakarta.myqcloud.com", pathname: "/**" },
+      {
+        protocol: "https",
+        hostname: "**.media.strapiapp.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.cos.ap-jakarta.myqcloud.com",
+        pathname: "/**",
+      },
       { protocol: "https", hostname: "picsum.photos", pathname: "/**" },
       { protocol: "https", hostname: "dummyimage.com", pathname: "/**" },
     ],

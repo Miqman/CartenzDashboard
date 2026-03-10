@@ -54,6 +54,7 @@ export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuI
       >
         <Link
           href={`/${locale}`}
+          prefetch
           className="flex shrink-0 items-center"
           onClick={closeMobile}
         >
@@ -108,6 +109,7 @@ export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuI
               <Link
                 key={key}
                 href={`/${locale}${path}`}
+                prefetch
                 className={`text-[#1E1E1E] transition hover:text-[#408FB4] ${active ? "font-bold" : ""}`}
               >
                 {t(key)}
@@ -171,6 +173,7 @@ export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuI
             <Link
               key={key}
               href={`/${locale}${path}`}
+              prefetch
               onClick={closeMobile}
               className={`text-white transition hover:text-[#408FB4] ${active ? "font-bold" : ""}`}
             >

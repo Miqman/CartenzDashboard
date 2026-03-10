@@ -46,8 +46,8 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   const menuItems = items && items.length ? items : megaMenuData;
-  console.log("[MegaMenu] data dari Strapi (items):", items);
-  console.log("[MegaMenu] data yang dipakai (menuItems):", menuItems);
+  // console.log("[MegaMenu] data dari Strapi (items):", items);
+  // console.log("[MegaMenu] data yang dipakai (menuItems):", menuItems);
   const activeCategory = level1Id
     ? menuItems.find((c) => c.id === level1Id)
     : null;
@@ -282,13 +282,13 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
                     <div className="rounded-lg bg-white p-4">
                       <ul>
                         {details.map((detail, idx) => {
+                          const detailSlug = titleToSlug(detail.title);
                           const baseDetailUrl = getProductPageUrl(
                             locale,
                             activeCategory!.id,
-                            activeChild!.id,
+                            detailSlug,
                           );
-                          const detailSlug = titleToSlug(detail.title);
-                          const detailPageUrl = `${baseDetailUrl}/${detailSlug}`;
+                          const detailPageUrl = `${baseDetailUrl}`;
                           return (
                             <DetailSection
                               key={idx}

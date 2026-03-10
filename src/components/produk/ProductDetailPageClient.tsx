@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { getProductHero } from "@/data/productsPageData";
 import { getProductClients } from "@/data/productClientsData";
 import { ProductNavBar } from "@/components/produk/ProductNavBar";
@@ -28,6 +29,8 @@ type Props = {
   categories: ProductDetailCategory[];
   initialExpandedCategoryIds: string[];
   initialTabIndex?: number;
+  /** True jika subSlug dipilih otomatis sebagai default pada /produk/{productSlug} (bukan deep-link spesifik). */
+  isDefaultSub?: boolean;
   /** Hero dari Strapi (per-product API) atau fallback lokal. */
   initialHero?: ProductHeroData | null;
   /** Klien dari Strapi atau fallback lokal (untuk smartgov, efd, strategic-consulting). */
@@ -38,18 +41,21 @@ type Props = {
   initialPalapaKlien?: PalapaKlienSectionPayload | null;
 };
 
-export function ProductDetailPageClient({
-  productSlug,
-  subSlug,
-  locale,
-  categories,
-  initialExpandedCategoryIds,
-  initialTabIndex = 0,
-  initialHero,
-  initialClients,
-  initialStrategicProjects,
-  initialPalapaKlien,
-}: Props) {
+export function ProductDetailPageClient(props: Props) {
+  const {
+    productSlug,
+    subSlug,
+    locale,
+    categories,
+    initialExpandedCategoryIds,
+    initialTabIndex = 0,
+    initialHero,
+    initialClients,
+    initialStrategicProjects,
+    initialPalapaKlien,
+    isDefaultSub = false,
+  } = props;
+  const router = useRouter();
   const [expandedCategoryIds, setExpandedCategoryIds] = useState<string[]>(
     initialExpandedCategoryIds,
   );
@@ -75,29 +81,56 @@ export function ProductDetailPageClient({
 
   const isInitialMount = useRef(true);
 
-  const scrollToDetailSection = useCallback(() => {
+  const scrollToDetailSectionIfFar = useCallback(() => {
     const el = document.getElementById("product-detail-section");
-    if (el) {
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const viewportHeight =
+      window.innerHeight || document.documentElement.clientHeight || 0;
+
+    // Hanya scroll jika section terlalu jauh di atas atau di bawah viewport.
+    const tooFarAbove = rect.top < -80;
+    const tooFarBelow = rect.top > viewportHeight * 0.3;
+
+    if (tooFarAbove || tooFarBelow) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, []);
 
-  // Scroll ke Section 2 hanya saat sub-menu diklik (navigasi), bukan saat pertama buka halaman
   useEffect(() => {
+    // Tidak ada subSlug -> tidak ada detail untuk di-scroll.
     if (!subSlug) return;
-    if (isInitialMount.current) {
+
+    // Jika subSlug default (halaman /produk/{productSlug}), jangan pernah auto-scroll.
+    if (isDefaultSub) {
       isInitialMount.current = false;
       return;
     }
-    scrollToDetailSection();
-  }, [subSlug, scrollToDetailSection]);
+
+    // Untuk deep-link /produk/{productSlug}/{subSlug}:
+    // - Di initial mount: scroll sekali ke section detail.
+    // - Setelah itu, setiap perubahan subSlug (navigasi antar sub) juga akan scroll jika perlu.
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      scrollToDetailSectionIfFar();
+      return;
+    }
+
+    scrollToDetailSectionIfFar();
+  }, [isDefaultSub, scrollToDetailSectionIfFar, subSlug]);
 
   const handleSelectTabIndex = useCallback(
     (index: number) => {
       setActiveTabIndex(index);
-      scrollToDetailSection();
+      // Update query param ?tab=... di URL tanpa menambah history dan tanpa auto-scroll.
+      if (productSlug && subSlug && locale) {
+        const basePath = `/${locale}/produk/${productSlug}/${subSlug}`;
+        const search = index > 0 ? `?tab=${index}` : "";
+        router.replace(`${basePath}${search}`, { scroll: false });
+      }
+      scrollToDetailSectionIfFar();
     },
-    [scrollToDetailSection],
+    [locale, productSlug, router, scrollToDetailSectionIfFar, subSlug],
   );
 
   return (

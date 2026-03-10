@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { PageLoadingOverlay } from "@/components/ui/PageLoadingOverlay";
 import { getLocale } from "next-intl/server";
 import {
   getHomepage,

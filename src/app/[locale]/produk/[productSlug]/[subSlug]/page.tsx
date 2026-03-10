@@ -103,6 +103,7 @@ export default async function ProdukSubPage({ params, searchParams }: PageProps)
       initialClients={payload.clients ?? null}
       initialStrategicProjects={payload.strategicProjects}
       initialPalapaKlien={payload.palapaKlien}
+      isDefaultSub={false}
     />
   );
 }

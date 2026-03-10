@@ -67,6 +67,7 @@ export async function getGlobal(): Promise<StrapiGlobalData | null> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "global?populate[0]=navbarLogo&populate[1]=favicon",
+      { revalidate: 600 },
     );
     const data = res?.data;
     return normalizeDoc<StrapiGlobalData>(data) ?? null;
@@ -79,6 +80,7 @@ export async function getHomepage(): Promise<StrapiHomepageData | null> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "homepage?populate[0]=heroSlides&populate[1]=heroSlides.logo&populate[2]=about&populate[3]=aboutStats&populate[4]=produkSection&populate[5]=klienSection&populate[6]=klienStats&populate[7]=galeriSection&populate[8]=artikelSection&populate[9]=featuredProducts&populate[10]=featuredClients&populate[11]=featuredGallery&populate[12]=featuredArticles",
+      { revalidate: 300 },
     );
     const data = res?.data;
     const out = normalizeDoc<StrapiHomepageData>(data) ?? null;
@@ -108,6 +110,7 @@ export async function getProducts(): Promise<StrapiProductData[]> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "products?sort[0]=order&pagination[pageSize]=12&populate=image",
+      { revalidate: 300 },
     );
     const data = res?.data;
     if (!Array.isArray(data)) return [];
@@ -126,6 +129,7 @@ export async function getClients(): Promise<StrapiClientData[]> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "clients?sort[0]=order&pagination[pageSize]=20&populate=logo",
+      { revalidate: 300 },
     );
     const data = res?.data;
     if (!Array.isArray(data)) return [];
@@ -144,6 +148,7 @@ export async function getGallery(): Promise<StrapiGalleryData[]> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "galleries?sort[0]=order&pagination[pageSize]=20&populate=image",
+      { revalidate: 300 },
     );
     const data = res?.data;
     if (!Array.isArray(data)) return [];
@@ -176,7 +181,9 @@ export async function getArticles(): Promise<
           attributes: Record<string, unknown>;
         }>
       >
-    >("articles?populate=*&pagination[pageSize]=4&sort[0]=publishedAt:desc");
+    >("articles?populate=*&pagination[pageSize]=4&sort[0]=publishedAt:desc", {
+      revalidate: 300,
+    });
     const list = Array.isArray(res?.data) ? res.data : [];
     if (process.env.NODE_ENV === "development") {
       console.log("[getArticles] OK, count:", list.length, "items");

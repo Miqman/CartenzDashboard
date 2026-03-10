@@ -87,11 +87,13 @@ export default async function ProdukProductSlugPage({ params }: PageProps) {
     );
   }
 
+  // Halaman /produk/{productSlug} (tanpa subSlug):
+  // - smartgov: jangan pilih sub-menu otomatis (tampilkan daftar Lv1 dulu).
+  // - produk lain: jika ada kategori & sub-menu, pilih sub pertama sebagai default (tanpa auto-scroll).
+  const isSmartgov = productSlug === "smartgov";
   const firstSub =
     data.categories[0]?.subMenus?.[0]?.id ?? getFirstSubSlug(productSlug);
-  // Smartgov: di URL /produk/smartgov (tanpa subSlug) tampilkan daftar menu Lv1 dulu, jangan pilih sub otomatis
-  const displaySubSlug =
-    productSlug === "smartgov" ? "" : (firstSub ?? "");
+  const displaySubSlug = isSmartgov ? "" : (firstSub ?? "");
   const found = displaySubSlug
     ? data.categories.find((c) =>
         c.subMenus.some((s) => s.id === displaySubSlug)
@@ -115,6 +117,7 @@ export default async function ProdukProductSlugPage({ params }: PageProps) {
       initialClients={clients}
       initialStrategicProjects={payload.strategicProjects}
       initialPalapaKlien={payload.palapaKlien}
+      isDefaultSub={!isSmartgov && Boolean(displaySubSlug)}
     />
   );
 }
