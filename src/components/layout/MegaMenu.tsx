@@ -276,37 +276,39 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
                 activeCategory &&
                 getMenuType(activeCategory) === "nested" ? (
                   <div
-                    className="min-w-0 flex-1 pl-4 shrink-0 w-[min(22rem,100%)] max-h-80"
+                    className="min-w-0 flex-1 pl-4 shrink-0 w-[min(22rem,100%)] max-h-80 flex flex-col"
                     aria-label="Detail fitur"
                   >
-                    <div className="rounded-lg bg-white p-4">
-                      <ul>
-                        {details.map((detail, idx) => {
-                          const detailSlug = titleToSlug(detail.title);
-                          const baseDetailUrl = getProductPageUrl(
-                            locale,
-                            activeCategory!.id,
-                            detailSlug,
-                          );
-                          const detailPageUrl = `${baseDetailUrl}`;
-                          return (
-                            <DetailSection
-                              key={idx}
-                              detail={detail}
-                              detailIndex={idx}
-                              isExpanded={expandedDetailIndex === idx}
-                              onToggle={() =>
-                                setExpandedDetailIndex((i) =>
-                                  i === idx ? -1 : idx,
-                                )
-                              }
-                              productPageUrl={detailPageUrl}
-                              onClose={onClose}
-                              accentBlue={ACCENT_BLUE}
-                            />
-                          );
-                        })}
-                      </ul>
+                    <div className="rounded-lg bg-white p-4 flex h-full min-h-0 flex-col">
+                      <nav className="flex-1 overflow-auto" aria-label="Daftar detail fitur">
+                        <ul>
+                          {details.map((detail, idx) => {
+                            const detailSlug = titleToSlug(detail.title);
+                            const baseDetailUrl = getProductPageUrl(
+                              locale,
+                              activeCategory!.id,
+                              detailSlug,
+                            );
+                            const detailPageUrl = `${baseDetailUrl}`;
+                            return (
+                              <DetailSection
+                                key={idx}
+                                detail={detail}
+                                detailIndex={idx}
+                                isExpanded={expandedDetailIndex === idx}
+                                onToggle={() =>
+                                  setExpandedDetailIndex((i) =>
+                                    i === idx ? -1 : idx,
+                                  )
+                                }
+                                productPageUrl={detailPageUrl}
+                                onClose={onClose}
+                                accentBlue={ACCENT_BLUE}
+                              />
+                            );
+                          })}
+                        </ul>
+                      </nav>
                     </div>
                   </div>
                 ) : null}
