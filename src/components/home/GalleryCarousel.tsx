@@ -8,11 +8,36 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 const GALLERY_IMAGES = [
-  { src: "/assets/galeri1.jpg", alt: "Galeri 1", caption: "Carteamz", subtitle: "2026" },
-  { src: "/assets/galeri2.png", alt: "Galeri 2", caption: "Carteamz", subtitle: "2026" },
-  { src: "/assets/galeri3.jpg", alt: "Galeri 3", caption: "Carteamz", subtitle: "2026" },
-  { src: "/assets/galeri4.jpg", alt: "Galeri 4", caption: "Carteamz", subtitle: "2026" },
-  { src: "/assets/galeri5.jpg", alt: "Galeri 5", caption: "Carteamz", subtitle: "2026" },
+  {
+    src: "/assets/galeri1.jpg",
+    alt: "Galeri 1",
+    caption: "Carteamz",
+    subtitle: "2026",
+  },
+  {
+    src: "/assets/galeri2.png",
+    alt: "Galeri 2",
+    caption: "Carteamz",
+    subtitle: "2026",
+  },
+  {
+    src: "/assets/galeri3.jpg",
+    alt: "Galeri 3",
+    caption: "Carteamz",
+    subtitle: "2026",
+  },
+  {
+    src: "/assets/galeri4.jpg",
+    alt: "Galeri 4",
+    caption: "Carteamz",
+    subtitle: "2026",
+  },
+  {
+    src: "/assets/galeri5.jpg",
+    alt: "Galeri 5",
+    caption: "Carteamz",
+    subtitle: "2026",
+  },
 ];
 
 const avenirStyle = {
@@ -41,11 +66,16 @@ export function GalleryCarousel({
   const slideItems =
     items && items.length > 0
       ? items
-      : GALLERY_IMAGES.map((g) => ({ imageUrl: g.src, alt: g.alt, caption: g.caption, subtitle: g.subtitle }));
+      : GALLERY_IMAGES.map((g) => ({
+          imageUrl: g.src,
+          alt: g.alt,
+          caption: g.caption,
+          subtitle: g.subtitle,
+        }));
   const gallerySlides = [...slideItems, ...slideItems];
 
   return (
-    <div className="galeri-swiper relative w-full overflow-hidden">
+    <div className="galeri-swiper relative w-full overflow-x-hidden overflow-y-visible pb-10">
       <div className="mb-8 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-normal text-[#6B7280]" style={avenirStyle}>
@@ -86,27 +116,29 @@ export function GalleryCarousel({
           prevEl: ".galeri-swiper-prev",
           nextEl: ".galeri-swiper-next",
         }}
-        className="!overflow-hidden"
       >
         {gallerySlides.map((item, i) => (
           <SwiperSlide key={i}>
-            <div className="galeri-slide-inner relative">
-              <ImageWithFallback
-                src={item.imageUrl}
-                alt={item.alt}
-                fill
-                className="object-cover object-center"
-                sizes="278px"
-                fallbackSrc="/assets/galeri5.jpg"
-              />
-            </div>
-            <div className="galeri-caption text-[#1E1E1E]">
-              <p className="text-base font-medium" style={avenirStyle}>
-                {item.caption ?? "Carteamz"}
-              </p>
-              <p className="text-sm text-[#6B7280]" style={avenirStyle}>
-                {item.subtitle ?? "2026"}
-              </p>
+            <div>
+              <div className="galeri-slide-inner">
+                <ImageWithFallback
+                  src={item.imageUrl}
+                  alt={item.alt}
+                  fill
+                  className="object-cover object-center"
+                  sizes="(max-width: 768px) 85vw, 300px"
+                  fallbackSrc="/assets/galeri5.jpg"
+                />
+              </div>
+
+              <div className="galeri-caption text-[#1E1E1E]">
+                <p className="text-base font-medium">
+                  {item.caption ?? "Carteamz"}
+                </p>
+                <p className="text-sm text-[#6B7280]">
+                  {item.subtitle ?? "2026"}
+                </p>
+              </div>
             </div>
           </SwiperSlide>
         ))}

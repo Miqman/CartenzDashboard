@@ -103,6 +103,7 @@ export interface StrapiProductData {
   category?: string;
   order?: number;
   image?: StrapiMedia;
+  urlProduk?: string;
 }
 
 export interface StrapiClientData {

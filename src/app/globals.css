@@ -6,9 +6,9 @@
 /* Default: teks #1E1E1E di semua halaman */
 :root {
   --background: #ffffff;
-  --foreground: #1E1E1E;
+  --foreground: #1e1e1e;
   --cartenz-blue: #408fb4;
-  --cartenz-black: #1E1E1E;
+  --cartenz-black: #1e1e1e;
 }
 
 @theme inline {
@@ -48,34 +48,59 @@ body {
   background: #408fb4;
 }
 
-/* Galeri Swiper: slide samping 278x264, slide tengah 278x305 + caption */
+/* Galeri Swiper: semua slide sejajar vertikal di tengah; slide aktif lebih besar.
+   overflow-y: visible agar caption di bawah gambar tidak terpotong (jangan pakai bottom negatif + overflow hidden). */
 .galeri-swiper .swiper {
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+}
+.galeri-swiper .swiper-wrapper {
+  align-items: center;
 }
 .galeri-swiper .swiper-slide {
   width: 278px !important;
-  height: 264px;
+  height: 395px;
   flex-shrink: 0;
-  transition: height 0.25s ease;
-}
-.galeri-swiper .swiper-slide-active {
-  height: 305px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+  transition: opacity 0.25s ease;
 }
 .galeri-swiper .galeri-slide-inner {
+  position: relative;
   width: 278px;
-  height: 264px;
-  border-radius: 8px;
+  height: 240px;
+  border-radius: 12px;
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition:
+    height 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  transform-origin: center center;
+}
+.galeri-swiper .swiper-slide:not(.swiper-slide-active) .galeri-slide-inner {
+  transform: scale(0.88);
 }
 .galeri-swiper .swiper-slide-active .galeri-slide-inner {
-  height: 305px;
+  height: 300px;
+  transform: scale(1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 .galeri-swiper .galeri-caption {
   display: none;
-  margin-top: 8px;
-  font-family: Avenir, "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  position: absolute;
+  left: 50%;
+  bottom: 0px;
+  width: 278px;
+  transform: translateX(-50%);
+  text-align: center;
+  padding-top: 4px;
+  line-height: 1.35;
+  pointer-events: none;
 }
 .galeri-swiper .swiper-slide-active .galeri-caption {
   display: block;

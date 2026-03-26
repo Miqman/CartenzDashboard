@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { toArticleSlug } from "@/data/articleData";
 
 export interface ArticleItem {
   kategori: string;
@@ -66,7 +67,7 @@ export function ArtikelListClient({
         {pageItems.map((item, i) => (
           <li key={`${item.judul}-${start + i}`}>
             <Link
-              href={`/${locale}/artikel/${encodeURIComponent(item.judul)}`}
+              href={`/${locale}/artikel/${toArticleSlug(item.judul)}`}
               className="group block overflow-hidden rounded-xl bg-white transition-shadow hover:shadow-sm"
             >
               <div

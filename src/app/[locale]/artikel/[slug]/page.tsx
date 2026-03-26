@@ -2,7 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { getLocale } from "next-intl/server";
 import { getArticleBySlug } from "@/lib/strapi";
-import { getArticleByJudul, getRelatedArticles } from "@/data/articleData";
+import {
+  getArticleByLocalSlug,
+  getRelatedArticles,
+  toArticleSlug,
+} from "@/data/articleData";
 import { notFound } from "next/navigation";
 
 interface PageProps {
@@ -53,7 +57,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
   const locale = await getLocale();
   const decodedSlug = decodeURIComponent(slug);
 
-  const localArticle = getArticleByJudul(decodedSlug);
+  const localArticle = getArticleByLocalSlug(decodedSlug);
 
   if (localArticle) {
     const related = getRelatedArticles(localArticle.judul, 3);
@@ -103,7 +107,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
                 {related.map((item) => (
                   <li key={item.judul}>
                     <Link
-                      href={`/${locale}/artikel/${encodeURIComponent(item.judul)}`}
+                      href={`/${locale}/artikel/${toArticleSlug(item.judul)}`}
                       className="flex gap-3 rounded-lg transition hover:opacity-90"
                     >
                       <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-[#F3F4F6]">
@@ -188,7 +192,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
               {related.map((item) => (
                 <li key={item.judul}>
                   <Link
-                    href={`/${locale}/artikel/${encodeURIComponent(item.judul)}`}
+                    href={`/${locale}/artikel/${toArticleSlug(item.judul)}`}
                     className="flex gap-3 rounded-lg transition hover:opacity-90"
                   >
                     <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-[#F3F4F6]">

@@ -17,6 +17,7 @@ import {
   HeroCarouselWrapper,
 } from "@/components/home/HomeCarousels.client";
 import { KlienSectionClient } from "@/components/home/KlienSection.client";
+import { toArticleSlug } from "@/data/articleData";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -205,6 +206,7 @@ export default async function HomePage() {
       ];
 
   const galeriSection = homepage?.galeriSection;
+  console.log(galeriSection, "galeriSection");
   const galeriBadge = galeriSection?.badge ?? "Galeri";
   const galeriTitle = galeriSection?.title ?? "MEMORI PERJALANAN";
 
@@ -231,6 +233,7 @@ export default async function HomePage() {
           title: p.title ?? "",
           category: p.category ?? "",
           imageUrl: getStrapiMediaUrl(p.image),
+          urlProduk: p.urlProduk ?? "",
         }))
       : null;
 
@@ -430,7 +433,7 @@ export default async function HomePage() {
                 return (
                   <Link
                     key={i}
-                    href={`/${locale}/produk`}
+                    href={`/${locale}${productList?.[i]?.urlProduk ? productList[i].urlProduk : "/produk"}`}
                     className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
                   >
                     <div className="relative aspect-[4/3] w-full bg-[#408FB4]/10">
@@ -549,7 +552,7 @@ export default async function HomePage() {
                 href={
                   "slug" in artikel && artikel.slug
                     ? `/${locale}/artikel/${artikel.slug}`
-                    : `/${locale}/artikel`
+                    : `/${locale}/artikel/${toArticleSlug(artikel.title)}`
                 }
                 className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
               >
