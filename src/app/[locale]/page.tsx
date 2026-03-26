@@ -173,9 +173,24 @@ export default async function HomePage() {
   const t = await getTranslations("home");
   const locale = await getLocale();
 
-  const [homepage, products, clients, gallery, articlesRes] = await Promise.all(
-    [getHomepage(), getProducts(), getClients(), getGallery(), getArticles()],
-  );
+  const [homepageRes, productsRes, clientsRes, galleryRes, articlesResResult] =
+    await Promise.allSettled([
+      getHomepage({ throwOnError: true }),
+      getProducts({ throwOnError: true }),
+      getClients({ throwOnError: true }),
+      getGallery({ throwOnError: true }),
+      getArticles({ throwOnError: true }),
+    ]);
+
+  const homepage =
+    homepageRes.status === "fulfilled" ? homepageRes.value : null;
+  const products = productsRes.status === "fulfilled" ? productsRes.value : [];
+  const clients = clientsRes.status === "fulfilled" ? clientsRes.value : [];
+  const gallery = galleryRes.status === "fulfilled" ? galleryRes.value : [];
+  const articlesRes =
+    articlesResResult.status === "fulfilled"
+      ? articlesResResult.value
+      : { data: [] };
 
   const about = homepage?.about;
   const aboutStats = homepage?.aboutStats?.length
@@ -206,7 +221,7 @@ export default async function HomePage() {
       ];
 
   const galeriSection = homepage?.galeriSection;
-  console.log(galeriSection, "galeriSection");
+  // console.log(galeriSection, "galeriSection");
   const galeriBadge = galeriSection?.badge ?? "Galeri";
   const galeriTitle = galeriSection?.title ?? "MEMORI PERJALANAN";
 
@@ -306,13 +321,14 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       {/* Hero section: mobile full screen, background full dari atas (di belakang navbar) sampai indikator swiper */}
-      <section className="relative min-h-[100dvh] min-h-[100vh] overflow-x-hidden bg-[#1E1E1E] pt-8 pb-8 md:min-h-[50vh]">
+      <section className="relative min-h-[100dvh] min-h-[100vh] overflow-x-hidden pt-8 pb-8 md:min-h-[50vh]">
         <Image
           src="/assets/bgHalfHero.jpg"
           alt=""
           fill
           className="object-cover object-center md:object-none min-w-full min-h-full"
           priority
+          loading="eager"
           sizes="220vw"
         />
         <HeroCarouselWrapper
@@ -525,6 +541,7 @@ export default async function HomePage() {
             alt=""
             fill
             className="object-cover object-center opacity-20"
+            loading="eager"
             sizes="100vw"
           />
         </div>

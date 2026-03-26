@@ -29,8 +29,17 @@ export function getStrapiMediaUrl(media: StrapiMedia | undefined): string {
 export type FetchApiOptions = {
   /** ISR: revalidate in seconds. Menu/nav jarang berubah bisa 300; konten halaman 60. */
   revalidate?: number;
-  /** AbortSignal mis. AbortSignal.timeout(ms) agar tidak hang di Vercel. */
+  /** AbortSignal eksternal opsional. */
   signal?: AbortSignal;
+  /** Timeout request dalam ms. Default 8000. */
+  timeoutMs?: number;
+  /** Jumlah retry jika network/5xx. Default 1 (total max 2 kali percobaan). */
+  retries?: number;
+};
+
+type DataFetchControl = {
+  /** Jika true, error fetch dilempar agar caller bisa deteksi kegagalan eksplisit. */
+  throwOnError?: boolean;
 };
 
 export async function fetchApi<T>(
@@ -40,17 +49,64 @@ export async function fetchApi<T>(
   const baseUrl = getStrapiUrl();
   const url = path.startsWith("http") ? path : `${baseUrl}/api/${path}`;
   const revalidate = options?.revalidate ?? 60;
-  const res = await fetch(url, {
-    next: { revalidate },
-    signal: options?.signal,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  if (!res.ok) {
-    throw new Error(`Strapi API error: ${res.status} ${res.statusText}`);
+  const timeoutMs = options?.timeoutMs ?? 8000;
+  const retries = options?.retries ?? 1;
+
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    const controller = new AbortController();
+    const externalSignal = options?.signal;
+    const abortFromExternal = () => controller.abort(externalSignal?.reason);
+    const timer =
+      timeoutMs > 0
+        ? setTimeout(() => controller.abort(new Error("Request timeout")), timeoutMs)
+        : null;
+
+    if (externalSignal) {
+      if (externalSignal.aborted) controller.abort(externalSignal.reason);
+      else externalSignal.addEventListener("abort", abortFromExternal, { once: true });
+    }
+
+    try {
+      const res = await fetch(url, {
+        next: { revalidate },
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!res.ok) {
+        const error = new Error(`Strapi API error: ${res.status} ${res.statusText}`) as Error & {
+          status?: number;
+        };
+        error.status = res.status;
+        throw error;
+      }
+      return res.json() as Promise<T>;
+    } catch (error) {
+      lastError = error;
+      const status =
+        typeof error === "object" && error !== null && "status" in error
+          ? Number((error as { status?: unknown }).status)
+          : null;
+      const isAbortError =
+        typeof error === "object" &&
+        error !== null &&
+        "name" in error &&
+        (error as { name?: string }).name === "AbortError";
+      const shouldRetry =
+        attempt < retries &&
+        (isAbortError || status === null || status >= 500 || status === 429);
+      if (!shouldRetry) throw error;
+    } finally {
+      if (timer) clearTimeout(timer);
+      if (externalSignal) {
+        externalSignal.removeEventListener("abort", abortFromExternal);
+      }
+    }
   }
-  return res.json() as Promise<T>;
+
+  throw lastError instanceof Error ? lastError : new Error("Strapi API error");
 }
 
 /** Normalize Strapi 5 response: data can be object with attributes or flattened */
@@ -76,7 +132,9 @@ export async function getGlobal(): Promise<StrapiGlobalData | null> {
   }
 }
 
-export async function getHomepage(): Promise<StrapiHomepageData | null> {
+export async function getHomepage(
+  options?: DataFetchControl,
+): Promise<StrapiHomepageData | null> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "homepage?populate[0]=heroSlides&populate[1]=heroSlides.logo&populate[2]=about&populate[3]=aboutStats&populate[4]=produkSection&populate[5]=klienSection&populate[6]=klienStats&populate[7]=galeriSection&populate[8]=artikelSection&populate[9]=featuredProducts&populate[10]=featuredClients&populate[11]=featuredGallery&populate[12]=featuredArticles",
@@ -96,6 +154,9 @@ export async function getHomepage(): Promise<StrapiHomepageData | null> {
     }
     return out;
   } catch (err) {
+    if (options?.throwOnError) {
+      throw err instanceof Error ? err : new Error("getHomepage failed");
+    }
     if (process.env.NODE_ENV === "development") {
       console.warn(
         "[getHomepage] Gagal fetch:",
@@ -106,7 +167,9 @@ export async function getHomepage(): Promise<StrapiHomepageData | null> {
   }
 }
 
-export async function getProducts(): Promise<StrapiProductData[]> {
+export async function getProducts(
+  options?: DataFetchControl,
+): Promise<StrapiProductData[]> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "products?sort[0]=order&pagination[pageSize]=12&populate=image",
@@ -120,12 +183,17 @@ export async function getProducts(): Promise<StrapiProductData[]> {
           normalizeDoc<StrapiProductData>(item) ?? ({} as StrapiProductData),
       )
       .filter(Boolean);
-  } catch {
+  } catch (err) {
+    if (options?.throwOnError) {
+      throw err instanceof Error ? err : new Error("getProducts failed");
+    }
     return [];
   }
 }
 
-export async function getClients(): Promise<StrapiClientData[]> {
+export async function getClients(
+  options?: DataFetchControl,
+): Promise<StrapiClientData[]> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "clients?sort[0]=order&pagination[pageSize]=20&populate=logo",
@@ -139,12 +207,17 @@ export async function getClients(): Promise<StrapiClientData[]> {
           normalizeDoc<StrapiClientData>(item) ?? ({} as StrapiClientData),
       )
       .filter(Boolean);
-  } catch {
+  } catch (err) {
+    if (options?.throwOnError) {
+      throw err instanceof Error ? err : new Error("getClients failed");
+    }
     return [];
   }
 }
 
-export async function getGallery(): Promise<StrapiGalleryData[]> {
+export async function getGallery(
+  options?: DataFetchControl,
+): Promise<StrapiGalleryData[]> {
   try {
     const res = await fetchApi<{ data: unknown }>(
       "galleries?sort[0]=order&pagination[pageSize]=20&populate=image",
@@ -158,12 +231,17 @@ export async function getGallery(): Promise<StrapiGalleryData[]> {
           normalizeDoc<StrapiGalleryData>(item) ?? ({} as StrapiGalleryData),
       )
       .filter(Boolean);
-  } catch {
+  } catch (err) {
+    if (options?.throwOnError) {
+      throw err instanceof Error ? err : new Error("getGallery failed");
+    }
     return [];
   }
 }
 
-export async function getArticles(): Promise<
+export async function getArticles(
+  options?: DataFetchControl,
+): Promise<
   StrapiResponse<
     Array<{
       id: number;
@@ -190,6 +268,9 @@ export async function getArticles(): Promise<
     }
     return res ?? { data: [] };
   } catch (err) {
+    if (options?.throwOnError) {
+      throw err instanceof Error ? err : new Error("getArticles failed");
+    }
     if (process.env.NODE_ENV === "development") {
       console.warn(
         "[getArticles] Gagal fetch:",

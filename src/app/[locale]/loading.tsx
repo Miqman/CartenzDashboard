@@ -2,7 +2,7 @@ export default function LocaleLoading() {
   return (
     <div className="min-h-screen bg-background px-4 py-8 md:px-8 lg:px-12">
       {/* Skeleton hero */}
-      <section className="mb-10 rounded-2xl bg-[#F1F5F9] px-6 py-10 text-white md:py-14">
+      <section className="mb-10 rounded-2xl bg-[#F1F5F9] px-6 mt-[72px] py-10 text-white md:py-14">
         <div className="mb-6 h-4 w-28 animate-pulse rounded-full bg-white/20" />
         <div className="mb-4 h-10 w-64 animate-pulse rounded bg-white/25 md:w-96" />
         <div className="mb-2 h-3 w-72 animate-pulse rounded bg-white/15 md:w-[28rem]" />

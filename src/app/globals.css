@@ -105,3 +105,15 @@ body {
 .galeri-swiper .swiper-slide-active .galeri-caption {
   display: block;
 }
+
+@keyframes routeLoader {
+  0% {
+    transform: translateX(-120%);
+  }
+  60% {
+    transform: translateX(160%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}

@@ -32,10 +32,7 @@ function LoadingSkeleton() {
   return (
     <div className="w-full space-y-2 px-2">
       {[1, 2, 3, 4].map((i) => (
-        <div
-          key={i}
-          className="h-10 animate-pulse rounded-lg bg-white/10"
-        />
+        <div key={i} className="h-10 animate-pulse rounded-lg bg-white/10" />
       ))}
     </div>
   );
@@ -139,13 +136,13 @@ export function MobileProductMenu({ items, locale, onNavigate }: Props) {
                       {isL2Open && (
                         <div className="ml-2 mt-0.5 space-y-0.5 border-l border-white/15 pl-2">
                           {child.details.map((detail, idx) => {
+                            const detailSlug = titleToSlug(detail.title);
                             const baseDetailUrl = getProductPageUrl(
                               locale,
                               item.id,
-                              child.id,
+                              detailSlug,
                             );
-                            const detailSlug = titleToSlug(detail.title);
-                            const detailPageUrl = `${baseDetailUrl}/${detailSlug}`;
+                            const detailPageUrl = `${baseDetailUrl}`;
                             return (
                               <div key={idx}>
                                 <Link
