@@ -278,7 +278,7 @@ export default async function HomePage() {
           },
         ];
 
-  console.log(testimoniList, 'testimoniList')
+  // console.log(testimoniList, 'testimoniList')
 
   const galleryItems =
     gallery.length >= 1

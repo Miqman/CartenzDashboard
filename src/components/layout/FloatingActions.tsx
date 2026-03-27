@@ -21,8 +21,9 @@ export function FloatingActions() {
       </button>
 
       {/* Tombol WhatsApp: mobile = icon saja, desktop = icon + text */}
+      {/* 62 815-1941-5874 */}
       <a
-        href="https://wa.me/6281234567890"
+        href="https://wa.me/6281519415874"
         target="_blank"
         rel="noreferrer"
         className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md transition hover:bg-sky-50 md:h-auto md:w-auto md:justify-start md:gap-3 md:px-4 md:py-2"
