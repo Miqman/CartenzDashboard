@@ -85,6 +85,13 @@ export interface StrapiSectionArtikel {
   viewMoreLabel?: string;
 }
 
+export interface StrapiSectionTestimoni {
+  text?: string;
+  name?: string;
+  posisi?: string;
+  foto?: StrapiMedia;
+}
+
 export interface StrapiHomepageData {
   documentId?: string;
   heroSlides?: StrapiHeroSlide[];
@@ -93,6 +100,7 @@ export interface StrapiHomepageData {
   produkSection?: StrapiSectionProduk;
   klienSection?: StrapiSectionKlien;
   klienStats?: StrapiStatItem[];
+  testimoniSection?: StrapiSectionTestimoni[];
   galeriSection?: StrapiSectionGaleri;
   artikelSection?: StrapiSectionArtikel;
 }

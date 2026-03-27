@@ -260,20 +260,25 @@ export default async function HomePage() {
         }))
       : [];
 
-  const testimoniList = [
-    {
-      text: "Hadirnya aplikasi Palapa adalah tonggak penting dalam transformasi digital di daerah kami. Melalui platform ini, kita meruntuhkan sekat-sekat birokrasi yang kaku dan menggantinya dengan sistem yang transparan, cepat, dan akuntabel.",
-      name: "drs. H. Haerul Warisin, M.SI.",
-      status: "Bupati Lombok Timur",
-      imageUrl: "/assets/ulasanBupatiLombokTimur.png",
-    },
-    {
-      text: "Kolaborasi dengan Cartenz membawa efisiensi dan transparansi dalam layanan publik. Kami berharap kerja sama ini terus berkembang untuk kemajuan daerah.",
-      name: "Dr. Jane Doe, M.Si.",
-      status: "Kepala Dinas Komunikasi dan Informatika",
-      imageUrl: "/assets/ulasanBupatiLombokTimur.png",
-    },
-  ];
+  const testimoniList =
+    homepage?.testimoniSection?.length
+      ? homepage.testimoniSection.map((item) => ({
+          text: item.text ?? "",
+          name: item.name ?? "",
+          status: item.posisi ?? "",
+          imageUrl:
+            getStrapiMediaUrl(item.foto) || "/assets/ulasanBupatiLombokTimur.png",
+        }))
+      : [
+          {
+            text: "Hadirnya aplikasi Palapa adalah tonggak penting dalam transformasi digital di daerah kami. Melalui platform ini, kita meruntuhkan sekat-sekat birokrasi yang kaku dan menggantinya dengan sistem yang transparan, cepat, dan akuntabel.",
+            name: "drs. H. Haerul Warisin, M.SI.",
+            status: "Bupati Lombok Timur",
+            imageUrl: "/assets/ulasanBupatiLombokTimur.png",
+          },
+        ];
+
+  console.log(testimoniList, 'testimoniList')
 
   const galleryItems =
     gallery.length >= 1

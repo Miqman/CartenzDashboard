@@ -137,7 +137,7 @@ export async function getHomepage(
 ): Promise<StrapiHomepageData | null> {
   try {
     const res = await fetchApi<{ data: unknown }>(
-      "homepage?populate[0]=heroSlides&populate[1]=heroSlides.logo&populate[2]=about&populate[3]=aboutStats&populate[4]=produkSection&populate[5]=klienSection&populate[6]=klienStats&populate[7]=galeriSection&populate[8]=artikelSection&populate[9]=featuredProducts&populate[10]=featuredClients&populate[11]=featuredGallery&populate[12]=featuredArticles",
+      "homepage?populate[0]=heroSlides&populate[1]=heroSlides.logo&populate[2]=about&populate[3]=aboutStats&populate[4]=produkSection&populate[5]=klienSection&populate[6]=klienStats&populate[7]=testimoniSection&populate[8]=testimoniSection.foto&populate[9]=galeriSection&populate[10]=artikelSection&populate[11]=featuredProducts&populate[12]=featuredClients&populate[13]=featuredGallery&populate[14]=featuredArticles",
       { revalidate: 300 },
     );
     const data = res?.data;
