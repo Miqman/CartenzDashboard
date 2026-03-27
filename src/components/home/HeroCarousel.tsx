@@ -61,27 +61,26 @@ function SlideContent({
 }) {
   const logoSrc = logoUrl || DEFAULT_HERO_LOGO;
   return (
-    <div className="flex min-h-[calc(100dvh-72px)] min-h-[calc(100vh-72px)] flex-col items-center justify-center px-4 md:min-h-[50vh] md:px-8">
+    <div className="flex min-h-[calc(100dvh-72px)] flex-col items-center justify-center px-4 md:min-h-[min(calc(100dvh-72px),500px)] md:px-8">
       <div className="relative z-10 w-full max-w-4xl md:max-w-5xl text-center">
-        <div className="relative mx-auto mb-4 h-8 w-24 md:mb-5 md:h-10 md:w-28">
+        <div className="relative mx-auto mb-4 h-8 w-full max-w-[300px] md:mb-5 md:h-10 md:max-w-[520px]">
           <Image
             src={logoSrc}
             alt="Logo"
             fill
             className="object-contain object-center"
-            sizes="112px"
+            sizes="(min-width: 768px) 520px, 300px"
             unoptimized={logoSrc.startsWith("http")}
           />
         </div>
         <h1
           className="text-[28px] leading-[100%] tracking-[0%] text-[#1E1E1E] md:text-[48px]"
-          style={{ ...avenirStyle, textAlign: "center" }}
+          style={{ textAlign: "center" }}
         >
           {title}
         </h1>
         <div
           className="mx-auto mt-4 flex md:w-full flex-wrap items-center justify-center gap-[12px] md:mt-5"
-          style={avenirStyle}
         >
           {solutions.flatMap((item, i) =>
             i === 0
@@ -111,7 +110,6 @@ function SlideContent({
         <Link
           href={`/${locale}/produk`}
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#408FB4] px-6 py-3 text-white transition hover:opacity-90 md:mt-8"
-          style={avenirStyle}
         >
           {/* {ctaLabel} */}
           {"Lihat Selengkapnya"}

@@ -10,7 +10,7 @@ export function Footer() {
 
   return (
     <footer className="bg-[#408FB4] text-white">
-      <div className="mx-auto max-w-6xl px-6 py-10 md:px-16 lg:px-24">
+      <div className="mx-auto px-6 py-10 md:px-16 lg:px-24">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
           {/* Kolom kiri: logo + alamat */}
           <div>
