@@ -260,23 +260,28 @@ export default async function HomePage() {
         }))
       : [];
 
-  const testimoniList =
-    homepage?.testimoniSection?.length
-      ? homepage.testimoniSection.map((item) => ({
-          text: item.text ?? "",
-          name: item.name ?? "",
-          status: item.posisi ?? "",
-          imageUrl:
-            getStrapiMediaUrl(item.foto) || "/assets/ulasanBupatiLombokTimur.png",
-        }))
-      : [
-          {
-            text: "Hadirnya aplikasi Palapa adalah tonggak penting dalam transformasi digital di daerah kami. Melalui platform ini, kita meruntuhkan sekat-sekat birokrasi yang kaku dan menggantinya dengan sistem yang transparan, cepat, dan akuntabel.",
-            name: "drs. H. Haerul Warisin, M.SI.",
-            status: "Bupati Lombok Timur",
-            imageUrl: "/assets/ulasanBupatiLombokTimur.png",
-          },
-        ];
+  const testimoniList = homepage?.testimoniSection?.length
+    ? homepage.testimoniSection.map((item) => ({
+        text: item.text ?? "",
+        name: item.name ?? "",
+        status: item.posisi ?? "",
+        imageUrl: getStrapiMediaUrl(item.foto),
+      }))
+    : [];
+  // const testimoniList = [
+  //   {
+  //     text: "Hadirnya aplikasi Palapa adalah tonggak penting dalam transformasi digital di daerah kami. Melalui platform ini, kita meruntuhkan sekat-sekat birokrasi yang kaku dan menggantinya dengan sistem yang transparan, cepat, dan akuntabel.",
+  //     name: "drs. H. Haerul Warisin, M.SI.",
+  //     status: "Bupati Lombok Timur",
+  //     imageUrl: "/assets/ulasanBupatiLombokTimur.png",
+  //   },
+  //   {
+  //     text: "Hadirnya aplikasi Palapa adalah tonggak penting dalam transformasi digital di daerah kami. Melalui platform ini, kita meruntuhkan sekat-sekat birokrasi yang kaku dan menggantinya dengan sistem yang transparan, cepat, dan akuntabel.",
+  //     name: "drs. H. Haerul Warisin, M.SI.",
+  //     status: "Bupati Lombok Timur asdsa",
+  //     imageUrl: "/assets/ulasanBupatiLombokTimur.png",
+  //   },
+  // ];
 
   // console.log(testimoniList, 'testimoniList')
 
@@ -513,6 +518,7 @@ export default async function HomePage() {
             src="/assets/bgKlien.jpg"
             alt=""
             fill
+            loading="eager"
             className="object-cover object-center opacity-[0.25]"
             sizes="100vw"
           />

@@ -80,20 +80,26 @@ export function KlienSectionClient({
   const [testimoniIndex, setTestimoniIndex] = useState(0);
   const [testimoniOpacity, setTestimoniOpacity] = useState(1);
 
-  const clients = clientList.length >= 1 ? clientList : [
-    { name: "DKI Jakarta", logoUrl: "/assets/dkiJakarta.png" },
-    { name: "Kab. Klungkung", logoUrl: "/assets/kabKlungkung.png" },
-    { name: "Kab. Badung", logoUrl: "/assets/kabBadung.png" },
-    { name: "Kab. Bantul", logoUrl: "/assets/kabBantul.png" },
-    { name: "Kota Denpasar", logoUrl: "/assets/kotaDenpasar.png" },
-    { name: "Kota Bogor", logoUrl: "/assets/kotaBogor.png" },
-    { name: "Kab. Bandung", logoUrl: "/assets/kabBandung.png" },
-    { name: "Kab. Aceh Tamiang", logoUrl: "/assets/kabAcehTamiang.png" },
-    { name: "Kab. Bogor", logoUrl: "/assets/kabBogor.png" },
-    { name: "Kota Banjarmasin", logoUrl: "/assets/kotaBanjarmasin.png" },
-  ];
+  const clients =
+    clientList.length >= 1
+      ? clientList
+      : [
+          { name: "DKI Jakarta", logoUrl: "/assets/dkiJakarta.png" },
+          { name: "Kab. Klungkung", logoUrl: "/assets/kabKlungkung.png" },
+          { name: "Kab. Badung", logoUrl: "/assets/kabBadung.png" },
+          { name: "Kab. Bantul", logoUrl: "/assets/kabBantul.png" },
+          { name: "Kota Denpasar", logoUrl: "/assets/kotaDenpasar.png" },
+          { name: "Kota Bogor", logoUrl: "/assets/kotaBogor.png" },
+          { name: "Kab. Bandung", logoUrl: "/assets/kabBandung.png" },
+          { name: "Kab. Aceh Tamiang", logoUrl: "/assets/kabAcehTamiang.png" },
+          { name: "Kab. Bogor", logoUrl: "/assets/kabBogor.png" },
+          { name: "Kota Banjarmasin", logoUrl: "/assets/kotaBanjarmasin.png" },
+        ];
 
-  const totalClientPages = Math.max(1, Math.ceil(clients.length / LOGOS_PER_PAGE));
+  const totalClientPages = Math.max(
+    1,
+    Math.ceil(clients.length / LOGOS_PER_PAGE),
+  );
   const canPrevClient = clientPage > 0;
   const canNextClient = clientPage < totalClientPages - 1;
   const sliceStart = clientPage * LOGOS_PER_PAGE;
@@ -104,12 +110,17 @@ export function KlienSectionClient({
   const canPrevTestimoni = testimoniIndex > 0;
   const canNextTestimoni = testimoniIndex < testimonials.length - 1;
   const currentTestimoni = testimonials[testimoniIndex];
+  const showTestimoniIdentity = Boolean(
+    currentTestimoni?.imageUrl?.trim() && currentTestimoni?.name?.trim(),
+  );
 
   const goToTestimoni = (direction: "prev" | "next") => {
     setTestimoniOpacity(0);
     setTimeout(() => {
       setTestimoniIndex((i) =>
-        direction === "prev" ? Math.max(0, i - 1) : Math.min(testimonials.length - 1, i + 1)
+        direction === "prev"
+          ? Math.max(0, i - 1)
+          : Math.min(testimonials.length - 1, i + 1),
       );
       setTestimoniOpacity(1);
     }, 200);
@@ -131,7 +142,11 @@ export function KlienSectionClient({
           </h2>
         </div>
         {clients.length > LOGOS_PER_PAGE && (
-          <div className="mt-4 flex items-center gap-2 sm:mt-0" role="group" aria-label="Navigasi logo klien">
+          <div
+            className="mt-4 flex items-center gap-2 sm:mt-0"
+            role="group"
+            aria-label="Navigasi logo klien"
+          >
             <button
               type="button"
               onClick={() => setClientPage((p) => Math.max(0, p - 1))}
@@ -143,7 +158,9 @@ export function KlienSectionClient({
             </button>
             <button
               type="button"
-              onClick={() => setClientPage((p) => Math.min(totalClientPages - 1, p + 1))}
+              onClick={() =>
+                setClientPage((p) => Math.min(totalClientPages - 1, p + 1))
+              }
               disabled={!canNextClient}
               className="flex size-10 cursor-pointer items-center justify-center rounded-full text-[#1E1E1E] transition hover:bg-black/5 disabled:pointer-events-none disabled:opacity-40"
               aria-label="Logo klien berikutnya"
@@ -170,7 +187,10 @@ export function KlienSectionClient({
                 sizes="80px"
               />
             </div>
-            <p className="text-sm font-normal text-[#1E1E1E]" style={avenirStyle}>
+            <p
+              className="text-sm font-normal text-[#1E1E1E]"
+              style={avenirStyle}
+            >
               {client.name}
             </p>
           </div>
@@ -180,11 +200,20 @@ export function KlienSectionClient({
       {/* Stats row */}
       <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
         {klienStats.map((stat, i) => (
-          <div key={`klien-stat-${i}`} className="flex items-center gap-8 md:gap-12">
-            {i > 0 && <span className="hidden h-8 w-px bg-[#E5E7EB] md:inline-block" />}
+          <div
+            key={`klien-stat-${i}`}
+            className="flex items-center gap-8 md:gap-12"
+          >
+            {i > 0 && (
+              <span className="hidden h-8 w-px bg-[#E5E7EB] md:inline-block" />
+            )}
             <div className="text-center">
-              <p className="text-[40px] font-extrabold text-[#408FB4]">{stat.value}</p>
-              <p className="mt-1 text-base font-normal text-[#6B7280]">{stat.label}</p>
+              <p className="text-[40px] font-extrabold text-[#408FB4]">
+                {stat.value}
+              </p>
+              <p className="mt-1 text-base font-normal text-[#6B7280]">
+                {stat.label}
+              </p>
             </div>
           </div>
         ))}
@@ -207,7 +236,8 @@ export function KlienSectionClient({
             className="transition-opacity duration-300 ease-in-out"
             style={{ opacity: testimoniOpacity }}
           >
-            <div className="min-h-[130px]">
+            {/* <div className="min-h-[130px]"> */}
+            <div className="">
               <p
                 className="text-center text-2xl font-extralight! leading-[34px] tracking-normal text-[#1E1E1E]"
                 style={plusJakartaStyle}
@@ -215,31 +245,33 @@ export function KlienSectionClient({
                 {currentTestimoni.text}
               </p>
             </div>
-            <div className="mt-2 flex min-h-[76px] flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-              <div className="relative h-[60px] w-[60px] shrink-0 overflow-hidden rounded-full bg-gray-100">
-                <Image
-                  src={currentTestimoni.imageUrl || "/assets/ulasanBupatiLombokTimur.png"}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="60px"
-                />
+            {showTestimoniIdentity && (
+              <div className="mt-2 flex min-h-[76px] flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+                <div className="relative h-[60px] w-[60px] shrink-0 overflow-hidden rounded-full bg-gray-100">
+                  <Image
+                    src={currentTestimoni.imageUrl}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="60px"
+                  />
+                </div>
+                <div className="text-center sm:text-left">
+                  <p
+                    className="text-base font-semibold leading-6 text-[#1E1E1E]"
+                    style={plusJakartaStyle}
+                  >
+                    {currentTestimoni.name}
+                  </p>
+                  <p
+                    className="mt-0.5 text-sm font-normal leading-none text-[#6B7280]"
+                    style={plusJakartaStyle}
+                  >
+                    {currentTestimoni.status}
+                  </p>
+                </div>
               </div>
-              <div className="text-center sm:text-left">
-                <p
-                  className="text-base font-semibold leading-6 text-[#1E1E1E]"
-                  style={plusJakartaStyle}
-                >
-                  {currentTestimoni.name}
-                </p>
-                <p
-                  className="mt-0.5 text-sm font-normal leading-none text-[#6B7280]"
-                  style={plusJakartaStyle}
-                >
-                  {currentTestimoni.status}
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
