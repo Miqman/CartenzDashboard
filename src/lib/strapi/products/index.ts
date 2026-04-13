@@ -41,10 +41,14 @@ export async function getProductPageData(
         getEfdPage({ revalidate }),
         getEfdDetailCategories({ revalidate }),
       ]);
+      const cmsUnavailable =
+        page.hero === null &&
+        page.clients === null &&
+        detail.categories.length === 0;
       return {
-        hero: page.hero ?? fallbackHero,
-        detail: detail.categories.length > 0 ? detail : fallbackDetail,
-        clients: page.clients ?? fallbackClients ?? null,
+        hero: cmsUnavailable ? fallbackHero : page.hero,
+        detail: cmsUnavailable ? fallbackDetail : detail,
+        clients: cmsUnavailable ? fallbackClients ?? null : page.clients,
         strategicProjects: null,
         palapaKlien: null,
       };
@@ -54,19 +58,23 @@ export async function getProductPageData(
         getPalapaPage({ revalidate }),
         getPalapaDetailCategories({ revalidate }),
       ]);
+      const cmsUnavailable =
+        page.hero === null &&
+        page.palapaKlien === null &&
+        detail.categories.length === 0;
       return {
-        hero: page.hero ?? fallbackHero,
-        detail: detail.categories.length > 0 ? detail : fallbackDetail,
+        hero: cmsUnavailable ? fallbackHero : page.hero,
+        detail: cmsUnavailable ? fallbackDetail : detail,
         clients: null,
         strategicProjects: null,
-        palapaKlien:
-          page.palapaKlien ??
-          {
-            badge: PALAPA_KLIEN_SECTION.badge,
-            title: PALAPA_KLIEN_SECTION.title,
-            rating: PALAPA_KLIEN_SECTION.rating,
-            cards: PALAPA_KLIEN_CARDS,
-          },
+        palapaKlien: cmsUnavailable
+          ? {
+              badge: PALAPA_KLIEN_SECTION.badge,
+              title: PALAPA_KLIEN_SECTION.title,
+              rating: PALAPA_KLIEN_SECTION.rating,
+              cards: PALAPA_KLIEN_CARDS,
+            }
+          : page.palapaKlien,
       };
     }
     case "smartgov": {
@@ -74,21 +82,31 @@ export async function getProductPageData(
         getSmartgovPage({ revalidate }),
         getSmartgovDetailCategories({ revalidate }),
       ]);
+      const cmsUnavailable =
+        page.hero === null &&
+        page.clients === null &&
+        detail.categories.length === 0;
       return {
-        hero: page.hero ?? fallbackHero,
-        detail: detail.categories.length > 0 ? detail : fallbackDetail,
-        clients: page.clients ?? fallbackClients ?? null,
+        hero: cmsUnavailable ? fallbackHero : page.hero,
+        detail: cmsUnavailable ? fallbackDetail : detail,
+        clients: cmsUnavailable ? fallbackClients ?? null : page.clients,
         strategicProjects: null,
         palapaKlien: null,
       };
     }
     case "strategic-consulting": {
       const page = await getStrategicConsultingPage({ revalidate });
+      const cmsUnavailable =
+        page.hero === null &&
+        page.clients === null &&
+        page.strategicProjects === null;
       return {
-        hero: page.hero ?? fallbackHero,
+        hero: cmsUnavailable ? fallbackHero : page.hero,
         detail: { categories: [] },
-        clients: page.clients ?? fallbackClients ?? null,
-        strategicProjects: page.strategicProjects ?? STRATEGIC_CONSULTING_PROJECTS,
+        clients: cmsUnavailable ? fallbackClients ?? null : page.clients,
+        strategicProjects: cmsUnavailable
+          ? STRATEGIC_CONSULTING_PROJECTS
+          : page.strategicProjects,
         palapaKlien: null,
       };
     }

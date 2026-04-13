@@ -67,6 +67,12 @@ export interface KlienSectionProps {
 }
 
 const plusJakartaStyle = { fontFamily: "'Plus Jakarta Sans', sans-serif" };
+const EMPTY_TESTIMONI: TestimoniItem = {
+  text: "",
+  name: "",
+  status: "",
+  imageUrl: "",
+};
 
 export function KlienSectionClient({
   klienBadge,
@@ -80,21 +86,7 @@ export function KlienSectionClient({
   const [testimoniIndex, setTestimoniIndex] = useState(0);
   const [testimoniOpacity, setTestimoniOpacity] = useState(1);
 
-  const clients =
-    clientList.length >= 1
-      ? clientList
-      : [
-          { name: "DKI Jakarta", logoUrl: "/assets/dkiJakarta.png" },
-          { name: "Kab. Klungkung", logoUrl: "/assets/kabKlungkung.png" },
-          { name: "Kab. Badung", logoUrl: "/assets/kabBadung.png" },
-          { name: "Kab. Bantul", logoUrl: "/assets/kabBantul.png" },
-          { name: "Kota Denpasar", logoUrl: "/assets/kotaDenpasar.png" },
-          { name: "Kota Bogor", logoUrl: "/assets/kotaBogor.png" },
-          { name: "Kab. Bandung", logoUrl: "/assets/kabBandung.png" },
-          { name: "Kab. Aceh Tamiang", logoUrl: "/assets/kabAcehTamiang.png" },
-          { name: "Kab. Bogor", logoUrl: "/assets/kabBogor.png" },
-          { name: "Kota Banjarmasin", logoUrl: "/assets/kotaBanjarmasin.png" },
-        ];
+  const clients = clientList;
 
   const totalClientPages = Math.max(
     1,
@@ -109,7 +101,7 @@ export function KlienSectionClient({
 
   const canPrevTestimoni = testimoniIndex > 0;
   const canNextTestimoni = testimoniIndex < testimonials.length - 1;
-  const currentTestimoni = testimonials[testimoniIndex];
+  const currentTestimoni = testimonials[testimoniIndex] ?? EMPTY_TESTIMONI;
   const showTestimoniIdentity = Boolean(
     currentTestimoni?.imageUrl?.trim() && currentTestimoni?.name?.trim(),
   );

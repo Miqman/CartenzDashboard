@@ -13,7 +13,11 @@ import { normalizeDoc, mapStrapiHeroToProductHero } from "./helpers";
 const POPULATE_PAGE =
   "populate[0]=Hero&populate[1]=Hero.paragraphs&populate[2]=Hero.logo&populate[3]=Hero.heroImage&populate[4]=ProjectCard&populate[5]=ProjectCard.logo&populate[6]=ProjectCard.image&populate[7]=clients&populate[8]=clients.logo";
 
-export type GetStrategicConsultingPageOptions = { revalidate?: number };
+export type GetStrategicConsultingPageOptions = {
+  revalidate?: number;
+  timeoutMs?: number;
+  retries?: number;
+};
 
 /** Fetch Strategic Consulting page (single type): Hero + ProjectCard[] + clients */
 export async function getStrategicConsultingPage(options?: GetStrategicConsultingPageOptions): Promise<{
@@ -22,9 +26,14 @@ export async function getStrategicConsultingPage(options?: GetStrategicConsultin
   strategicProjects: StrategicConsultingProject[] | null;
 }> {
   try {
+    const requestOptions = {
+      revalidate: options?.revalidate ?? 0,
+      timeoutMs: options?.timeoutMs ?? 30000,
+      retries: options?.retries ?? 4,
+    };
     const res = await fetchApi<{ data: unknown }>(
       `strategic-consulting-page?${POPULATE_PAGE}`,
-      { revalidate: options?.revalidate ?? 60 }
+      requestOptions
     );
     const doc = normalizeDoc<StrapiStrategicConsultingPageData>(res?.data);
     if (!doc) return { hero: null, clients: null, strategicProjects: null };

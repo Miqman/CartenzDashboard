@@ -21,7 +21,11 @@ const POPULATE_PAGE =
 const POPULATE_CATEGORIES =
   "populate[0]=subMenus&populate[1]=subMenus.tabs&populate[2]=subMenus.tabs.content&populate[3]=subMenus.tabs.content.image&populate[4]=subMenus.tabs.content.blocks&sort[0]=order";
 
-export type GetSmartgovPageOptions = { revalidate?: number };
+export type GetSmartgovPageOptions = {
+  revalidate?: number;
+  timeoutMs?: number;
+  retries?: number;
+};
 
 /** Fetch Smartgov page (single type): Hero + featuredClients */
 export async function getSmartgovPage(options?: GetSmartgovPageOptions): Promise<{
@@ -29,9 +33,14 @@ export async function getSmartgovPage(options?: GetSmartgovPageOptions): Promise
   clients: ProductClientsData | null;
 }> {
   try {
+    const requestOptions = {
+      revalidate: options?.revalidate ?? 0,
+      timeoutMs: options?.timeoutMs ?? 30000,
+      retries: options?.retries ?? 4,
+    };
     const res = await fetchApi<{ data: unknown }>(
       `smartgov-page?${POPULATE_PAGE}`,
-      { revalidate: options?.revalidate ?? 60 }
+      requestOptions
     );
     const doc = normalizeDoc<StrapiEfdPageData>(res?.data);
     if (!doc) return { hero: null, clients: null };
@@ -82,9 +91,14 @@ interface SmartgovDetailCategoryItem {
 /** Fetch Smartgov detail categories */
 export async function getSmartgovDetailCategories(options?: GetSmartgovPageOptions): Promise<ProductDetailData> {
   try {
+    const requestOptions = {
+      revalidate: options?.revalidate ?? 0,
+      timeoutMs: options?.timeoutMs ?? 30000,
+      retries: options?.retries ?? 4,
+    };
     const res = await fetchApi<{ data: unknown }>(
       `smartgov-detail-categories?${POPULATE_CATEGORIES}`,
-      { revalidate: options?.revalidate ?? 60 }
+      requestOptions
     );
     const data = res?.data;
     const list = Array.isArray(data) ? data : [];

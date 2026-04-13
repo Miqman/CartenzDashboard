@@ -31,9 +31,9 @@ export type FetchApiOptions = {
   revalidate?: number;
   /** AbortSignal eksternal opsional. */
   signal?: AbortSignal;
-  /** Timeout request dalam ms. Default 8000. */
+  /** Timeout request dalam ms. Default 20000. */
   timeoutMs?: number;
-  /** Jumlah retry jika network/5xx. Default 1 (total max 2 kali percobaan). */
+  /** Jumlah retry jika network/5xx. Default 2 (total max 3 kali percobaan). */
   retries?: number;
 };
 
@@ -49,8 +49,8 @@ export async function fetchApi<T>(
   const baseUrl = getStrapiUrl();
   const url = path.startsWith("http") ? path : `${baseUrl}/api/${path}`;
   const revalidate = options?.revalidate ?? 60;
-  const timeoutMs = options?.timeoutMs ?? 8000;
-  const retries = options?.retries ?? 1;
+  const timeoutMs = options?.timeoutMs ?? 20000;
+  const retries = options?.retries ?? 2;
 
   let lastError: unknown = null;
   for (let attempt = 0; attempt <= retries; attempt += 1) {
@@ -59,12 +59,18 @@ export async function fetchApi<T>(
     const abortFromExternal = () => controller.abort(externalSignal?.reason);
     const timer =
       timeoutMs > 0
-        ? setTimeout(() => controller.abort(new Error("Request timeout")), timeoutMs)
+        ? setTimeout(
+            () => controller.abort(new Error("Request timeout")),
+            timeoutMs,
+          )
         : null;
 
     if (externalSignal) {
       if (externalSignal.aborted) controller.abort(externalSignal.reason);
-      else externalSignal.addEventListener("abort", abortFromExternal, { once: true });
+      else
+        externalSignal.addEventListener("abort", abortFromExternal, {
+          once: true,
+        });
     }
 
     try {
@@ -76,7 +82,9 @@ export async function fetchApi<T>(
         },
       });
       if (!res.ok) {
-        const error = new Error(`Strapi API error: ${res.status} ${res.statusText}`) as Error & {
+        const error = new Error(
+          `Strapi API error: ${res.status} ${res.statusText}`,
+        ) as Error & {
           status?: number;
         };
         error.status = res.status;
@@ -138,9 +146,10 @@ export async function getHomepage(
   try {
     const res = await fetchApi<{ data: unknown }>(
       "homepage?populate[0]=heroSlides&populate[1]=heroSlides.logo&populate[2]=about&populate[3]=aboutStats&populate[4]=produkSection&populate[5]=klienSection&populate[6]=klienStats&populate[7]=testimoniSection&populate[8]=testimoniSection.foto&populate[9]=galeriSection&populate[10]=artikelSection&populate[11]=featuredProducts&populate[12]=featuredClients&populate[13]=featuredGallery&populate[14]=featuredArticles",
-      { revalidate: 300 },
+      { revalidate: 0, timeoutMs: 30000, retries: 4 },
     );
     const data = res?.data;
+    // console.log("data", res);
     const out = normalizeDoc<StrapiHomepageData>(data) ?? null;
     if (process.env.NODE_ENV === "development") {
       if (out) {
@@ -239,9 +248,7 @@ export async function getGallery(
   }
 }
 
-export async function getArticles(
-  options?: DataFetchControl,
-): Promise<
+export async function getArticles(options?: DataFetchControl): Promise<
   StrapiResponse<
     Array<{
       id: number;
@@ -281,9 +288,7 @@ export async function getArticles(
   }
 }
 
-export async function getArticleBySlug(
-  slug: string,
-): Promise<
+export async function getArticleBySlug(slug: string): Promise<
   StrapiResponse<{
     id: number;
     documentId: string;

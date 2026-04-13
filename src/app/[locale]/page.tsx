@@ -1,8 +1,6 @@
-import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
-import { PageLoadingOverlay } from "@/components/ui/PageLoadingOverlay";
 import { getLocale } from "next-intl/server";
 import {
   getHomepage,
@@ -122,55 +120,28 @@ function ArrowRightIcon({ className }: { className?: string }) {
   );
 }
 
-const FALLBACK_ABOUT = {
-  badge: "Tentang Kami",
-  title: "WE ARE CARTENZ",
-  paragraph:
-    "Cartenz adalah Perusahaan Teknologi Nasionalis yang membantu para pemimpin daerah dalam membangun pemerintahan yang mampu mencapai tujuan melayani masyarakat secara optimal melalui semua instrumen pemerintahan, termasuk anggaran daerah (yang harus substansial), sumber daya manusia (yang harus berkualitas tinggi), dan sistem pendukung (yang harus unggul). Tujuannya adalah untuk mencapai tujuan ini secara efisien dalam hal biaya, waktu, dan sumber daya.",
-  ctaLabel: "Tentang Kami",
-  employeeCount: "150+ karyawan",
-};
-
-const FALLBACK_STATS = [
-  { value: "500+", label: "Proyek Pemerintah Daerah" },
-  { value: "50+", label: "Produk" },
-  { value: "50+", label: "IT Partner di Indonesia" },
-  { value: "300.000+", label: "Pengguna Public" },
-  { value: "2.500.000+", label: "Layanan Tersubmit" },
-  { value: "175+", label: "Klien" },
-];
-
-const FALLBACK_ARTIKEL: {
-  image: string;
-  imageUrl?: string;
-  category: string;
-  title: string;
-  slug?: string;
-}[] = [
-  {
-    image: "/assets/artikel1.png",
-    category: "Pajak Daerah",
-    title: "Mengenal Apa Itu Pajak Daerah",
-  },
-  {
-    image: "/assets/artikel2.png",
-    category: "Kisah Sukses",
-    title: "Kabupaten Bandung Raih 3 Penghargaan Top Digital Awards ...",
-  },
-  {
-    image: "/assets/artikel3.png",
-    category: "Teknologi",
-    title: "Digitalisasi Layanan Pemerintah Daerah",
-  },
-  {
-    image: "/assets/artikel4.png",
-    category: "Kisah Sukses",
-    title: "Digitalisasi Permudah Akses Informasi Bagi Warga Denpasar",
-  },
-];
+function SectionPlaceholder({
+  className = "",
+  lines = 3,
+}: {
+  className?: string;
+  lines?: number;
+}) {
+  return (
+    <div className={`animate-pulse rounded-xl bg-[#EEF2F7] p-4 ${className}`}>
+      <div className="space-y-3">
+        {Array.from({ length: lines }).map((_, i) => (
+          <div
+            key={i}
+            className={`h-3 rounded bg-[#DCE5EE] ${i === lines - 1 ? "w-2/3" : "w-full"}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default async function HomePage() {
-  const t = await getTranslations("home");
   const locale = await getLocale();
 
   const [homepageRes, productsRes, clientsRes, galleryRes, articlesResResult] =
@@ -193,64 +164,46 @@ export default async function HomePage() {
       : { data: [] };
 
   const about = homepage?.about;
-  const aboutStats = homepage?.aboutStats?.length
-    ? homepage.aboutStats
-    : FALLBACK_STATS;
-  const aboutBadge = about?.badge ?? FALLBACK_ABOUT.badge;
-  const aboutTitle = about?.title ?? FALLBACK_ABOUT.title;
-  const aboutParagraph = about?.paragraph ?? FALLBACK_ABOUT.paragraph;
-  const aboutCtaLabel = about?.ctaLabel ?? FALLBACK_ABOUT.ctaLabel;
-  const aboutEmployeeCount =
-    about?.employeeCount ?? FALLBACK_ABOUT.employeeCount;
+  const aboutStats = homepage?.aboutStats ?? [];
+  const aboutBadge = about?.badge ?? "";
+  const aboutTitle = about?.title ?? "";
+  const aboutParagraph = about?.paragraph ?? "";
+  const aboutCtaLabel = about?.ctaLabel ?? "";
+  const aboutEmployeeCount = about?.employeeCount ?? "";
 
   const produkSection = homepage?.produkSection;
-  const produkBadge = produkSection?.badge ?? t("produkSection.badge");
-  const produkTitle = produkSection?.title ?? t("produkSection.title");
-  const produkViewMore =
-    produkSection?.viewMoreLabel ?? t("produkSection.viewMore");
+  const produkBadge = produkSection?.badge ?? "";
+  const produkTitle = produkSection?.title ?? "";
+  const produkViewMore = produkSection?.viewMoreLabel ?? "";
 
   const klienSection = homepage?.klienSection;
-  const klienBadge = klienSection?.badge ?? "Klien";
-  const klienTitle = klienSection?.title ?? "PEMDA DAN KEMENTERIAN";
-  const klienStats = homepage?.klienStats?.length
-    ? homepage.klienStats
-    : [
-        { value: "150+", label: "Kota / Kabupaten" },
-        { value: "18+", label: "Provinsi" },
-        { value: "10+", label: "Kementerian" },
-      ];
+  const klienBadge = klienSection?.badge ?? "";
+  const klienTitle = klienSection?.title ?? "";
+  const klienStats = homepage?.klienStats ?? [];
 
   const galeriSection = homepage?.galeriSection;
   // console.log(galeriSection, "galeriSection");
-  const galeriBadge = galeriSection?.badge ?? "Galeri";
-  const galeriTitle = galeriSection?.title ?? "MEMORI PERJALANAN";
+  const galeriBadge = galeriSection?.badge ?? "";
+  const galeriTitle = galeriSection?.title ?? "";
 
   const artikelSection = homepage?.artikelSection;
-  const artikelBadge = artikelSection?.badge ?? "Artikel";
-  const artikelTitle = artikelSection?.title ?? "INFORMASI DAN INSPIRASI";
-  const artikelViewMore = artikelSection?.viewMoreLabel ?? "Artikel Lainnya";
+  const artikelBadge = artikelSection?.badge ?? "";
+  const artikelTitle = artikelSection?.title ?? "";
+  const artikelViewMore = artikelSection?.viewMoreLabel ?? "";
 
-  const heroSlides =
-    homepage?.heroSlides?.length &&
-    homepage.heroSlides.every(
-      (s) => s.title || (Array.isArray(s.solutions) && s.solutions.length),
-    )
-      ? homepage.heroSlides.map((s) => ({
-          title: s.title ?? "Solusi Pengelolaan Pajak Daerah",
-          solutions: Array.isArray(s.solutions) ? s.solutions : [],
-          logoUrl: getStrapiMediaUrl(s.logo) || undefined,
-        }))
-      : null;
+  const heroSlides = (homepage?.heroSlides ?? []).map((s) => ({
+    title: s.title ?? "",
+    solutions: Array.isArray(s.solutions) ? s.solutions : [],
+    logoUrl: getStrapiMediaUrl(s.logo) || undefined,
+    linkProdukHero: s.linkProdukHero ?? "",
+  }));
 
-  const productList =
-    products.length >= 1
-      ? products.slice(0, 6).map((p) => ({
-          title: p.title ?? "",
-          category: p.category ?? "",
-          imageUrl: getStrapiMediaUrl(p.image),
-          urlProduk: p.urlProduk ?? "",
-        }))
-      : null;
+  const productList = products.slice(0, 6).map((p) => ({
+    title: p.title ?? "",
+    category: p.category ?? "",
+    imageUrl: getStrapiMediaUrl(p.image),
+    urlProduk: p.urlProduk ?? "",
+  }));
 
   const clientList =
     clients.length >= 1
@@ -285,48 +238,56 @@ export default async function HomePage() {
 
   // console.log(testimoniList, 'testimoniList')
 
-  const galleryItems =
-    gallery.length >= 1
-      ? gallery.map((g) => ({
-          imageUrl: getStrapiMediaUrl(g.image),
-          alt: g.caption ?? "Galeri",
-          caption: g.caption,
-          subtitle: g.subtitle,
-        }))
-      : null;
+  const galleryItems = gallery.map((g) => ({
+    imageUrl: getStrapiMediaUrl(g.image),
+    alt: g.caption ?? "",
+    caption: g.caption,
+    subtitle: g.subtitle,
+  }));
 
   const articlesData = articlesRes?.data;
-  const artikelList =
-    Array.isArray(articlesData) && articlesData.length >= 1
-      ? articlesData.slice(0, 4).map((a) => {
-          const raw = (a ?? {}) as Record<string, unknown>;
-          const attrs = (raw?.attributes ?? raw) as Record<string, unknown>;
-          const cover = (attrs?.cover ?? raw?.cover) as
-            | { url?: string }
-            | undefined;
-          const url = cover?.url ?? "";
-          const baseUrl =
-            process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
-          const imageUrl = url
-            ? url.startsWith("http")
-              ? url
-              : `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`
-            : "";
-          const category = (attrs?.category ?? raw?.category) as
-            | { name?: string }
-            | undefined;
-          return {
-            imageUrl: imageUrl || "/assets/artikel1.png",
-            category: category?.name ?? "Artikel",
-            title: String(attrs?.title ?? raw?.title ?? ""),
-            slug: String(attrs?.slug ?? raw?.slug ?? ""),
-          };
-        })
-      : null;
+  const artikelList = Array.isArray(articlesData)
+    ? articlesData.slice(0, 4).map((a) => {
+        const raw = (a ?? {}) as Record<string, unknown>;
+        const attrs = (raw?.attributes ?? raw) as Record<string, unknown>;
+        const cover = (attrs?.cover ?? raw?.cover) as
+          | { url?: string }
+          | undefined;
+        const url = cover?.url ?? "";
+        const baseUrl =
+          process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+        const imageUrl = url
+          ? url.startsWith("http")
+            ? url
+            : `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`
+          : "";
+        const category = (attrs?.category ?? raw?.category) as
+          | { name?: string }
+          | undefined;
+        return {
+          imageUrl,
+          category: category?.name ?? "",
+          title: String(attrs?.title ?? raw?.title ?? ""),
+          slug: String(attrs?.slug ?? raw?.slug ?? ""),
+        };
+      })
+    : [];
 
   const avenirStyle = {
     fontFamily: "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
   };
+  const showHeroPlaceholder = heroSlides.length === 0;
+  const showAboutPlaceholder =
+    !aboutBadge && !aboutTitle && !aboutParagraph && aboutStats.length === 0;
+  const showProdukPlaceholder = productList.length === 0;
+  const showKlienPlaceholder =
+    !klienBadge &&
+    !klienTitle &&
+    clientList.length === 0 &&
+    klienStats.length === 0 &&
+    testimoniList.length === 0;
+  const showGaleriPlaceholder = galleryItems.length === 0;
+  const showArtikelPlaceholder = artikelList.length === 0;
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
@@ -341,88 +302,83 @@ export default async function HomePage() {
           loading="eager"
           sizes="220vw"
         />
-        <HeroCarouselWrapper
-          locale={locale}
-          slides={heroSlides}
-          ctaLabel={aboutCtaLabel}
-        />
+        {showHeroPlaceholder ? (
+          <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-72px)] w-full max-w-6xl items-center px-6">
+            <SectionPlaceholder className="h-[280px] w-full md:h-[340px]" lines={5} />
+          </div>
+        ) : (
+          <HeroCarouselWrapper
+            locale={locale}
+            slides={heroSlides}
+            ctaLabel={aboutCtaLabel}
+          />
+        )}
       </section>
 
       {/* Tentang Kami section (bawah) - dua kolom seperti gambar */}
       <section className="bg-background px-6 py-12 lg:px-12 lg:py-16">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12">
-          {/* Kolom kiri: judul, tombol, avatars */}
-          <div className="flex flex-col justify-between">
-            <div>
-              <p className="text-[16px] font-normal leading-[100%] tracking-[0%] text-[#6B7280]">
-                {aboutBadge}
-              </p>
-              <h2 className="mt-2 text-[32px] font-normal uppercase leading-[100%] tracking-[0%] md:text-[40px]">
-                <span className="text-[#1E1E1E]">
-                  {aboutTitle.includes("CARTENZ")
-                    ? aboutTitle.replace("CARTENZ", "").trimEnd() + " "
-                    : ""}
+        {showAboutPlaceholder ? (
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-2">
+            <SectionPlaceholder className="h-[220px]" lines={5} />
+            <SectionPlaceholder className="h-[220px]" lines={6} />
+          </div>
+        ) : (
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12">
+            {/* Kolom kiri: judul, tombol, avatars */}
+            <div className="flex flex-col justify-between">
+              <div>
+                <p className="text-[16px] font-normal leading-[100%] tracking-[0%] text-[#6B7280]">
+                  {aboutBadge}
+                </p>
+                <h2 className="mt-2 text-[32px] font-normal uppercase leading-[100%] tracking-[0%] md:text-[40px]">
+                  <span className="text-[#1E1E1E]">
+                    {aboutTitle.includes("CARTENZ")
+                      ? aboutTitle.replace("CARTENZ", "").trimEnd() + " "
+                      : ""}
+                  </span>
+                  <span className="text-[#408FB4]">
+                    {aboutTitle.includes("CARTENZ") ? "CARTENZ" : aboutTitle}
+                  </span>
+                </h2>
+                <Link
+                  href={`/${locale}/tentang-kami`}
+                  className="mt-4 inline-flex w-max items-center gap-2 rounded-full border border-[#408FB4] bg-white px-4 py-2.5 text-[#408FB4] transition hover:bg-[#408FB4]/5"
+                  style={{ ...avenirStyle, fontSize: "16px" }}
+                >
+                  {aboutCtaLabel}
+                  <ArrowRightIcon className="size-4" />
+                </Link>
+              </div>
+              {aboutEmployeeCount ? (
+                <span
+                  className="mt-6 text-[16px] font-normal text-[#6B7280]"
+                  style={avenirStyle}
+                >
+                  {aboutEmployeeCount}
                 </span>
-                <span className="text-[#408FB4]">
-                  {aboutTitle.includes("CARTENZ") ? "CARTENZ" : aboutTitle}
-                </span>
-              </h2>
-              <Link
-                href={`/${locale}/tentang-kami`}
-                className="mt-4 inline-flex w-max items-center gap-2 rounded-full border border-[#408FB4] bg-white px-4 py-2.5 text-[#408FB4] transition hover:bg-[#408FB4]/5"
-                style={{ ...avenirStyle, fontSize: "16px" }}
-              >
-                {aboutCtaLabel}
-                <ArrowRightIcon className="size-4" />
-              </Link>
+              ) : null}
             </div>
 
-            {/* Jumlah karyawan - di hide sementara */}
-            {/* <div className="mt-6 flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {["karyawan1.png", "karyawan2.png", "karyawan3.png", "karyawan4.png"].map((src) => (
-                  <div
-                    key={src}
-                    className="relative size-10 shrink-0 overflow-hidden rounded-full shadow-sm"
-                  >
-                    <Image
-                      src={`/assets/${src}`}
-                      alt=""
-                      fill
-                      className="object-cover"
-                      sizes="40px"
-                    />
+            {/* Kolom kanan: paragraf + grid statistik 3 kolom */}
+            <div className="flex flex-col">
+              <p className="text-[16px] font-normal leading-[24px] tracking-[0%] text-[#374151]">
+                {aboutParagraph}
+              </p>
+              <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
+                {aboutStats.map((stat, idx) => (
+                  <div key={stat.label ? `${stat.label}-${idx}` : `stat-${idx}`}>
+                    <p className="text-[24px] font-black leading-[100%] tracking-[0%] text-[#1E1E1E]">
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 text-[14px] font-normal leading-snug text-[#6B7280]">
+                      {stat.label}
+                    </p>
                   </div>
                 ))}
               </div>
-              <span
-                className="text-[16px] font-normal text-[#6B7280]"
-                style={avenirStyle}
-              >
-                {aboutEmployeeCount}
-              </span>
-            </div> */}
-          </div>
-
-          {/* Kolom kanan: paragraf + grid statistik 3 kolom */}
-          <div className="flex flex-col">
-            <p className="text-[16px] font-normal leading-[24px] tracking-[0%] text-[#374151]">
-              {aboutParagraph}
-            </p>
-            <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
-              {aboutStats.map((stat, idx) => (
-                <div key={stat.label ? `${stat.label}-${idx}` : `stat-${idx}`}>
-                  <p className="text-[24px] font-black leading-[100%] tracking-[0%] text-[#1E1E1E]">
-                    {stat.value}
-                  </p>
-                  <p className="mt-1 text-[14px] font-normal leading-snug text-[#6B7280]">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* Produk Section */}
@@ -445,26 +401,19 @@ export default async function HomePage() {
           </h2>
 
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {(productList ?? Array.from({ length: 6 }, (_, i) => i + 1)).map(
-              (_, i) => {
-                const idx = (i + 1) as 1 | 2 | 3 | 4 | 5 | 6;
-                const title = productList
-                  ? (productList[i]?.title ?? "")
-                  : t(`produkSection.product${idx}Title`);
-                const category = productList
-                  ? (productList[i]?.category ?? "")
-                  : t(`produkSection.product${idx}Category`);
-                const imageUrl =
-                  productList?.[i]?.imageUrl || "/assets/produk1.png";
-                return (
+            {showProdukPlaceholder
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <SectionPlaceholder key={i} className="h-[280px]" lines={4} />
+                ))
+              : productList.map((item, i) => (
                   <Link
                     key={i}
-                    href={`/${locale}${productList?.[i]?.urlProduk ? productList[i].urlProduk : "/produk"}`}
+                    href={`/${locale}${item.urlProduk || "/produk"}`}
                     className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
                   >
                     <div className="relative aspect-[4/3] w-full bg-[#408FB4]/10">
                       <ImageWithFallback
-                        src={imageUrl}
+                        src={item.imageUrl || "/assets/produk1.png"}
                         alt=""
                         fill
                         className="object-cover object-center"
@@ -478,13 +427,13 @@ export default async function HomePage() {
                           className="font-semibold text-[#1E1E1E]"
                           style={{ ...avenirStyle, fontSize: "15px" }}
                         >
-                          {title}
+                          {item.title}
                         </p>
                         <p
                           className="mt-1 text-[14px] font-normal text-[#6B7280]"
                           style={avenirStyle}
                         >
-                          {category}
+                          {item.category}
                         </p>
                       </div>
                       <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-[#408FB4] text-[#408FB4] transition group-hover:bg-[#408FB4] group-hover:text-white">
@@ -492,9 +441,7 @@ export default async function HomePage() {
                       </span>
                     </div>
                   </Link>
-                );
-              },
-            )}
+                ))}
           </div>
 
           <div className="mt-12 flex justify-center">
@@ -531,17 +478,25 @@ export default async function HomePage() {
           />
         </div>
 
-        <KlienSectionClient
-          klienBadge={klienBadge}
-          klienTitle={klienTitle}
-          clientList={clientList}
-          klienStats={klienStats.map((s) => ({
-            value: s.value ?? "",
-            label: s.label ?? "",
-          }))}
-          testimoniList={testimoniList}
-          avenirStyle={avenirStyle}
-        />
+        {showKlienPlaceholder ? (
+          <div className="relative z-10 mx-auto max-w-6xl space-y-6">
+            <SectionPlaceholder className="h-[80px]" lines={2} />
+            <SectionPlaceholder className="h-[200px]" lines={4} />
+            <SectionPlaceholder className="h-[160px]" lines={3} />
+          </div>
+        ) : (
+          <KlienSectionClient
+            klienBadge={klienBadge}
+            klienTitle={klienTitle}
+            clientList={clientList}
+            klienStats={klienStats.map((s) => ({
+              value: s.value ?? "",
+              label: s.label ?? "",
+            }))}
+            testimoniList={testimoniList}
+            avenirStyle={avenirStyle}
+          />
+        )}
       </section>
 
       {/* Galeri Section: bgHalfHero 20%, height 620px, padding 64px */}
@@ -557,11 +512,15 @@ export default async function HomePage() {
           />
         </div>
         <div className="relative z-10 mx-auto max-w-6xl">
-          <GalleryCarouselWrapper
-            items={galleryItems}
-            sectionBadge={galeriBadge}
-            sectionTitle={galeriTitle}
-          />
+          {showGaleriPlaceholder ? (
+            <SectionPlaceholder className="h-[320px]" lines={5} />
+          ) : (
+            <GalleryCarouselWrapper
+              items={galleryItems}
+              sectionBadge={galeriBadge}
+              sectionTitle={galeriTitle}
+            />
+          )}
         </div>
       </section>
 
@@ -574,41 +533,40 @@ export default async function HomePage() {
           </h2>
 
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {(artikelList ?? FALLBACK_ARTIKEL).map((artikel, i) => (
-              <Link
-                key={i}
-                href={
-                  "slug" in artikel && artikel.slug
-                    ? `/${locale}/artikel/${artikel.slug}`
-                    : `/${locale}/artikel/${toArticleSlug(artikel.title)}`
-                }
-                className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
-              >
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-xl">
-                  <ImageWithFallback
-                    src={
-                      "imageUrl" in artikel && artikel.imageUrl
-                        ? artikel.imageUrl
-                        : ((artikel as { image?: string }).image ??
-                          "/assets/artikel1.png")
+            {showArtikelPlaceholder
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <SectionPlaceholder key={i} className="h-[260px]" lines={4} />
+                ))
+              : artikelList.map((artikel, i) => (
+                  <Link
+                    key={i}
+                    href={
+                      artikel.slug
+                        ? `/${locale}/artikel/${artikel.slug}`
+                        : `/${locale}/artikel/${toArticleSlug(artikel.title)}`
                     }
-                    alt=""
-                    fill
-                    className="object-cover object-center transition group-hover:opacity-95"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    fallbackSrc="/assets/artikel1.png"
-                  />
-                </div>
-                <div className="flex flex-col gap-1 p-4">
-                  <p className="text-xs font-normal text-[#6B7280]">
-                    {artikel.category}
-                  </p>
-                  <h3 className="line-clamp-2 text-base font-semibold text-[#1E1E1E] dark:text-foreground">
-                    {artikel.title}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+                    className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-zinc-800 dark:shadow-none"
+                  >
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-xl">
+                      <ImageWithFallback
+                        src={artikel.imageUrl || "/assets/artikel1.png"}
+                        alt=""
+                        fill
+                        className="object-cover object-center transition group-hover:opacity-95"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        fallbackSrc="/assets/artikel1.png"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1 p-4">
+                      <p className="text-xs font-normal text-[#6B7280]">
+                        {artikel.category}
+                      </p>
+                      <h3 className="line-clamp-2 text-base font-semibold text-[#1E1E1E] dark:text-foreground">
+                        {artikel.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ))}
           </div>
 
           <div className="mt-10 flex justify-center">

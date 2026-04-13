@@ -22,7 +22,11 @@ const POPULATE_PAGE =
 const POPULATE_CATEGORIES =
   "populate[0]=subMenus&populate[1]=subMenus.tabs&populate[2]=subMenus.tabs.content&populate[3]=subMenus.tabs.content.image&populate[4]=subMenus.tabs.content.blocks&sort[0]=order";
 
-export type GetPalapaPageOptions = { revalidate?: number };
+export type GetPalapaPageOptions = {
+  revalidate?: number;
+  timeoutMs?: number;
+  retries?: number;
+};
 
 function mapPalapaCard(card: StrapiPalapaKlienCard): PalapaKlienCardItem {
   return {
@@ -39,9 +43,14 @@ export async function getPalapaPage(options?: GetPalapaPageOptions): Promise<{
   palapaKlien: PalapaKlienSectionPayload | null;
 }> {
   try {
+    const requestOptions = {
+      revalidate: options?.revalidate ?? 0,
+      timeoutMs: options?.timeoutMs ?? 30000,
+      retries: options?.retries ?? 4,
+    };
     const res = await fetchApi<{ data: unknown }>(
       `palapa-page?${POPULATE_PAGE}`,
-      { revalidate: options?.revalidate ?? 60 }
+      requestOptions
     );
     const doc = normalizeDoc<StrapiPalapaPageData>(res?.data);
     if (!doc) return { hero: null, palapaKlien: null };
@@ -90,9 +99,14 @@ interface PalapaDetailCategoryItem {
 /** Fetch Palapa detail categories */
 export async function getPalapaDetailCategories(options?: GetPalapaPageOptions): Promise<ProductDetailData> {
   try {
+    const requestOptions = {
+      revalidate: options?.revalidate ?? 0,
+      timeoutMs: options?.timeoutMs ?? 30000,
+      retries: options?.retries ?? 4,
+    };
     const res = await fetchApi<{ data: unknown }>(
       `palapa-detail-categories?${POPULATE_CATEGORIES}`,
-      { revalidate: options?.revalidate ?? 60 }
+      requestOptions
     );
     const data = res?.data;
     const list = Array.isArray(data) ? data : [];

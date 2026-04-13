@@ -9,23 +9,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const HERO_SOLUTIONS = [
-  "Solusi Administrasi Pengelolaan Pajak Daerah",
-  "Solusi Integrasi Pembayaran Pajak Daerah",
-  "Solusi Integrasi Data Pajak Daerah",
-  "Solusi Digitalisasi Pemetaan Pajak Daerah",
-  "Solusi Anjungan Pajak Mandiri E-Kiosk",
-  "Solusi Dashboard Command Center",
-  "Solusi Perekaman Retribusi",
-];
-
-const SLIDE_TITLES = [
-  "Solusi Pengelolaan Pajak Daerah",
-  "Solusi Pengelolaan Pajak Daerah",
-  "Solusi Pengelolaan Pajak Daerah",
-  "Solusi Pengelolaan Pajak Daerah",
-];
-
 const avenirStyle = {
   fontFamily: "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
 };
@@ -35,6 +18,8 @@ export interface HeroSlideData {
   solutions: string[];
   /** URL logo dari Strapi; jika kosong pakai fallback /assets/smartgov_logo_hero.svg */
   logoUrl?: string;
+  /** URL tujuan tombol CTA hero per-slide */
+  linkProdukHero?: string;
 }
 
 interface HeroCarouselProps {
@@ -52,14 +37,31 @@ function SlideContent({
   locale,
   ctaLabel,
   logoUrl,
+  linkProdukHero,
 }: {
   title: string;
   solutions: string[];
   locale: string;
   ctaLabel: string;
   logoUrl?: string;
+  linkProdukHero?: string;
 }) {
   const logoSrc = logoUrl || DEFAULT_HERO_LOGO;
+  const normalizedLink = linkProdukHero?.trim();
+  const ctaHref = !normalizedLink
+    ? `/${locale}/produk`
+    : normalizedLink.startsWith("http://") ||
+        normalizedLink.startsWith("https://")
+      ? normalizedLink
+      : normalizedLink.startsWith(`/${locale}/`)
+        ? normalizedLink
+        : normalizedLink.startsWith("/")
+          ? `/${locale}${normalizedLink}`
+          : `/${locale}/${normalizedLink}`;
+
+  // console.log("normalizedLink", normalizedLink);
+  // console.log("ctaHref", ctaHref);
+
   return (
     <div className="flex min-h-[calc(100dvh-72px)] flex-col items-center justify-center px-4 md:min-h-[min(calc(100dvh-72px),500px)] md:px-8">
       <div className="relative z-10 w-full max-w-4xl md:max-w-5xl text-center">
@@ -79,9 +81,7 @@ function SlideContent({
         >
           {title}
         </h1>
-        <div
-          className="mx-auto mt-4 flex md:w-full flex-wrap items-center justify-center gap-[12px] md:mt-5"
-        >
+        <div className="mx-auto mt-4 flex md:w-full flex-wrap items-center justify-center gap-[12px] md:mt-5">
           {solutions.flatMap((item, i) =>
             i === 0
               ? [
@@ -108,11 +108,10 @@ function SlideContent({
           )}
         </div>
         <Link
-          href={`/${locale}/produk`}
+          href={ctaHref}
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#408FB4] px-6 py-3 text-white transition hover:opacity-90 md:mt-8"
         >
-          {/* {ctaLabel} */}
-          {"Lihat Selengkapnya"}
+          {ctaLabel}
           <ArrowRight className="size-5" aria-hidden />
         </Link>
       </div>
@@ -125,18 +124,12 @@ export function HeroCarousel({
   slides,
   ctaLabel = "Lihat Selengkapnya",
 }: HeroCarouselProps) {
-  const slideList =
-    slides && slides.length > 0
-      ? slides.map((s) => ({
-          title: s.title ?? "Solusi Pengelolaan Pajak Daerah",
-          solutions: Array.isArray(s.solutions) ? s.solutions : HERO_SOLUTIONS,
-          logoUrl: s.logoUrl,
-        }))
-      : SLIDE_TITLES.map((title) => ({
-          title,
-          solutions: HERO_SOLUTIONS,
-          logoUrl: undefined,
-        }));
+  const slideList = (slides ?? []).map((s) => ({
+    title: s.title ?? "",
+    solutions: Array.isArray(s.solutions) ? s.solutions : [],
+    logoUrl: s.logoUrl,
+    linkProdukHero: s.linkProdukHero,
+  }));
 
   return (
     <div className="hero-swiper relative w-full overflow-hidden">
@@ -160,6 +153,7 @@ export function HeroCarousel({
               locale={locale}
               ctaLabel={ctaLabel}
               logoUrl={slide.logoUrl}
+              linkProdukHero={slide.linkProdukHero}
             />
           </SwiperSlide>
         ))}
