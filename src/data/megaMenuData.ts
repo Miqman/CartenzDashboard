@@ -199,7 +199,7 @@ export const megaMenuData: MegaMenuItem[] = [
   },
   {
     id: "palapa",
-    label: "Digitalisasi Layanan Pemerintah Terintegrasi",
+    label: "Sistem enabler kebijakan pemerintah",
     menuType: "flat",
     children: [
       {

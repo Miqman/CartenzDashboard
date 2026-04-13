@@ -72,7 +72,7 @@ export function Footer() {
                 Solusi Perekaman dan Monitoring Perpajakan Daerah
               </p>
               <p className="transition hover:text-sky-100">
-                Digitalisasi Layanan Pemerintah Terintegrasi
+                Sistem enabler kebijakan pemerintah
               </p>
               <p className="transition hover:text-sky-100">
                 Strategic Consulting

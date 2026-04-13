@@ -23,7 +23,7 @@ export const PRODUCT_NAV_ITEMS = [
   {
     id: "palapa",
     brand: "PALAPA",
-    label: "Digitalisasi Layanan Pemerintah Terintegrasi",
+    label: "Sistem enabler kebijakan pemerintah",
     logo: "/assets/palapa_logo.png",
   },
   {
@@ -42,7 +42,7 @@ export const PRODUCT_DESCRIPTIONS: Record<string, string> = {
     "SMARTGOV menyediakan solusi pengelolaan pajak daerah yang terintegrasi untuk Kota dan Kabupaten, mencakup Pajak Bumi dan Bangunan, Bea Perolehan Hak atas Tanah dan Bangunan, retribusi daerah, serta dashboard realisasi penerimaan.",
   efd: "Solusi monitoring pajak daerah untuk pengawasan objek pajak dan realisasi penerimaan secara real-time.",
   palapa:
-    "Platform digitalisasi layanan pemerintah terintegrasi (PALAPA) untuk meningkatkan kualitas layanan publik.",
+    "Platform sistem enabler kebijakan pemerintah (PALAPA) untuk meningkatkan kualitas layanan publik.",
   "strategic-consulting":
     "Layanan konsultasi dan project strategic untuk mendampingi pemerintah dalam transformasi digital.",
 };
@@ -84,7 +84,7 @@ export const PRODUCT_HERO: Record<string, ProductHeroData> = {
     heroImageUrl: "/assets/galeri5.jpg",
   },
   palapa: {
-    title: "Digitalisasi Layanan Pemerintah Terintegrasi",
+    title: "Sistem enabler kebijakan pemerintah",
     paragraphs: [
       "Palapa bertujuan untuk membuat proses layanan instansi pemerintah menjadi lebih efektif, efisien, praktis serta mendekatkan layanan pemerintah ke masyarakat dalam satu sistem.",
       "Palapa adalah platform tumbuh mandiri terintegrasi yang memungkinkan pemerintah membuat layanan digital dengan mudah tanpa memerlukan keahlian pemrograman. Dirancang untuk mempermudah digitalisasi di berbagai instansi pemerintahan, Palapa mendukung berbagai kebutuhan SKPD, seperti informasi, pelayanan, dan antrian, serta dapat diintegrasikan dengan sistem yang sudah ada. Dengan Palapa, pemerintah diharapkan dapat bekerja lebih cepat, efisien, dan efektif dalam melayani masyarakat dan berkoordinasi antar dinas.",
