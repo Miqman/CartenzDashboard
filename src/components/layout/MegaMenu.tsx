@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { X, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
@@ -15,13 +16,17 @@ import { getProductPageUrl } from "@/lib/productNavigation";
 
 const ACCENT_BLUE = "#3b82f6";
 
-/** Ubah title jadi slug: lowercase, spasi/slash jadi strip. */
+/** Ubah title jadi slug yang aman untuk URL. */
 function titleToSlug(title: string): string {
-  return title
-    .toLowerCase()
+  if (title == null) return "";
+  return String(title)
     .trim()
-    .replace(/[\s/]+/g, "-")
-    .replace(/-+/g, "-");
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function getMenuType(item: MegaMenuItem): MegaMenuType {
@@ -280,7 +285,10 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
                     aria-label="Detail fitur"
                   >
                     <div className="rounded-lg bg-white p-4 flex h-full min-h-0 flex-col">
-                      <nav className="flex-1 overflow-auto" aria-label="Daftar detail fitur">
+                      <nav
+                        className="flex-1 overflow-auto"
+                        aria-label="Daftar detail fitur"
+                      >
                         <ul>
                           {details.map((detail, idx) => {
                             const detailSlug = titleToSlug(detail.title);
@@ -337,15 +345,23 @@ function DetailSection({
   onClose: () => void;
   accentBlue: string;
 }) {
+  const router = useRouter();
   const hasItems = detail.items.length > 0;
   return (
     <li className="py-1 first:pt-0 last:pb-0">
       <div className="flex items-center gap-2">
         <button
           type="button"
-          onClick={onToggle}
-          className="flex flex-1 items-center justify-between gap-3 rounded-lg px-2 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-          aria-expanded={isExpanded}
+          onClick={() => {
+            if (hasItems) {
+              onToggle();
+              return;
+            }
+            onClose();
+            router.push(productPageUrl);
+          }}
+          className={`flex flex-1 items-center justify-between gap-3 rounded-lg px-2 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-50 ${hasItems ? "" : "cursor-pointer"}`}
+          aria-expanded={hasItems ? isExpanded : undefined}
         >
           <span className="line-clamp-2">{detail.title}</span>
           {hasItems ? (
@@ -356,14 +372,16 @@ function DetailSection({
             )
           ) : null}
         </button>
-        <Link
-          href={productPageUrl}
-          onClick={onClose}
-          className="shrink-0 rounded px-2 py-2 text-xs font-medium transition hover:bg-gray-100"
-          style={{ color: accentBlue }}
-        >
-          Lihat →
-        </Link>
+        {hasItems ? (
+          <Link
+            href={productPageUrl}
+            onClick={onClose}
+            className="shrink-0 rounded px-2 py-2 text-xs font-medium transition hover:bg-gray-100"
+            style={{ color: accentBlue }}
+          >
+            Lihat →
+          </Link>
+        ) : null}
       </div>
       {hasItems && isExpanded && (
         <ul className="px-2 pb-3 pt-1">

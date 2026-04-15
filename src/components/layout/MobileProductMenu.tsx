@@ -14,11 +14,15 @@ type Props = {
 
 /** Slug dari title: lowercase, spasi/slash jadi strip (sama dengan MegaMenu). */
 function titleToSlug(title: string): string {
-  return title
-    .toLowerCase()
+  if (title == null) return "";
+  return String(title)
     .trim()
-    .replace(/[\s/]+/g, "-")
-    .replace(/-+/g, "-");
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function getMenuType(item: MegaMenuItem): MegaMenuType {

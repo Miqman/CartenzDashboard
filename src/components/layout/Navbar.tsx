@@ -119,7 +119,11 @@ export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuI
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
-          <LanguageSwitch />
+          <LanguageSwitch
+            containerClassName="border-[#1E1E1E]/50"
+            iconClassName="text-[#1E1E1E]"
+            badgeClassName="border-[#408FB4] text-[#408FB4]"
+          />
         </div>
 
         <button
@@ -182,7 +186,11 @@ export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuI
           );
         })}
         <div className="mt-4 flex items-center gap-3">
-          <LanguageSwitch />
+          <LanguageSwitch
+            containerClassName="border-white/40"
+            iconClassName="text-white"
+            badgeClassName="border-white text-white"
+          />
         </div>
         <button
           type="button"

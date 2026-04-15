@@ -137,6 +137,16 @@ export function ProductDetailSection({
   /** Smartgov: tampilkan Back + nama Lv1 + daftar Lv2 */
   const showSmartgovLv2List =
     isSmartgov && categories.length > 1 && selectedCategory != null;
+  const flatSubMenuCount = useMemo(
+    () => categories.reduce((acc, cat) => acc + cat.subMenus.length, 0),
+    [categories],
+  );
+  const activeSidebarListCount = showSmartgovLv1List
+    ? categories.length
+    : showSmartgovLv2List && selectedCategory
+      ? selectedCategory.subMenus.length
+      : flatSubMenuCount;
+  const shouldSidebarScroll = activeSidebarListCount > 12;
 
   const handleSmartgovBack = () => {
     setSelectedCategoryIdState(null);
@@ -167,7 +177,12 @@ export function ProductDetailSection({
         <div className="mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row lg:gap-8">
           {/* Kolom kiri ~30%: Sidebar (tanpa accordion) */}
           <aside className="w-full shrink-0 rounded-lg lg:w-[30%] lg:max-w-[320px]">
-            <nav className="" aria-label="Daftar solusi">
+            <nav
+              className={
+                shouldSidebarScroll ? "max-h-210 overflow-y-auto pr-1" : ""
+              }
+              aria-label="Daftar solusi"
+            >
               {showSmartgovLv1List ? (
                 <ul className="space-y-6">
                   {categories.map((cat) => (
@@ -349,7 +364,6 @@ export function ProductDetailSection({
                     ) : null}
                   </>
                 )}
-                
 
                 {activeTab?.content?.image && (
                   <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-lg bg-[#E2E8F0]">

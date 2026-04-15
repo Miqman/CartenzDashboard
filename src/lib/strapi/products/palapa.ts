@@ -50,8 +50,9 @@ export async function getPalapaPage(options?: GetPalapaPageOptions): Promise<{
     };
     const res = await fetchApi<{ data: unknown }>(
       `palapa-page?${POPULATE_PAGE}`,
-      requestOptions
+      requestOptions,
     );
+    // console.log("res", res);
     const doc = normalizeDoc<StrapiPalapaPageData>(res?.data);
     if (!doc) return { hero: null, palapaKlien: null };
 
@@ -70,7 +71,10 @@ export async function getPalapaPage(options?: GetPalapaPageOptions): Promise<{
     return { hero, palapaKlien };
   } catch (err) {
     if (process.env.NODE_ENV === "development") {
-      console.warn("[getPalapaPage] Gagal:", err instanceof Error ? err.message : err);
+      console.warn(
+        "[getPalapaPage] Gagal:",
+        err instanceof Error ? err.message : err,
+      );
     }
     return { hero: null, palapaKlien: null };
   }
@@ -97,7 +101,9 @@ interface PalapaDetailCategoryItem {
 }
 
 /** Fetch Palapa detail categories */
-export async function getPalapaDetailCategories(options?: GetPalapaPageOptions): Promise<ProductDetailData> {
+export async function getPalapaDetailCategories(
+  options?: GetPalapaPageOptions,
+): Promise<ProductDetailData> {
   try {
     const requestOptions = {
       revalidate: options?.revalidate ?? 0,
@@ -106,7 +112,7 @@ export async function getPalapaDetailCategories(options?: GetPalapaPageOptions):
     };
     const res = await fetchApi<{ data: unknown }>(
       `palapa-detail-categories?${POPULATE_CATEGORIES}`,
-      requestOptions
+      requestOptions,
     );
     const data = res?.data;
     const list = Array.isArray(data) ? data : [];
@@ -114,11 +120,14 @@ export async function getPalapaDetailCategories(options?: GetPalapaPageOptions):
       .map((item) => normalizeDoc<PalapaDetailCategoryItem>(item))
       .filter((c): c is PalapaDetailCategoryItem => c != null);
     return fillDefaultDetailImages(
-      mapStrapiCategoriesToDetailData(rawCategories, getStrapiMediaUrl)
+      mapStrapiCategoriesToDetailData(rawCategories, getStrapiMediaUrl),
     );
   } catch (err) {
     if (process.env.NODE_ENV === "development") {
-      console.warn("[getPalapaDetailCategories] Gagal:", err instanceof Error ? err.message : err);
+      console.warn(
+        "[getPalapaDetailCategories] Gagal:",
+        err instanceof Error ? err.message : err,
+      );
     }
     return { categories: [] };
   }
