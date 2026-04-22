@@ -1,6 +1,8 @@
 import Image from "next/image";
+import type { LucideIcon } from "lucide-react";
 import { Award, Zap, Target, Users } from "lucide-react";
 import { BentoGridClient } from "@/components/tentang-kami/BentoGrid.client";
+import { getTentangKamiPageData } from "@/lib/strapi/tentang-kami";
 
 const SEJARAH_TEXT =
   "Didirikan pada tahun 2014, Cartenz merupakan pionir dalam bidang e-Government, menyediakan solusi untuk lembaga-lembaga di semua tingkatan dalam memanfaatkan sistem informasi yang dapat diandalkan dan terintegrasi menggunakan model Penyediaan SaaS, yang bertujuan untuk mempromosikan pembangunan berkelanjutan dalam pemerintahan.";
@@ -8,7 +10,7 @@ const SEJARAH_TEXT =
 const VISI_TEXT =
   "Menjadi perusahaan layanan teknologi paling berfokus pada pelanggan di Asia Tenggara";
 
-const NILAI_INTI = [
+const NILAI_INTI_DEFAULT = [
   {
     letter: "P",
     title: "Profesional",
@@ -39,16 +41,69 @@ const NILAI_INTI = [
   },
 ];
 
-const TIM_KAMI = [
-  { name: "Gito Wahyudi", jabatan: "Founder, Chairman" },
-  // { name: "Daniel Winarto Alam", jabatan: "Board Member" },
-  { name: "Andrew Ryan P", jabatan: "Managing Director" },
-  { name: "Devriady Pratama", jabatan: "Director" },
-  // { name: "Enggar Baskoro", jabatan: "Director" },
-  { name: "Muhammad Fajar", jabatan: "Consulting Head" },
+const ICON_BY_KEYWORD: Array<{ keywords: string[]; Icon: LucideIcon }> = [
+  { keywords: ["award", "profesional"], Icon: Award },
+  { keywords: ["zap", "efisien"], Icon: Zap },
+  { keywords: ["target", "sigap"], Icon: Target },
+  { keywords: ["users", "sinergis"], Icon: Users },
 ];
 
-export default function TentangKamiPage() {
+const TIM_KAMI_DEFAULT = [
+  {
+    name: "Andrew Ryan P",
+    jabatan: "Managing Director",
+    photo: "/assets/timKamiFrame.png",
+  },
+  // { name: "Daniel Winarto Alam", jabatan: "Board Member" },
+  // { name: "Andrew Ryan P", jabatan: "Managing Director" },
+  {
+    name: "Devriady Pratama",
+    jabatan: "Director",
+    photo: "/assets/timKamiFrame.png",
+  },
+  {
+    name: "Zenal Arifin",
+    jabatan: "Director",
+    photo: "/assets/timKamiFrame.png",
+  },
+  {
+    name: "Muhammad Fajar",
+    jabatan: "Consulting Head",
+    photo: "/assets/timKamiFrame.png",
+  },
+];
+
+export default async function TentangKamiPage() {
+  const cmsData = await getTentangKamiPageData({ revalidate: 60 });
+
+  const sejarahText = cmsData?.sejarah || SEJARAH_TEXT;
+  const visiText = cmsData?.visi || VISI_TEXT;
+  const nilaiIntiTitle = cmsData?.nilaiIntiTitle || "Presisi";
+  const timKamiSubtitle = cmsData?.timKamiSubtitle || "Berdedikasi untuk negeri";
+  const logoUrl = cmsData?.logo || "/assets/logoCartenz2.png";
+  const timKami =
+    cmsData?.timKamiMembers && cmsData.timKamiMembers.length > 0
+      ? cmsData.timKamiMembers
+      : TIM_KAMI_DEFAULT;
+  const nilaiIntiRaw =
+    cmsData?.nilaiIntiItems && cmsData.nilaiIntiItems.length > 0
+      ? cmsData.nilaiIntiItems
+      : NILAI_INTI_DEFAULT;
+  const nilaiInti = nilaiIntiRaw.map((item) => {
+    const iconKey =
+      "icon" in item && typeof item.icon === "string"
+        ? item.icon.toLowerCase()
+        : "";
+    const titleKey = item.title?.toLowerCase() ?? "";
+    const matchedIcon = ICON_BY_KEYWORD.find(({ keywords }) =>
+      keywords.some((keyword) => iconKey.includes(keyword) || titleKey.includes(keyword)),
+    )?.Icon;
+    return {
+      ...item,
+      Icon: matchedIcon ?? Users,
+    };
+  });
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Section 1 - Info Sejarah Cartenz (pt agar konten tidak tertutup navbar transparan) */}
@@ -56,7 +111,7 @@ export default function TentangKamiPage() {
         <div className="mx-auto max-w-6xl text-center">
           <div className="relative mx-auto mb-8 inline-block h-24 w-[389px]">
             <Image
-              src="/assets/logoCartenz2.png"
+              src={logoUrl}
               alt="Cartenz Technology"
               fill
               className="object-contain object-center"
@@ -64,7 +119,7 @@ export default function TentangKamiPage() {
               priority
             />
           </div>
-          <p className="text-center text-base text-[#1E1E1E]">{SEJARAH_TEXT}</p>
+          <p className="text-center text-base text-[#1E1E1E]">{sejarahText}</p>
         </div>
       </section>
 
@@ -82,7 +137,7 @@ export default function TentangKamiPage() {
         <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center justify-center gap-2.5 text-center">
           <p className="text-xl font-bold text-cartenz-black">Visi</p>
           <h2 className="text-3xl font-normal leading-tight text-cartenz-black md:text-[40px] md:leading-tight">
-            {VISI_TEXT}
+            {visiText}
           </h2>
         </div>
       </section>
@@ -95,11 +150,11 @@ export default function TentangKamiPage() {
               Nilai-nilai Inti Kami
             </p>
             <h2 className="mt-1 text-4xl font-normal uppercase tracking-tight text-cartenz-black md:text-5xl">
-              Presisi
+              {nilaiIntiTitle}
             </h2>
           </div>
           <div className="flex flex-col gap-8 col-span-3">
-            {NILAI_INTI.map((item, i) => (
+            {nilaiInti.map((item, i) => (
               <div key={i} className="gap-4">
                 <div className="flex h-8 w-8 shrink-0 mb-2 items-center justify-center rounded-lg border border-cartenz-blue text-cartenz-blue">
                   <item.Icon className="h-5 w-5" />
@@ -123,15 +178,18 @@ export default function TentangKamiPage() {
         <div className="mx-auto max-w-6xl">
           <p className="text-base font-normal text-[#62748E]">Tim Kami</p>
           <h2 className="mt-1 text-4xl font-normal leading-tight uppercase tracking-tight text-cartenz-black md:text-3xl">
-            Berdedikasi untuk negeri
+            {timKamiSubtitle}
           </h2>
           <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {TIM_KAMI.map((member, i) => (
-              <div key={i} className="flex flex-col overflow-hidden rounded-lg">
+            {timKami.map((member, i) => (
+              <div
+                key={`${member.name}-${member.jabatan}-${i}`}
+                className="flex flex-col overflow-hidden rounded-lg"
+              >
                 <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-[#408FB4] to-emerald-600">
                   <Image
-                    src="/assets/timKamiFrame.png"
-                    alt=""
+                    src={member.photo}
+                    alt={member.name}
                     fill
                     className="object-cover"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -150,7 +208,7 @@ export default function TentangKamiPage() {
       {/* Section 5 - Bento Grid Gambar */}
       <section className="px-4 py-16 md:px-16 lg:px-24 xl:px-32">
         <div className="mx-auto max-w-6xl">
-          <BentoGridClient />
+          <BentoGridClient imageSources={cmsData?.bentoImages} />
         </div>
       </section>
     </div>

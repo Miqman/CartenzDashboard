@@ -27,8 +27,21 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-export function BentoGridClient() {
+type BentoGridClientProps = {
+  imageSources?: string[];
+};
+
+export function BentoGridClient({ imageSources }: BentoGridClientProps) {
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const mergedItems = BENTO_ITEMS.map((cell, i) => {
+    if (cell.type === "text") return cell;
+    const imageIndex = i === 4 ? 3 : i;
+    const cmsImage = imageSources?.[imageIndex];
+    return {
+      ...cell,
+      src: cmsImage && cmsImage.trim().length > 0 ? cmsImage : cell.src,
+    };
+  });
 
   useEffect(() => {
     if (!lightboxSrc) return;
@@ -48,7 +61,7 @@ export function BentoGridClient() {
         viewport={{ once: true, margin: "-40px" }}
         className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 md:auto-rows-[minmax(180px,1fr)]"
       >
-        {BENTO_ITEMS.map((cell, i) => {
+        {mergedItems.map((cell, i) => {
           const isLarge = "large" in cell && cell.large;
           const gridPlacement =
             i === 0
