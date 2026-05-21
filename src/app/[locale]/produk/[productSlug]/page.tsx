@@ -7,6 +7,7 @@ import {
 import type { ProductDetailCategory } from "@/data/productDetailData";
 import { getLocale } from "next-intl/server";
 import { getProductPageData } from "@/lib/strapi/products";
+import { getProductHero } from "@/data/productsPageData";
 import { getProductClients } from "@/data/productClientsData";
 import { ProductDetailPageClient } from "@/components/produk/ProductDetailPageClient";
 import { ProductNavBar } from "@/components/produk/ProductNavBar";
@@ -66,13 +67,23 @@ export default async function ProdukProductSlugPage({ params }: PageProps) {
   const data = payload.detail.categories.length > 0 ? payload.detail : fallbackDetail;
   const clients = payload.clients ?? fallbackClients;
 
+  const hero = payload.hero ?? getProductHero(productSlug);
+  const hasKlienCards =
+    (productSlug === "palapa" || productSlug === "citigov") &&
+    (payload.palapaKlien?.cards?.length ?? 0) > 0;
+  const hasHeroContent =
+    Boolean(hero.title?.trim()) ||
+    hero.paragraphs.some((p) => p.trim().length > 0);
+
   const hasContent =
     productSlug === "strategic-consulting" ||
+    hasKlienCards ||
     hasAnySectionContent(
       payload.detail.categories,
       fallbackDetail.categories,
-      clients != null
-    );
+      clients != null,
+    ) ||
+    hasHeroContent;
 
   if (!hasContent) {
     return (

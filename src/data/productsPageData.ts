@@ -29,6 +29,12 @@ export const PRODUCT_NAV_ITEMS = [
     logo: "/assets/palapa_logo.png",
   },
   {
+    id: "citigov",
+    brand: "CITIGOV",
+    label: "Digitalisasi Layanan Pemerintah Terintegrasi",
+    logo: "/assets/citigov_logo.png",
+  },
+  {
     id: "strategic-consulting",
     brand: "STRATEGIC CONSULTING",
     label: "Layanan Konsultasi dan Project",
@@ -50,6 +56,8 @@ export const PRODUCT_DESCRIPTIONS: Record<string, string> = {
   efd: "Solusi monitoring pajak daerah untuk pengawasan objek pajak dan realisasi penerimaan secara real-time.",
   palapa:
     "Platform sistem enabler kebijakan pemerintah (PALAPA) untuk meningkatkan kualitas layanan publik.",
+  citigov:
+    "Citigov adalah platform digitalisasi layanan pemerintah terintegrasi yang mempermudah akses masyarakat dan meningkatkan efisiensi pelayanan publik.",
   "strategic-consulting":
     "Layanan konsultasi dan project strategic untuk mendampingi pemerintah dalam transformasi digital.",
 };
@@ -99,6 +107,16 @@ export const PRODUCT_HERO: Record<string, ProductHeroData> = {
     ],
     demoUrl: "https://smartgov.cartenz.com",
     logoUrl: "/assets/palapa_logo.png",
+    heroImageUrl: "/assets/galeri5.jpg",
+  },
+  citigov: {
+    title: "Digitalisasi Layanan Pemerintah Terintegrasi",
+    paragraphs: [
+      "Citigov dirancang secara fleksibel untuk menyesuaikan kebutuhan di lapangan, serta mudah digunakan oleh siapa saja, termasuk mereka yang tidak memiliki latar belakang teknologi.",
+      "Platform ini memungkinkan pemerintah membuat layanan digital tanpa coding, mengatur jam dan kuota layanan, serta menyediakan pelayanan online maupun di kantor dengan sistem antrian digital yang efisien.",
+    ],
+    demoUrl: "https://citigov.id",
+    logoUrl: "/assets/citigov_logo.png",
     heroImageUrl: "/assets/galeri5.jpg",
   },
   "strategic-consulting": {

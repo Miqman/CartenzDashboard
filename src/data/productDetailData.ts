@@ -562,6 +562,8 @@ export const productDetailByProductId: Record<string, ProductDetailData> = {
     "Solusi yang kami tawarkan",
     "palapa",
   ),
+  /** Konten detail dari Strapi (citigov-detail-categories); entri ini agar slug valid. */
+  citigov: { categories: [] },
   "strategic-consulting": { categories: [] },
 };
 

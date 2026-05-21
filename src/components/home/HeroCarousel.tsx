@@ -20,6 +20,7 @@ export interface HeroSlideData {
   logoUrl?: string;
   /** URL tujuan tombol CTA hero per-slide */
   linkProdukHero?: string;
+  show?: boolean;
 }
 
 interface HeroCarouselProps {
@@ -29,7 +30,7 @@ interface HeroCarouselProps {
   ctaLabel?: string;
 }
 
-const DEFAULT_HERO_LOGO = "/assets/smartgov_logo_hero.svg";
+const DEFAULT_HERO_LOGO = "/assets/defaultImage.png";
 
 function SlideContent({
   title,
@@ -124,12 +125,15 @@ export function HeroCarousel({
   slides,
   ctaLabel = "Lihat Selengkapnya",
 }: HeroCarouselProps) {
-  const slideList = (slides ?? []).map((s) => ({
-    title: s.title ?? "",
-    solutions: Array.isArray(s.solutions) ? s.solutions : [],
-    logoUrl: s.logoUrl,
-    linkProdukHero: s.linkProdukHero,
-  }));
+  /** Hanya slide dengan show !== false (default Strapi / data lama tetap tampil). */
+  const slideList = (slides ?? [])
+    .filter((s) => s.show !== false)
+    .map((s) => ({
+      title: s.title ?? "",
+      solutions: Array.isArray(s.solutions) ? s.solutions : [],
+      logoUrl: s.logoUrl,
+      linkProdukHero: s.linkProdukHero,
+    }));
 
   return (
     <div className="hero-swiper relative w-full overflow-hidden">

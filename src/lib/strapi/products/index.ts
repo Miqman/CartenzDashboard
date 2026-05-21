@@ -15,6 +15,7 @@ import {
 import type { ProductPagePayload } from "./types";
 import { getEfdPage, getEfdDetailCategories } from "./efd";
 import { getPalapaPage, getPalapaDetailCategories } from "./palapa";
+import { getCitigovPage, getCitigovDetailCategories } from "./citigov";
 import { getSmartgovPage, getSmartgovDetailCategories } from "./smartgov";
 import { getStrategicConsultingPage } from "./strategic-consulting";
 
@@ -75,6 +76,23 @@ export async function getProductPageData(
               cards: PALAPA_KLIEN_CARDS,
             }
           : page.palapaKlien,
+      };
+    }
+    case "citigov": {
+      const [page, detail] = await Promise.all([
+        getCitigovPage({ revalidate }),
+        getCitigovDetailCategories({ revalidate }),
+      ]);
+      const cmsUnavailable =
+        page.hero === null &&
+        page.palapaKlien === null &&
+        detail.categories.length === 0;
+      return {
+        hero: cmsUnavailable ? fallbackHero : page.hero,
+        detail: cmsUnavailable ? fallbackDetail : detail,
+        clients: null,
+        strategicProjects: null,
+        palapaKlien: page.palapaKlien,
       };
     }
     case "smartgov": {

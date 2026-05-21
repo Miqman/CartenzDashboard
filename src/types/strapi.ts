@@ -49,6 +49,7 @@ export interface StrapiHeroSlide {
   solutions?: string[];
   logo?: StrapiMedia;
   linkProdukHero?: string;
+  show?: boolean;
 }
 
 export interface StrapiAboutSection {

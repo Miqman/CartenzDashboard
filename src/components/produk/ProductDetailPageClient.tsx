@@ -163,7 +163,7 @@ export function ProductDetailPageClient(props: Props) {
       )}
 
       {/* section klien: tampilan card hanya untuk palapa */}
-      {productSlug === "palapa" && (
+      {(productSlug === "palapa" || productSlug === "citigov") && (
         <ProductKlienCardSection
           badge={palapaKlienSection.badge ?? PALAPA_KLIEN_SECTION.badge}
           title={palapaKlienSection.title ?? PALAPA_KLIEN_SECTION.title}
@@ -173,7 +173,9 @@ export function ProductDetailPageClient(props: Props) {
       )}
 
       {/* section klien: tampilan logo grid untuk produk lain */}
-      {productClients && productSlug !== "palapa" && (
+      {productClients &&
+        productSlug !== "palapa" &&
+        productSlug !== "citigov" && (
         <section className="px-4 py-10 md:px-8 md:py-14 lg:px-12">
           <ProductKlienSection
             badge={productClients.badge ?? "Klien"}

@@ -191,12 +191,14 @@ export default async function HomePage() {
   const artikelTitle = artikelSection?.title ?? "";
   const artikelViewMore = artikelSection?.viewMoreLabel ?? "";
 
-  const heroSlides = (homepage?.heroSlides ?? []).map((s) => ({
-    title: s.title ?? "",
-    solutions: Array.isArray(s.solutions) ? s.solutions : [],
-    logoUrl: getStrapiMediaUrl(s.logo) || undefined,
-    linkProdukHero: s.linkProdukHero ?? "",
-  }));
+  const heroSlides = (homepage?.heroSlides ?? [])
+    .filter((s) => s.show !== false)
+    .map((s) => ({
+      title: s.title ?? "",
+      solutions: Array.isArray(s.solutions) ? s.solutions : [],
+      logoUrl: getStrapiMediaUrl(s.logo) || undefined,
+      linkProdukHero: s.linkProdukHero ?? "",
+    }));
 
   const productList = products.slice(0, 6).map((p) => ({
     title: p.title ?? "",
@@ -304,7 +306,10 @@ export default async function HomePage() {
         />
         {showHeroPlaceholder ? (
           <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-72px)] w-full max-w-6xl items-center px-6">
-            <SectionPlaceholder className="h-[280px] w-full md:h-[340px]" lines={5} />
+            <SectionPlaceholder
+              className="h-[280px] w-full md:h-[340px]"
+              lines={5}
+            />
           </div>
         ) : (
           <HeroCarouselWrapper
@@ -366,7 +371,9 @@ export default async function HomePage() {
               </p>
               <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
                 {aboutStats.map((stat, idx) => (
-                  <div key={stat.label ? `${stat.label}-${idx}` : `stat-${idx}`}>
+                  <div
+                    key={stat.label ? `${stat.label}-${idx}` : `stat-${idx}`}
+                  >
                     <p className="text-[24px] font-black leading-[100%] tracking-[0%] text-[#1E1E1E]">
                       {stat.value}
                     </p>
