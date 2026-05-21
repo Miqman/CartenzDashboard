@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import { getArticleBySlug } from "@/lib/strapi";
 import {
@@ -11,6 +12,55 @@ import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
+
+  const local = getArticleByLocalSlug(decodedSlug);
+  if (local) {
+    return {
+      title: local.judul,
+      description: `${local.kategori} — Cartenz`,
+      openGraph: {
+        title: local.judul,
+        description: `${local.kategori} — Cartenz`,
+        type: "article",
+        images: local.image ? [{ url: local.image }] : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: local.judul,
+        images: local.image ? [local.image] : undefined,
+      },
+    };
+  }
+
+  try {
+    const { data } = await getArticleBySlug(decodedSlug);
+    const attrs = (data?.attributes ?? {}) as {
+      title?: string;
+      excerpt?: string;
+    };
+    if (attrs.title) {
+      return {
+        title: attrs.title,
+        description: attrs.excerpt ?? "Artikel dari Cartenz",
+        openGraph: {
+          title: attrs.title,
+          description: attrs.excerpt,
+          type: "article",
+        },
+      };
+    }
+  } catch {
+    // Fallback ke default metadata
+  }
+
+  return { title: "Artikel" };
 }
 
 const AUTHOR = "Administrator";

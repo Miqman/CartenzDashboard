@@ -129,7 +129,6 @@ function ProductNavCard({
                 ? "(min-width: 768px) 88px, 40px"
                 : "(min-width: 768px) 100px, 48px"
           }
-          unoptimized={PRODUCT_PAGE_ASSETS.logo.startsWith("http")}
         />
       </span>
       <span

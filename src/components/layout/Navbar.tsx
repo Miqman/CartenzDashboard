@@ -7,7 +7,6 @@ import Link from "next/link";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
-import { AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { LanguageSwitch } from "@/components/ui/LanguageSwitch";
 import { MegaMenu } from "@/components/layout/MegaMenu";
@@ -91,17 +90,15 @@ export function Navbar({ logoUrl, megaMenuItems }: { logoUrl?: string; megaMenuI
                       aria-hidden
                     />
                   </button>
-                  <AnimatePresence>
-                    {megaMenuOpen && (
-                      <MegaMenu
-                        key="mega-menu"
-                        open={megaMenuOpen}
-                        onClose={() => setMegaMenuOpen(false)}
-                        anchorRef={produkTriggerRef}
-                        items={megaMenuItems}
-                      />
-                    )}
-                  </AnimatePresence>
+                  {megaMenuOpen && (
+                    <MegaMenu
+                      key="mega-menu"
+                      open={megaMenuOpen}
+                      onClose={() => setMegaMenuOpen(false)}
+                      anchorRef={produkTriggerRef}
+                      items={megaMenuItems}
+                    />
+                  )}
                 </div>
               );
             }

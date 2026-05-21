@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { getLocale } from "next-intl/server";
+import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
 import {
   getHomepage,
   getProducts,
@@ -16,109 +17,6 @@ import {
 } from "@/components/home/HomeCarousels.client";
 import { KlienSectionClient } from "@/components/home/KlienSection.client";
 import { toArticleSlug } from "@/data/articleData";
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden
-    >
-      <path d="m9 18 6-6-6-6" />
-    </svg>
-  );
-}
-
-function VideoIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden
-    >
-      <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" />
-      <rect x="2" y="6" width="14" height="12" rx="2" />
-    </svg>
-  );
-}
-
-function ArrowUpRightIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden
-    >
-      <path d="M7 7h10v10" />
-      <path d="M7 17 17 7" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden
-    >
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
-  );
-}
 
 function SectionPlaceholder({
   className = "",
@@ -182,7 +80,6 @@ export default async function HomePage() {
   const klienStats = homepage?.klienStats ?? [];
 
   const galeriSection = homepage?.galeriSection;
-  // console.log(galeriSection, "galeriSection");
   const galeriBadge = galeriSection?.badge ?? "";
   const galeriTitle = galeriSection?.title ?? "";
 
@@ -275,9 +172,6 @@ export default async function HomePage() {
       })
     : [];
 
-  const avenirStyle = {
-    fontFamily: "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-  };
   const showHeroPlaceholder = heroSlides.length === 0;
   const showAboutPlaceholder =
     !aboutBadge && !aboutTitle && !aboutParagraph && aboutStats.length === 0;
@@ -301,7 +195,6 @@ export default async function HomePage() {
           fill
           className="object-cover object-center md:object-none min-w-full min-h-full"
           priority
-          loading="eager"
           sizes="220vw"
         />
         {showHeroPlaceholder ? (
@@ -347,18 +240,14 @@ export default async function HomePage() {
                 </h2>
                 <Link
                   href={`/${locale}/tentang-kami`}
-                  className="mt-4 inline-flex w-max items-center gap-2 rounded-full border border-[#408FB4] bg-white px-4 py-2.5 text-[#408FB4] transition hover:bg-[#408FB4]/5"
-                  style={{ ...avenirStyle, fontSize: "16px" }}
+                  className="mt-4 inline-flex w-max items-center gap-2 rounded-full border border-[#408FB4] bg-white px-4 py-2.5 text-base text-[#408FB4] transition hover:bg-[#408FB4]/5"
                 >
                   {aboutCtaLabel}
-                  <ArrowRightIcon className="size-4" />
+                  <ArrowRight className="size-4" aria-hidden />
                 </Link>
               </div>
               {aboutEmployeeCount ? (
-                <span
-                  className="mt-6 text-[16px] font-normal text-[#6B7280]"
-                  style={avenirStyle}
-                >
+                <span className="mt-6 text-base font-normal text-[#6B7280]">
                   {aboutEmployeeCount}
                 </span>
               ) : null}
@@ -394,16 +283,8 @@ export default async function HomePage() {
         className="scroll-mt-20 bg-background px-4 py-16 md:px-16 lg:px-24 xl:px-32"
       >
         <div className="mx-auto max-w-6xl">
-          <p
-            className="text-[16px] font-normal text-[#6B7280]"
-            style={avenirStyle}
-          >
-            {produkBadge}
-          </p>
-          <h2
-            className="mt-2 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl"
-            style={avenirStyle}
-          >
+          <p className="text-base font-normal text-[#6B7280]">{produkBadge}</p>
+          <h2 className="mt-2 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl">
             {produkTitle}
           </h2>
 
@@ -430,21 +311,15 @@ export default async function HomePage() {
                     </div>
                     <div className="flex items-start justify-between gap-3 p-4">
                       <div className="min-w-0 flex-1">
-                        <p
-                          className="font-semibold text-[#1E1E1E]"
-                          style={{ ...avenirStyle, fontSize: "15px" }}
-                        >
+                        <p className="text-[15px] font-semibold text-[#1E1E1E]">
                           {item.title}
                         </p>
-                        <p
-                          className="mt-1 text-[14px] font-normal text-[#6B7280]"
-                          style={avenirStyle}
-                        >
+                        <p className="mt-1 text-sm font-normal text-[#6B7280]">
                           {item.category}
                         </p>
                       </div>
                       <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-[#408FB4] text-[#408FB4] transition group-hover:bg-[#408FB4] group-hover:text-white">
-                        <ArrowUpRightIcon className="size-4" />
+                        <ArrowUpRight className="size-4" aria-hidden />
                       </span>
                     </div>
                   </Link>
@@ -454,11 +329,10 @@ export default async function HomePage() {
           <div className="mt-12 flex justify-center">
             <Link
               href={`/${locale}/produk`}
-              className="inline-flex items-center gap-2 rounded-full border border-[#408FB4] bg-white px-6 py-3 text-[#408FB4] transition hover:bg-[#408FB4]/5"
-              style={{ ...avenirStyle, fontSize: "16px" }}
+              className="inline-flex items-center gap-2 rounded-full border border-[#408FB4] bg-white px-6 py-3 text-base text-[#408FB4] transition hover:bg-[#408FB4]/5"
             >
               {produkViewMore}
-              <ChevronRightIcon className="size-4" />
+              <ChevronRight className="size-4" aria-hidden />
             </Link>
           </div>
         </div>
@@ -472,7 +346,6 @@ export default async function HomePage() {
             src="/assets/bgKlien.jpg"
             alt=""
             fill
-            loading="eager"
             className="object-cover object-center opacity-[0.25]"
             sizes="100vw"
           />
@@ -501,7 +374,6 @@ export default async function HomePage() {
               label: s.label ?? "",
             }))}
             testimoniList={testimoniList}
-            avenirStyle={avenirStyle}
           />
         )}
       </section>
@@ -514,7 +386,6 @@ export default async function HomePage() {
             alt=""
             fill
             className="object-cover object-center opacity-20"
-            loading="eager"
             sizes="100vw"
           />
         </div>
@@ -582,7 +453,7 @@ export default async function HomePage() {
               className="inline-flex items-center gap-2 rounded-full border border-[#408FB4] bg-white px-6 py-3 text-base text-[#408FB4] transition hover:bg-[#408FB4]/5 dark:border-[#408FB4] dark:bg-transparent dark:hover:bg-[#408FB4]/10"
             >
               {artikelViewMore}
-              <ChevronRightIcon className="size-4" />
+              <ChevronRight className="size-4" aria-hidden />
             </Link>
           </div>
         </div>

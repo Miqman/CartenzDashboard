@@ -9,10 +9,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const avenirStyle = {
-  fontFamily: "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-};
-
 export interface HeroSlideData {
   title: string;
   solutions: string[];
@@ -60,9 +56,6 @@ function SlideContent({
           ? `/${locale}${normalizedLink}`
           : `/${locale}/${normalizedLink}`;
 
-  // console.log("normalizedLink", normalizedLink);
-  // console.log("ctaHref", ctaHref);
-
   return (
     <div className="flex min-h-[calc(100dvh-72px)] flex-col items-center justify-center px-4 md:min-h-[min(calc(100dvh-72px),500px)] md:px-8">
       <div className="relative z-10 w-full max-w-4xl md:max-w-5xl text-center">
@@ -73,7 +66,6 @@ function SlideContent({
             fill
             className="object-contain object-center"
             sizes="(min-width: 768px) 520px, 300px"
-            unoptimized={logoSrc.startsWith("http")}
           />
         </div>
         <h1

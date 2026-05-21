@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { motion } from "framer-motion";
 import { X, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import { filterVisibleMegaMenuItems } from "@/config/productVisibility";
 import {
@@ -53,8 +52,6 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
 
   const rawItems = items && items.length ? items : megaMenuData;
   const menuItems = filterVisibleMegaMenuItems(rawItems);
-  // console.log("[MegaMenu] data dari Strapi (items):", items);
-  // console.log("[MegaMenu] data yang dipakai (menuItems):", menuItems);
   const activeCategory = level1Id
     ? menuItems.find((c) => c.id === level1Id)
     : null;
@@ -90,12 +87,8 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
   if (!open) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-      className="fixed inset-x-0 bottom-0 z-40"
+    <div
+      className="fixed inset-x-0 bottom-0 z-40 motion-safe:animate-[megaMenuIn_220ms_cubic-bezier(0.4,0,0.2,1)_both]"
       style={{ top: "var(--navbar-height, 72px)" }}
     >
       {/* Backdrop: full width */}
@@ -327,7 +320,7 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

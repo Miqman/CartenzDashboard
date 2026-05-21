@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import {
   getProductDetailData,
   getProductSlugs,
@@ -7,13 +8,34 @@ import {
 import type { ProductDetailCategory } from "@/data/productDetailData";
 import { getLocale } from "next-intl/server";
 import { getProductPageData } from "@/lib/strapi/products";
-import { getProductHero } from "@/data/productsPageData";
+import { getProductHero, PRODUCT_NAV_ITEMS } from "@/data/productsPageData";
 import { getProductClients } from "@/data/productClientsData";
 import { ProductDetailPageClient } from "@/components/produk/ProductDetailPageClient";
 import { ProductNavBar } from "@/components/produk/ProductNavBar";
 
 interface PageProps {
   params: Promise<{ productSlug: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { productSlug } = await params;
+  const navItem = PRODUCT_NAV_ITEMS.find((i) => i.id === productSlug);
+  const hero = getProductHero(productSlug);
+  const title = hero.title || navItem?.label || "Produk";
+  const description =
+    hero.paragraphs[0] ?? navItem?.label ?? "Produk Cartenz Technology";
+
+  return {
+    title,
+    description: description.slice(0, 160),
+    openGraph: {
+      title,
+      description: description.slice(0, 200),
+      type: "website",
+    },
+  };
 }
 
 /** Pre-compile known product slugs to reduce dev "Compiling..." on each visit. */

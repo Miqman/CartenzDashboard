@@ -40,7 +40,6 @@ function KlienCard({ item }: { item: PalapaKlienCardItem }) {
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 378px"
-          unoptimized={gambarSrc.startsWith("http")}
         />
       </div>
       <div className="mt-3 flex items-center gap-3">
@@ -54,7 +53,6 @@ function KlienCard({ item }: { item: PalapaKlienCardItem }) {
             fill
             className="object-contain p-1"
             sizes="60px"
-            unoptimized={logoSrc.startsWith("http")}
           />
         </div>
         <div className="min-w-0 flex-1">

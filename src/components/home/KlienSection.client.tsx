@@ -63,10 +63,8 @@ export interface KlienSectionProps {
   clientList: ClientItem[];
   klienStats: { value: string; label: string }[];
   testimoniList: TestimoniItem[];
-  avenirStyle: React.CSSProperties;
 }
 
-const plusJakartaStyle = { fontFamily: "'Plus Jakarta Sans', sans-serif" };
 const EMPTY_TESTIMONI: TestimoniItem = {
   text: "",
   name: "",
@@ -80,7 +78,6 @@ export function KlienSectionClient({
   clientList,
   klienStats,
   testimoniList,
-  avenirStyle,
 }: KlienSectionProps) {
   const [clientPage, setClientPage] = useState(0);
   const [testimoniIndex, setTestimoniIndex] = useState(0);
@@ -123,13 +120,8 @@ export function KlienSectionClient({
       {/* Header: badge, title, dan arrow navigasi logo klien (di samping ujung kanan title) */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-normal text-[#6B7280]" style={avenirStyle}>
-            {klienBadge}
-          </p>
-          <h2
-            className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl"
-            style={avenirStyle}
-          >
+          <p className="text-sm font-normal text-[#6B7280]">{klienBadge}</p>
+          <h2 className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl">
             {klienTitle}
           </h2>
         </div>
@@ -179,12 +171,7 @@ export function KlienSectionClient({
                 sizes="80px"
               />
             </div>
-            <p
-              className="text-sm font-normal text-[#1E1E1E]"
-              style={avenirStyle}
-            >
-              {client.name}
-            </p>
+            <p className="text-sm font-normal text-[#1E1E1E]">{client.name}</p>
           </div>
         ))}
       </div>
@@ -230,10 +217,7 @@ export function KlienSectionClient({
           >
             {/* <div className="min-h-[130px]"> */}
             <div className="">
-              <p
-                className="text-center text-2xl font-extralight! leading-[34px] tracking-normal text-[#1E1E1E]"
-                style={plusJakartaStyle}
-              >
+              <p className="text-center text-2xl font-extralight! leading-[34px] tracking-normal text-[#1E1E1E]">
                 {currentTestimoni.text}
               </p>
             </div>
@@ -249,16 +233,10 @@ export function KlienSectionClient({
                   />
                 </div>
                 <div className="text-center sm:text-left">
-                  <p
-                    className="text-base font-semibold leading-6 text-[#1E1E1E]"
-                    style={plusJakartaStyle}
-                  >
+                  <p className="text-base font-semibold leading-6 text-[#1E1E1E]">
                     {currentTestimoni.name}
                   </p>
-                  <p
-                    className="mt-0.5 text-sm font-normal leading-none text-[#6B7280]"
-                    style={plusJakartaStyle}
-                  >
+                  <p className="mt-0.5 text-sm font-normal leading-none text-[#6B7280]">
                     {currentTestimoni.status}
                   </p>
                 </div>

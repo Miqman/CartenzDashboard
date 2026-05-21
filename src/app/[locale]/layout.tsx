@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/layout/FloatingActions";
-import { RouteTransitionLoader } from "@/components/ui/RouteTransitionLoader";
 import { filterVisibleMegaMenuItems } from "@/config/productVisibility";
 import { getGlobal, getMegaMenuItems, getStrapiMediaUrl } from "@/lib/strapi";
 
@@ -19,7 +18,6 @@ export default async function LocaleLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <RouteTransitionLoader />
       <Navbar logoUrl={navbarLogoUrl} megaMenuItems={megaMenuItems} />
       <main className="flex-1">{children}</main>
       <Footer />

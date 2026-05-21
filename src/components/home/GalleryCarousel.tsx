@@ -40,10 +40,6 @@ const GALLERY_IMAGES = [
   },
 ];
 
-const avenirStyle = {
-  fontFamily: "Avenir, Avenir Next, Segoe UI, system-ui, sans-serif",
-};
-
 export interface GalleryItemData {
   imageUrl: string;
   alt: string;
@@ -78,13 +74,8 @@ export function GalleryCarousel({
     <div className="galeri-swiper relative w-full overflow-x-hidden overflow-y-visible pb-10">
       <div className="mb-8 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-normal text-[#6B7280]" style={avenirStyle}>
-            {sectionBadge}
-          </p>
-          <h2
-            className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl"
-            style={avenirStyle}
-          >
+          <p className="text-sm font-normal text-[#6B7280]">{sectionBadge}</p>
+          <h2 className="mt-1 text-2xl font-normal uppercase leading-tight text-[#1E1E1E] md:text-3xl">
             {sectionTitle}
           </h2>
         </div>

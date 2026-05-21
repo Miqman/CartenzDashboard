@@ -32,7 +32,6 @@ function ProjectCard({ project }: { project: StrategicConsultingProject }) {
               fill
               className="object-contain object-left"
               sizes="56px"
-              unoptimized={project.logoUrl.startsWith("http")}
             />
           </div>
         )}
@@ -52,7 +51,6 @@ function ProjectCard({ project }: { project: StrategicConsultingProject }) {
             fill
             className="object-cover transition hover:opacity-95"
             sizes="(max-width: 768px) 100vw, 33vw"
-            unoptimized={project.imageUrl.startsWith("http")}
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-gray-400">

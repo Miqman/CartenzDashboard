@@ -146,10 +146,9 @@ export async function getHomepage(
   try {
     const res = await fetchApi<{ data: unknown }>(
       "homepage?populate[0]=heroSlides&populate[1]=heroSlides.logo&populate[2]=about&populate[3]=aboutStats&populate[4]=produkSection&populate[5]=klienSection&populate[6]=klienStats&populate[7]=testimoniSection&populate[8]=testimoniSection.foto&populate[9]=galeriSection&populate[10]=artikelSection&populate[11]=featuredProducts&populate[12]=featuredClients&populate[13]=featuredGallery&populate[14]=featuredArticles",
-      { revalidate: 0, timeoutMs: 30000, retries: 4 },
+      { revalidate: 300, timeoutMs: 30000, retries: 4 },
     );
     const data = res?.data;
-    // console.log("data", res);
     const out = normalizeDoc<StrapiHomepageData>(data) ?? null;
     if (process.env.NODE_ENV === "development") {
       if (out) {
