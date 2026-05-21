@@ -3,6 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import { Award, Zap, Target, Users } from "lucide-react";
 import { BentoGridClient } from "@/components/tentang-kami/BentoGrid.client";
 import { getTentangKamiPageData } from "@/lib/strapi/tentang-kami";
+import { shouldBypassNextImageOptimization } from "@/lib/utils";
 
 const SEJARAH_TEXT =
   "Didirikan pada tahun 2014, Cartenz merupakan pionir dalam bidang e-Government, menyediakan solusi untuk lembaga-lembaga di semua tingkatan dalam memanfaatkan sistem informasi yang dapat diandalkan dan terintegrasi menggunakan model Penyediaan SaaS, yang bertujuan untuk mempromosikan pembangunan berkelanjutan dalam pemerintahan.";
@@ -117,6 +118,7 @@ export default async function TentangKamiPage() {
               className="object-contain object-center"
               sizes="389px"
               priority
+              unoptimized={shouldBypassNextImageOptimization(logoUrl)}
             />
           </div>
           <p className="text-center text-base text-[#1E1E1E]">{sejarahText}</p>
@@ -193,6 +195,7 @@ export default async function TentangKamiPage() {
                     fill
                     className="object-cover"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    unoptimized={shouldBypassNextImageOptimization(member.photo)}
                   />
                 </div>
                 <div className="mt-3">

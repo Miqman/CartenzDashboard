@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { shouldBypassNextImageOptimization } from "@/lib/utils";
 
 // Nama file harus sama persis (case-sensitive di Linux/Vercel): gunakan "Tentangkami" (k kecil) jika file di public/assets begitu.
 const BENTO_ITEMS = [
@@ -86,6 +87,7 @@ export function BentoGridClient({ imageSources }: BentoGridClientProps) {
                     fill
                     className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                     sizes={isLarge ? "(max-width: 768px) 100vw, 33vw" : "(max-width: 768px) 50vw, 33vw"}
+                    unoptimized={shouldBypassNextImageOptimization(cell.src)}
                   />
                   <div
                     className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20"
@@ -124,6 +126,7 @@ export function BentoGridClient({ imageSources }: BentoGridClientProps) {
               fill
               className="rounded-lg object-contain"
               sizes="90vw"
+              unoptimized={shouldBypassNextImageOptimization(lightboxSrc)}
             />
           </div>
         </div>

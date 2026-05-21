@@ -8,6 +8,7 @@ import {
   PRODUCT_PAGE_ASSETS,
 } from "@/data/productsPageData";
 import { getProductPageUrl } from "@/lib/productNavigation";
+import { shouldBypassNextImageOptimization } from "@/lib/utils";
 
 const BORDER_COLOR = "#CAD5E2";
 const TEXT_COLOR = "#62748E";
@@ -129,6 +130,7 @@ function ProductNavCard({
                 ? "(min-width: 768px) 88px, 40px"
                 : "(min-width: 768px) 100px, 48px"
           }
+          unoptimized={shouldBypassNextImageOptimization(item.logo)}
         />
       </span>
       <span

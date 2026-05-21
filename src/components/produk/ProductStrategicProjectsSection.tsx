@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import type { StrategicConsultingProject } from "@/data/strategicConsultingProjectsData";
+import { shouldBypassNextImageOptimization } from "@/lib/utils";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -32,6 +33,7 @@ function ProjectCard({ project }: { project: StrategicConsultingProject }) {
               fill
               className="object-contain object-left"
               sizes="56px"
+              unoptimized={shouldBypassNextImageOptimization(project.logoUrl)}
             />
           </div>
         )}
@@ -51,6 +53,7 @@ function ProjectCard({ project }: { project: StrategicConsultingProject }) {
             fill
             className="object-cover transition hover:opacity-95"
             sizes="(max-width: 768px) 100vw, 33vw"
+            unoptimized={shouldBypassNextImageOptimization(project.imageUrl)}
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-gray-400">

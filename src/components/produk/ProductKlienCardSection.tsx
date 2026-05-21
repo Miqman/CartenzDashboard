@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { PalapaKlienCardItem } from "@/data/palapaKlienCardData";
+import { shouldBypassNextImageOptimization } from "@/lib/utils";
 
 const CARDS_PER_PAGE = 6;
 const IMAGE_WIDTH = 378;
@@ -40,6 +41,7 @@ function KlienCard({ item }: { item: PalapaKlienCardItem }) {
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 378px"
+          unoptimized={shouldBypassNextImageOptimization(gambarSrc)}
         />
       </div>
       <div className="mt-3 flex items-center gap-3">
@@ -53,6 +55,7 @@ function KlienCard({ item }: { item: PalapaKlienCardItem }) {
             fill
             className="object-contain p-1"
             sizes="60px"
+            unoptimized={shouldBypassNextImageOptimization(logoSrc)}
           />
         </div>
         <div className="min-w-0 flex-1">

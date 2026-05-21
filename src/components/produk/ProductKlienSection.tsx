@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { shouldBypassNextImageOptimization } from "@/lib/utils";
 
 const LOGOS_PER_PAGE = 10;
 
@@ -124,6 +125,7 @@ export function ProductKlienSection({
                 fill
                 className="object-contain"
                 sizes="80px"
+                unoptimized={shouldBypassNextImageOptimization(client.logoUrl)}
               />
             </div>
             <p className="text-sm font-normal text-[#1E1E1E]">{client.name}</p>

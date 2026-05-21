@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { shouldBypassNextImageOptimization } from "@/lib/utils";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -66,6 +67,7 @@ function SlideContent({
             fill
             className="object-contain object-center"
             sizes="(min-width: 768px) 520px, 300px"
+            unoptimized={shouldBypassNextImageOptimization(logoSrc)}
           />
         </div>
         <h1
