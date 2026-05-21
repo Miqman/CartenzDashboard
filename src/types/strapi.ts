@@ -10,8 +10,8 @@ export interface StrapiResponse<T> {
   };
 }
 
-/** Media from Strapi (object with url or raw) */
-export type StrapiMedia = { url: string; alternativeText?: string } | null;
+/** Media from Strapi (url bisa kosong sebelum dinormalisasi). */
+export type StrapiMedia = { url?: string; alternativeText?: string } | null;
 
 /** Global (single type) - site settings */
 export interface StrapiGlobalData {
