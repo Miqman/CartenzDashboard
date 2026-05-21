@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { X, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
+import { filterVisibleMegaMenuItems } from "@/config/productVisibility";
 import {
   megaMenuData,
   type MegaMenuDetail,
@@ -50,7 +51,8 @@ export function MegaMenu({ open, onClose, anchorRef, items }: Props) {
   const [expandedDetailIndex, setExpandedDetailIndex] = useState<number>(-1);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const menuItems = items && items.length ? items : megaMenuData;
+  const rawItems = items && items.length ? items : megaMenuData;
+  const menuItems = filterVisibleMegaMenuItems(rawItems);
   // console.log("[MegaMenu] data dari Strapi (items):", items);
   // console.log("[MegaMenu] data yang dipakai (menuItems):", menuItems);
   const activeCategory = level1Id

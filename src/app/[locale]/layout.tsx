@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/layout/FloatingActions";
 import { RouteTransitionLoader } from "@/components/ui/RouteTransitionLoader";
+import { filterVisibleMegaMenuItems } from "@/config/productVisibility";
 import { getGlobal, getMegaMenuItems, getStrapiMediaUrl } from "@/lib/strapi";
 
 export default async function LocaleLayout({
@@ -9,7 +10,11 @@ export default async function LocaleLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [global, megaMenuItems] = await Promise.all([getGlobal(), getMegaMenuItems()]);
+  const [global, megaMenuItemsRaw] = await Promise.all([
+    getGlobal(),
+    getMegaMenuItems(),
+  ]);
+  const megaMenuItems = filterVisibleMegaMenuItems(megaMenuItemsRaw);
   const navbarLogoUrl = global?.navbarLogo ? getStrapiMediaUrl(global.navbarLogo) : undefined;
 
   return (

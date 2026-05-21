@@ -1,8 +1,10 @@
+import { getDefaultVisibleProductSlug } from "@/config/productVisibility";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 
-/** Default: /produk → /produk/smartgov (tetap di level productSlug, tanpa subSlug). */
+/** Default: /produk → produk visible pertama (tanpa subSlug). */
 export default async function ProdukRootPage() {
   const locale = await getLocale();
-  redirect({ href: "/produk/smartgov", locale });
+  const defaultSlug = getDefaultVisibleProductSlug();
+  redirect({ href: `/produk/${defaultSlug}`, locale });
 }

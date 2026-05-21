@@ -3,6 +3,8 @@
  * Id harus match dengan megaMenuData agar Sidebar & Content ikut berubah.
  */
 
+import { isProductVisible } from "@/config/productVisibility";
+
 /** Default aset untuk fallback saat dari Strapi kosong atau pakai data default. */
 export const DEFAULT_HERO_IMAGE = "/assets/galeri5.jpg";
 export const DEFAULT_LOGO = "/assets/smartgov_logo.png";
@@ -33,6 +35,11 @@ export const PRODUCT_NAV_ITEMS = [
     logo: "/assets/consulting_logo.png",
   },
 ] as const;
+
+/** Item nav produk yang ditampilkan (menghormati HIDDEN_PRODUCT_IDS). */
+export function getVisibleProductNavItems() {
+  return PRODUCT_NAV_ITEMS.filter((item) => isProductVisible(item.id));
+}
 
 const DEFAULT_DESCRIPTION =
   "Solusi terintegrasi untuk mendukung pengelolaan dan pemantauan pajak daerah serta digitalisasi layanan pemerintah.";

@@ -5,6 +5,8 @@
  * Konten setelah gambar bisa pakai blocks (dinamis) atau legacy description + details.
  */
 
+import { isProductVisible } from "@/config/productVisibility";
+
 /** Blok konten dinamis: format di frontend, isi dari data/CMS. */
 export type ContentBlock =
   | { type: "paragraph"; text: string }
@@ -575,9 +577,14 @@ export function getFirstSubSlug(productId: string): string | null {
   return firstSub?.id ?? null;
 }
 
-/** Daftar productId yang punya konten (untuk validasi slug). */
-export function getProductSlugs(): string[] {
+/** Semua productId yang punya data (termasuk yang disembunyikan). */
+export function getAllProductSlugs(): string[] {
   return Object.keys(productDetailByProductId);
+}
+
+/** Daftar productId yang boleh diakses publik (validasi slug halaman /produk). */
+export function getProductSlugs(): string[] {
+  return getAllProductSlugs().filter(isProductVisible);
 }
 
 /**
