@@ -5,7 +5,8 @@ import { PRODUCT_NAV_ITEMS } from "@/data/productsPageData";
  * Produk yang disembunyikan dari UI (nav, mega menu, redirect /produk).
  * Hapus slug dari array ini untuk menampilkan kembali.
  */
-export const HIDDEN_PRODUCT_IDS = ["smartgov", "efd"] as const;
+// export const HIDDEN_PRODUCT_IDS = ["smartgov", "efd"] as const;
+export const HIDDEN_PRODUCT_IDS = [] as const;
 
 export type HiddenProductId = (typeof HIDDEN_PRODUCT_IDS)[number];
 
